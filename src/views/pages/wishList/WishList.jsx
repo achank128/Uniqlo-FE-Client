@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
-import "./wishList.scss";
-import { Link } from "react-router-dom";
-import { useGlobalContext } from "../../../hooks/useGlobalContext";
-import { Close } from "@mui/icons-material";
+import React, { useEffect } from 'react';
+import './wishList.scss';
+import { Link } from 'react-router-dom';
+import { useGlobalContext } from '../../../hooks/useGlobalContext';
+import { Close } from '@mui/icons-material';
 //components
-import Navbar from "../../components/navbar/Navbar";
-import Footer from "../../components/footer/Footer";
+import Navbar from '../../components/navbar/Navbar';
+import Footer from '../../components/footer/Footer';
 
-const WishList = ({ showToast }) => {
+const WishList = () => {
   const { wishList, formater, removeFromWishList } = useGlobalContext();
 
   useEffect(() => {
@@ -36,7 +36,7 @@ const WishList = ({ showToast }) => {
               <div className="amount-item">
                 {wishList.length > 0
                   ? `${wishList.length} item(s)`
-                  : "YOUR WISH LIST HAS NO ITEMS."}
+                  : 'YOUR WISH LIST HAS NO ITEMS.'}
               </div>
               {wishList.map((item) => {
                 return (
@@ -45,7 +45,6 @@ const WishList = ({ showToast }) => {
                       className="btn-remove"
                       onClick={() => {
                         removeFromWishList(item._id);
-                        showToast("Item has been removed!", "info");
                       }}
                     >
                       <Close />

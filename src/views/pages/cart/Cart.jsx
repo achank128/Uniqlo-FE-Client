@@ -8,7 +8,7 @@ import Navbar from '../../components/navbar/Navbar';
 import Footer from '../../components/footer/Footer';
 import CartItem from '../../components/cartItem/CartItem';
 
-const Cart = ({ showToast }) => {
+const Cart = () => {
   const navigate = useNavigate();
   const currentUser = JSON.parse(localStorage.getItem('currentUser'));
   const { cart, subtotal, shippingFee, total, formater, amount } = useGlobalContext();
@@ -46,7 +46,7 @@ const Cart = ({ showToast }) => {
               <div className="cart-content">
                 <div className="items">
                   {cart.map((item, index) => (
-                    <CartItem item={item} key={index} showToast={showToast} />
+                    <CartItem item={item} key={index} />
                   ))}
                 </div>
                 <div className="summary">
@@ -95,7 +95,6 @@ const Cart = ({ showToast }) => {
                     className="btn-checkout"
                     onClick={() => {
                       if (currentUser) navigate('/checkout');
-                      else showToast('Please login before checkout', 'warning');
                     }}
                   >
                     CHECKOUT

@@ -6,9 +6,8 @@ import { useGlobalContext } from '../../../hooks/useGlobalContext';
 //components
 import RatingStar from '../ratingStar/RatingStar';
 import { useDispatch } from 'react-redux';
-import { toastAction } from '../../../store/actions';
 
-const ProductItem = ({ product, showToast }) => {
+const ProductItem = ({ product }) => {
   const { formater, addToWishList, removeFromWishList, wishList } = useGlobalContext();
   const [isAddToWishList, setIsAddToWishList] = useState(false);
   const dispatch = useDispatch();
@@ -26,20 +25,8 @@ const ProductItem = ({ product, showToast }) => {
           onClick={() => {
             if (isAddToWishList) {
               removeFromWishList(product._id);
-              dispatch(
-                toastAction.showToast({
-                  message: 'Item has been removed from your wish list!',
-                  type: 'info',
-                }),
-              );
             } else {
               addToWishList(product);
-              dispatch(
-                toastAction.showToast({
-                  message: 'Item has been added to your wish list!',
-                  type: 'info',
-                }),
-              );
             }
             setIsAddToWishList(!isAddToWishList);
           }}

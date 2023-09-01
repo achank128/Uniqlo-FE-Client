@@ -13,7 +13,7 @@ import {
 } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 
-const ProductContent = ({ productData, showToast }) => {
+const ProductContent = ({ productData }) => {
   const { formater, addToCart, addToWishList, wishList } = useGlobalContext();
   const [color, setColor] = useState();
   const [size, setSize] = useState();
@@ -23,7 +23,6 @@ const ProductContent = ({ productData, showToast }) => {
   const [materialOn, setMaterialOn] = useState(false);
   const [quantityOn, setQuantityOn] = useState(false);
   const [index, setIndex] = useState(0);
-  const notify = () => toast('Wow so easy !');
 
   useEffect(() => {
     if (color) {
@@ -262,7 +261,7 @@ const ProductContent = ({ productData, showToast }) => {
                     const itemId = uuidv4();
                     if (addActive) {
                       addToCart(productData, size, color, quantity, itemId);
-                      showToast('Item has been added to your cart!', 'info');
+                      toast.info('Item has been added to your cart!');
                     }
                   }}
                 >
@@ -274,7 +273,6 @@ const ProductContent = ({ productData, showToast }) => {
                     // onClick={() => {
                     //   let item = wishList.find((w) => w._id === productData._id);
                     //   if (!item) addToWishList(productData);
-                    //   showToast('Item has been added to your wish list!', 'info');
                     // }}
                     onClick={() => toast.info('Added to your wish list!')}
                   >

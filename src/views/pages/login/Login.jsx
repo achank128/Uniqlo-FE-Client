@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
-import "./login.scss";
-import { Link, useNavigate } from "react-router-dom";
-import { InfoOutlined } from "@mui/icons-material";
-import { login } from "../../../api/apiUser";
+import React, { useEffect, useState } from 'react';
+import './login.scss';
+import { Link, useNavigate } from 'react-router-dom';
+import { InfoOutlined } from '@mui/icons-material';
+import { login } from '../../../api/apiUser';
 //components
-import Navbar from "../../components/navbar/Navbar";
-import Loading from "../../components/loading/Loading";
+import Navbar from '../../components/navbar/Navbar';
+import Loading from '../../components/loading/Loading';
 
-const Login = ({ showToast }) => {
+const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [msg, setMsg] = useState(null);
@@ -23,16 +23,14 @@ const Login = ({ showToast }) => {
       setLoading(true);
       const res = await login({ email, password });
       setLoading(false);
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("currentUser", JSON.stringify(res.data.user));
-      showToast("Login successful!", "success");
-      navigate("/");
+      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('currentUser', JSON.stringify(res.data.user));
+      navigate('/');
     } catch (error) {
       setError(true);
       setLoading(false);
-      showToast("Login has been failed!", "error");
       setMsg(error.response.data?.msg);
-      localStorage.removeItem("token");
+      localStorage.removeItem('token');
     }
   };
 
@@ -85,7 +83,7 @@ const Login = ({ showToast }) => {
                       type="email"
                       placeholder="Enter a valid email"
                       value={email}
-                      className={error ? "error-input" : ""}
+                      className={error ? 'error-input' : ''}
                       onChange={(e) => setEmail(e.target.value)}
                       onFocus={() => setError(false)}
                     />
@@ -95,32 +93,24 @@ const Login = ({ showToast }) => {
                     <input
                       required
                       placeholder="Password"
-                      type={showPassword ? "text" : "password"}
+                      type={showPassword ? 'text' : 'password'}
                       value={password}
-                      className={error ? "error-input" : ""}
+                      className={error ? 'error-input' : ''}
                       onChange={(e) => setPassword(e.target.value)}
                       onFocus={() => setError(false)}
                     />
                   </div>
                   <p className="pass-text">
-                    Password must be at least 8 characters, and contain both
-                    letters and numbers.
+                    Password must be at least 8 characters, and contain both letters and numbers.
                   </p>
                   <label className="show-pass">
-                    <input
-                      type="checkbox"
-                      onClick={() => setShowPassword(!showPassword)}
-                    />
+                    <input type="checkbox" onClick={() => setShowPassword(!showPassword)} />
                     <span className="checkmark"></span>
                     Show my password
                   </label>
                   <span className="term">TERMS OF USE</span>
                   <span className="privacy">PRIVACY POLICY</span>
-                  <button
-                    className="login-submit"
-                    type="submit"
-                    onClick={handleLogin}
-                  >
+                  <button className="login-submit" type="submit" onClick={handleLogin}>
                     LOG IN
                   </button>
                   <span className="forgot">FORGOT YOUR PASSWORD?</span>
@@ -130,9 +120,9 @@ const Login = ({ showToast }) => {
                 <h2 className="title">CREATE AN ACCOUNT</h2>
                 <div className="text">
                   <p>
-                    If you create an account, you can get personalized services
-                    like checking purchase history and getting discount coupons
-                    with your membership. Register today for free!
+                    If you create an account, you can get personalized services like checking
+                    purchase history and getting discount coupons with your membership. Register
+                    today for free!
                   </p>
                 </div>
                 <Link to="/register">

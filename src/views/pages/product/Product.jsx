@@ -11,7 +11,7 @@ import Loading from '../../components/loading/Loading';
 import ProductContent from './productContent/ProductContent';
 import { ProductData } from '../../../utils/data';
 
-const Product = ({ showToast }) => {
+const Product = () => {
   const { id } = useParams();
   const [productData, setProductData] = useState();
   const [error, setError] = useState(false);
@@ -38,7 +38,7 @@ const Product = ({ showToast }) => {
     <>
       <Navbar />
       {productData ? (
-        <ProductContent productData={productData} showToast={showToast} />
+        <ProductContent productData={productData} />
       ) : (
         <div id="loading-container">
           <Loading />

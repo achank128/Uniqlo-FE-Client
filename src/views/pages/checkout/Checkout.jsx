@@ -1,18 +1,15 @@
-import React, { useEffect, useState } from "react";
-import "./checkout.scss";
-import { Link, useNavigate } from "react-router-dom";
-import { useGlobalContext } from "../../../hooks/useGlobalContext";
-import { getProvinces, getDistricts, getWards } from "../../../api/apiAddress";
-import { createOrder } from "../../../api/apiOrder";
+import React, { useEffect, useState } from 'react';
+import './checkout.scss';
+import { Link, useNavigate } from 'react-router-dom';
+import { useGlobalContext } from '../../../hooks/useGlobalContext';
+import { getProvinces, getDistricts, getWards } from '../../../api/apiAddress';
+import { createOrder } from '../../../api/apiOrder';
 
-import {
-  KeyboardArrowDown,
-  ConfirmationNumberOutlined,
-} from "@mui/icons-material";
+import { KeyboardArrowDown, ConfirmationNumberOutlined } from '@mui/icons-material';
 //components
-import Navbar from "../../components/navbar/Navbar";
-import Footer from "../../components/footer/Footer";
-import Loading from "../../components/loading/Loading";
+import Navbar from '../../components/navbar/Navbar';
+import Footer from '../../components/footer/Footer';
+import Loading from '../../components/loading/Loading';
 import {
   Button,
   Dialog,
@@ -20,18 +17,17 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-} from "@mui/material";
+} from '@mui/material';
 
-const Checkout = ({ showToast }) => {
-  const { cart, amount, subtotal, shippingFee, total, formater, checkout } =
-    useGlobalContext();
+const Checkout = () => {
+  const { cart, amount, subtotal, shippingFee, total, formater, checkout } = useGlobalContext();
   const navigate = useNavigate();
   const [provincesList, setProvincesList] = useState([]);
   const [districtsList, setDistrictsList] = useState([]);
   const [wardsList, setWardsList] = useState([]);
   const [provinceId, setProvinceId] = useState(1);
   const [districtId, setDistrictId] = useState(1);
-  const [ward, setWard] = useState("");
+  const [ward, setWard] = useState('');
   //error
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -46,8 +42,7 @@ const Checkout = ({ showToast }) => {
   const [openConfirm, setOpenConfirm] = useState(false);
   const handleOpenConfirm = () => {
     if (!fullName || !phone || !addressDetail) {
-      showToast("Please provide Full Name, Phone, Address Detail", "warning");
-      setMsg("Please provide Full Name, Phone, Address Detail");
+      setMsg('Please provide Full Name, Phone, Address Detail');
       setError(true);
     } else {
       const pp = provincesList.find((p) => p.code === parseInt(provinceId));
@@ -130,11 +125,9 @@ const Checkout = ({ showToast }) => {
       });
       checkout();
       setLoading(false);
-      showToast("Place Order has been Completed!", "success");
-      navigate("/");
+      navigate('/');
     } catch (error) {
       setLoading(false);
-      showToast("Place Order failed", "error");
       setError(true);
       setMsg(error.response.data?.msg);
     }
@@ -155,16 +148,14 @@ const Checkout = ({ showToast }) => {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">
-            {"Confirm your order"}
-          </DialogTitle>
+          <DialogTitle id="alert-dialog-title">{'Confirm your order'}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               Full Name: <b>{address.fullName}</b>
               <br></br>
               Phone: <b>{address.phone}</b>
               <br></br>
-              Address:{" "}
+              Address:{' '}
               <b>
                 {address.addressDetail}, {address.address}
               </b>
@@ -223,10 +214,7 @@ const Checkout = ({ showToast }) => {
                         placeholder="Please enter your phone number"
                         onChange={(e) => setPhone(e.target.value)}
                       />
-                      <p>
-                        Please enter valid 10 digits phone number starting from
-                        0
-                      </p>
+                      <p>Please enter valid 10 digits phone number starting from 0</p>
                     </div>
                   </div>
                   <div className="input-container">
@@ -234,11 +222,7 @@ const Checkout = ({ showToast }) => {
                       PROVINCE
                     </label>
                     <div className="address-input">
-                      <select
-                        name="province"
-                        id="provice"
-                        onChange={hanleProvince}
-                      >
+                      <select name="province" id="provice" onChange={hanleProvince}>
                         {provincesList.map((p) => (
                           <option value={p.code} key={p.code}>
                             {p.name}
@@ -253,11 +237,7 @@ const Checkout = ({ showToast }) => {
                       DISTRICT
                     </label>
                     <div className="address-input">
-                      <select
-                        name="district"
-                        id="district"
-                        onChange={hanleDistrict}
-                      >
+                      <select name="district" id="district" onChange={hanleDistrict}>
                         {districtsList.map((d) => (
                           <option value={d.code} key={d.code}>
                             {d.name}
@@ -290,9 +270,7 @@ const Checkout = ({ showToast }) => {
                         placeholder="Apt, suite, unit, building, floor, etc"
                         onChange={(e) => setAddressDetail(e.target.value)}
                       />
-                      <p>
-                        For invoice purposes, please input only in Vietnamese.
-                      </p>
+                      <p>For invoice purposes, please input only in Vietnamese.</p>
                     </div>
                   </div>
 
@@ -300,8 +278,8 @@ const Checkout = ({ showToast }) => {
                     <p className="error via">{msg}</p>
                   ) : (
                     <p className="via">
-                      You may be contacted via phone or email if we have
-                      questions about your order and delivery option.
+                      You may be contacted via phone or email if we have questions about your order
+                      and delivery option.
                     </p>
                   )}
 
@@ -323,15 +301,11 @@ const Checkout = ({ showToast }) => {
                   </div>
                   <div className="vat">
                     <div className="label">VAT included</div>
-                    <div className="total">
-                      {formater.format(subtotal * 0.1)} VND
-                    </div>
+                    <div className="total">{formater.format(subtotal * 0.1)} VND</div>
                   </div>
                   <div className="shipping">
                     <div className="label">Shipping Fee</div>
-                    <div className="total">
-                      {formater.format(shippingFee)} VND
-                    </div>
+                    <div className="total">{formater.format(shippingFee)} VND</div>
                   </div>
                   <div className="order-total">
                     <div className="label">ORDER TOTAL</div>
@@ -351,8 +325,7 @@ const Checkout = ({ showToast }) => {
                 </div>
                 <div className="coupon">
                   <span>
-                    <ConfirmationNumberOutlined className="icon-coupon" />{" "}
-                    Coupon
+                    <ConfirmationNumberOutlined className="icon-coupon" /> Coupon
                   </span>
                   <span className="arrow-down">
                     <KeyboardArrowDown className="arrow-down-icon" />

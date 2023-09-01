@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from "react";
-import "./register.scss";
-import { Link, useNavigate } from "react-router-dom";
-import { LockOutlined } from "@mui/icons-material";
-import { register } from "../../../api/apiUser";
+import React, { useEffect, useState } from 'react';
+import './register.scss';
+import { Link, useNavigate } from 'react-router-dom';
+import { LockOutlined } from '@mui/icons-material';
+import { register } from '../../../api/apiUser';
 //components
-import Navbar from "../../components/navbar/Navbar";
-import Loading from "../../components/loading/Loading";
+import Navbar from '../../components/navbar/Navbar';
+import Loading from '../../components/loading/Loading';
 
-const genders = ["male", "female", "unselect"];
+const genders = ['male', 'female', 'unselect'];
 
-const Register = ({ showToast }) => {
+const Register = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [gender, setGender] = useState("");
-  const [birthday, setBirthday] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [gender, setGender] = useState('');
+  const [birthday, setBirthday] = useState('');
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState();
@@ -25,7 +25,7 @@ const Register = ({ showToast }) => {
   const handleRegister = async (e) => {
     e.preventDefault();
     if (!email || !password) {
-      setMsg("Please provide Email and Password");
+      setMsg('Please provide Email and Password');
       setError(true);
       window.scrollTo(0, 0);
     }
@@ -36,16 +36,14 @@ const Register = ({ showToast }) => {
         setLoading(true);
         const res = await register({ email, password, birthday, gender });
         setLoading(false);
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("currentUser", JSON.stringify(res.data.user));
-        showToast("Sign Up successful!", "success");
-        navigate("/");
+        localStorage.setItem('token', res.data.token);
+        localStorage.setItem('currentUser', JSON.stringify(res.data.user));
+        navigate('/');
       } catch (error) {
         setLoading(false);
         setError(true);
-        showToast("Sign Up failed!", "error");
         setMsg(error.response.data?.msg);
-        localStorage.removeItem("token");
+        localStorage.removeItem('token');
       }
     } else {
       setErrorAgree(true);
@@ -88,55 +86,46 @@ const Register = ({ showToast }) => {
                   <p className="error">{msg}</p>
                 ) : (
                   <p>
-                    You will receive the confirmation mail to your email address
-                    associated with account. Please make sure to check your
-                    incoming email from us.
+                    You will receive the confirmation mail to your email address associated with
+                    account. Please make sure to check your incoming email from us.
                   </p>
                 )}
                 <div className="required">Required*</div>
               </div>
               <form>
                 <div className="input-container">
-                  <label className={error ? "label error" : "label"}>
-                    EMAIL ADDRESS
-                  </label>
+                  <label className={error ? 'label error' : 'label'}>EMAIL ADDRESS</label>
                   <div className="email-input">
                     <input
                       type="email"
                       placeholder="Enter a valid email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className={error ? "error-input" : ""}
+                      className={error ? 'error-input' : ''}
                       onFocus={() => setError(false)}
                     />
                   </div>
                 </div>
 
                 <div className="input-container">
-                  <label className={error ? "label error" : "label"}>
-                    PASSWORD
-                  </label>
+                  <label className={error ? 'label error' : 'label'}>PASSWORD</label>
                   <div className="pass-input">
                     <input
                       placeholder="Password"
-                      type={showPassword ? "text" : "password"}
-                      className={error ? "error-input" : ""}
+                      type={showPassword ? 'text' : 'password'}
+                      className={error ? 'error-input' : ''}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       onFocus={() => setError(false)}
                     />
                     <p className="pass-text">
-                      Password must be at least 8 characters, and contain both
-                      letters and numbers.
+                      Password must be at least 8 characters, and contain both letters and numbers.
                     </p>
                   </div>
                 </div>
 
                 <label className="show-pass">
-                  <input
-                    type="checkbox"
-                    onClick={() => setShowPassword(!showPassword)}
-                  />
+                  <input type="checkbox" onClick={() => setShowPassword(!showPassword)} />
                   <span className="checkmark"></span>
                   Show my password
                 </label>
@@ -153,9 +142,7 @@ const Register = ({ showToast }) => {
                       max="2022-04-27"
                       min="1922-04-27"
                     />
-                    <p className="birthday-text">
-                      Unable to edit birthday after you register.
-                    </p>
+                    <p className="birthday-text">Unable to edit birthday after you register.</p>
                   </div>
                 </div>
 
@@ -163,25 +150,16 @@ const Register = ({ showToast }) => {
                   <label className="label">GENDER</label>
                   <div className="gender-input">
                     {genders.map((g) => (
-                      <label
-                        className={gender === g ? "gender checked" : "gender"}
-                        key={g}
-                      >
+                      <label className={gender === g ? 'gender checked' : 'gender'} key={g}>
                         {g}
-                        <input
-                          type="radio"
-                          checked={gender === g}
-                          onChange={() => setGender(g)}
-                        />
+                        <input type="radio" checked={gender === g} onChange={() => setGender(g)} />
                         <span className="checkmark"></span>
                       </label>
                     ))}
                   </div>
                 </div>
 
-                <label className="subscribe-label">
-                  SUBSCRIBE ME TO UNIQLO’S MAILING LIST
-                </label>
+                <label className="subscribe-label">SUBSCRIBE ME TO UNIQLO’S MAILING LIST</label>
                 <label className="subscribe-checkbox">
                   <input type="checkbox" />
                   <span className="checkmark"></span>
@@ -192,19 +170,17 @@ const Register = ({ showToast }) => {
                   <h3>PUSH NOTIFICATIONS AND PRIVACY SETTINGS</h3>
                   <div>UNIQLO APPLICATION AND YOUR PERSONAL DATA</div>
                   <p>
-                    UNIQLO is committed to respecting our customers' rights when
-                    storing their personal data within our system. The consents
-                    below will allow customers to choose whether their personal
-                    data can be stored and processed in order to provide the
-                    corresponding services. For the purposes of the consents
-                    below, a "push message" refers to a notifications to provide
-                    customers with valuable information related to our services.
+                    UNIQLO is committed to respecting our customers' rights when storing their
+                    personal data within our system. The consents below will allow customers to
+                    choose whether their personal data can be stored and processed in order to
+                    provide the corresponding services. For the purposes of the consents below, a
+                    "push message" refers to a notifications to provide customers with valuable
+                    information related to our services.
                   </p>
                   <div>CONSENT FOR MARKETING (NON-PERSONALIZED MESSAGES)</div>
                   <p>
-                    I consent to Uniqlo's use of my personal data to send me
-                    marketing messages in the form of non-personalized push
-                    messages
+                    I consent to Uniqlo's use of my personal data to send me marketing messages in
+                    the form of non-personalized push messages
                   </p>
                   <label className="push-checkbox">
                     <input type="checkbox" name="push-1" />
@@ -213,9 +189,8 @@ const Register = ({ showToast }) => {
                   </label>
                   <div>CONSENT FOR MARKETING (PERSONALIZED MESSAGES)</div>
                   <p>
-                    I consent to Uniqlo's analysis and processing of my data to
-                    send me marketing messages in the form of personalized push
-                    messages
+                    I consent to Uniqlo's analysis and processing of my data to send me marketing
+                    messages in the form of personalized push messages
                   </p>
                   <label className="push2-checkbox">
                     <input type="checkbox" name="push-2" />
@@ -226,13 +201,10 @@ const Register = ({ showToast }) => {
                 <div className="submit">
                   <div className="membership-label">MEMBERSHIP AGREEMENT</div>
                   {errorAgree ? (
-                    <p className="error agree-desc">
-                      Please make sure to check below.
-                    </p>
+                    <p className="error agree-desc">Please make sure to check below.</p>
                   ) : (
                     <p className="agree-desc">
-                      By creating an account, you agree to UNIQLO’s privacy
-                      policy and terms of use.
+                      By creating an account, you agree to UNIQLO’s privacy policy and terms of use.
                     </p>
                   )}
                   <label className="argee-checkbox">
@@ -242,20 +214,14 @@ const Register = ({ showToast }) => {
                         setIsAgree(!isAgree);
                       }}
                     />
-                    <span
-                      className={errorAgree ? "checkmark error" : "checkmark"}
-                    ></span>
-                    I agree to the UNIQLO’s TERMS OF USE and PRIVACY POLICY
+                    <span className={errorAgree ? 'checkmark error' : 'checkmark'}></span>I agree to
+                    the UNIQLO’s TERMS OF USE and PRIVACY POLICY
                   </label>
                   <div className="term-privacy">
                     <span className="term">TERMS OF USE</span>
                     <span className="privacy">PRIVACY POLICY</span>
                   </div>
-                  <button
-                    className="register-submit"
-                    type="submit"
-                    onClick={handleRegister}
-                  >
+                  <button className="register-submit" type="submit" onClick={handleRegister}>
                     REGISTER
                   </button>
                 </div>

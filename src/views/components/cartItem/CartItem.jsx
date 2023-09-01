@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 import './cartItem.scss';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { useGlobalContext } from '../../../hooks/useGlobalContext';
 import { Add, Close, KeyboardArrowDown } from '@mui/icons-material';
-import { useDispatch } from 'react-redux';
-import { cartAction, toastAction } from '../../../store/actions';
 
-const CartItem = ({ item, showToast }) => {
+const CartItem = ({ item }) => {
   const { formater, increase, setQuantity, removeItem } = useGlobalContext();
   const [quantityOn, setQuantityOn] = useState(false);
-  const dispatch = useDispatch();
 
   const handleRemove = () => {
     removeItem(item.itemId);
-    dispatch(toastAction.showToast({ message: 'Item has been removed!', type: 'info' }));
+    toast.info('Item has been removed!');
   };
 
   return (

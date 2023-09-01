@@ -11,7 +11,6 @@ import Register from './views/pages/register/Register';
 import Profile from './views/pages/profile/Profile';
 import Checkout from './views/pages/checkout/Checkout';
 import Error from './views/pages/Error';
-import { Stack } from '@mui/material';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 function App() {
@@ -19,7 +18,7 @@ function App() {
     <>
       <BrowserRouter>
         <ToastContainer
-          //autoClose={3000}
+          autoClose={3000}
           hideProgressBar
           closeOnClick
           pauseOnFocusLoss

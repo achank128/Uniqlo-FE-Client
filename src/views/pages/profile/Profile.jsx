@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
-import "./profile.scss";
-import { Link } from "react-router-dom";
-import { getUserOrder } from "../../../api/apiOrder";
-import { changePassword } from "../../../api/apiUser";
+import React, { useEffect, useState } from 'react';
+import './profile.scss';
+import { Link } from 'react-router-dom';
+import { getUserOrder } from '../../../api/apiOrder';
+import { changePassword } from '../../../api/apiUser';
 
 //components
-import Navbar from "../../components/navbar/Navbar";
-import Footer from "../../components/footer/Footer";
-import Order from "../../components/order/Order";
-import Loading from "../../components/loading/Loading";
+import Navbar from '../../components/navbar/Navbar';
+import Footer from '../../components/footer/Footer';
+import Order from '../../components/order/Order';
+import Loading from '../../components/loading/Loading';
 
-const Profile = ({ showToast }) => {
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+const Profile = () => {
+  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
   const [loading, setLoading] = useState(false);
   const [userOrders, setUserOrders] = useState([]);
   const [showChangePass, setShowChangePass] = useState(false);
@@ -25,31 +25,23 @@ const Profile = ({ showToast }) => {
       try {
         const orders = await getUserOrder(currentUser.userId);
         setUserOrders(orders.userOrders);
-      } catch (error) {
-        showToast("Get Order failed!", "error");
-      }
+      } catch (error) {}
     };
     apiOrder();
-  }, [currentUser.userId, showToast]);
+  }, [currentUser.userId]);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
       setErrorPass(false);
       setLoading(true);
-      const res = await changePassword(
-        currentUser.userId,
-        oldPassword,
-        newPassword
-      );
+      const res = await changePassword(currentUser.userId, oldPassword, newPassword);
       setLoading(false);
-      showToast(res.data.msg, "success");
-      setOldPassword("");
-      setNewPassword("");
+      setOldPassword('');
+      setNewPassword('');
       setShowChangePass(false);
     } catch (error) {
       setLoading(false);
-      showToast("Change password failed!", "error");
       setErrorPass(true);
       setMsg(error.response.data.msg);
     }
@@ -108,11 +100,7 @@ const Profile = ({ showToast }) => {
                     Change Password
                   </button>
                 </div>
-                <div
-                  className={
-                    showChangePass ? "change-pass active" : "change-pass"
-                  }
-                >
+                <div className={showChangePass ? 'change-pass active' : 'change-pass'}>
                   <form>
                     {errorPass ? (
                       <p className="error">{msg}</p>
@@ -124,7 +112,7 @@ const Profile = ({ showToast }) => {
                       <input
                         required
                         type="password"
-                        className={errorPass ? "error-input" : ""}
+                        className={errorPass ? 'error-input' : ''}
                         value={oldPassword}
                         onChange={(e) => setOldPassword(e.target.value)}
                       />
@@ -134,7 +122,7 @@ const Profile = ({ showToast }) => {
                       <input
                         required
                         type="password"
-                        className={errorPass ? "error-input" : ""}
+                        className={errorPass ? 'error-input' : ''}
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                       />
