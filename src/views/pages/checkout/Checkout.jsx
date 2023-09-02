@@ -140,7 +140,6 @@ const Checkout = () => {
           <Loading />
         </div>
       ) : null}
-      <Navbar />
       <div id="checkout">
         <Dialog
           open={openConfirm}

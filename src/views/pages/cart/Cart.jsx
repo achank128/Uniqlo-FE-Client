@@ -19,7 +19,6 @@ const Cart = () => {
 
   return (
     <>
-      <Navbar />
       <div id="cart">
         <div className="container">
           <div className="wrapper">

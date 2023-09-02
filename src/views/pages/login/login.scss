@@ -1,7 +1,6 @@
-@use "../../../assets/scss/" as *;
+@use '../../../assets/scss/' as *;
 
 #login {
-  margin-top: $topHeight;
   .wrapper {
     @include mobile {
       padding: 0 20px;

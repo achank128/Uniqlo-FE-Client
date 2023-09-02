@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
-import "./home.scss";
+import React, { useEffect } from 'react';
+import './home.scss';
 //components
-import Slider from "../../components/slider/Slider";
-import Notice from "../../components/notice/Notice";
-import AppBenefits from "../../components/appbenefits/AppBenefits";
-import Navbar from "../../components/navbar/Navbar";
-import Footer from "../../components/footer/Footer";
+import Slider from '../../components/slider/Slider';
+import Notice from '../../components/notice/Notice';
+import AppBenefits from '../../components/appbenefits/AppBenefits';
+import Navbar from '../../components/navbar/Navbar';
+import Footer from '../../components/footer/Footer';
 
 const Home = () => {
   useEffect(() => {
@@ -14,7 +14,6 @@ const Home = () => {
 
   return (
     <>
-      <Navbar />
       <Slider />
       <Notice />
       <AppBenefits />

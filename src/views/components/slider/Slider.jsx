@@ -1,18 +1,31 @@
-import React from "react";
-import "./slider.scss";
-import SlideItem from "../slideItem/SlideItem";
-import { SlidersData } from "../../../utils/data.js";
+import React from 'react';
+import './slider.scss';
+import SliderItem from './sliderItem/SliderItem';
+import { collectionApi } from '../../../api/apiCollection';
+import { useQuery } from 'react-query';
+import Loading from '../loading/Loading';
 
 const Slider = () => {
+  const { isLoading, data } = useQuery(['collections'], collectionApi.getCollections);
+
   return (
     <div id="slider">
-      <div className="warpper">
-        {SlidersData.map((slideItem, index) => {
-          return (
-            <SlideItem key={index} SlideItem={slideItem} sliderIndex={index} />
-          );
-        })}
-      </div>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <div className="warpper">
+          {data.map((collection, index) => {
+            return (
+              <SliderItem
+                key={collection.id}
+                collection={collection}
+                collections={data}
+                sliderIndex={index}
+              />
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };

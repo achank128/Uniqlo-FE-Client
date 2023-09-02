@@ -13,10 +13,24 @@ import Checkout from './views/pages/checkout/Checkout';
 import Error from './views/pages/Error';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Navbar from './views/components/navbar/Navbar';
 function App() {
   return (
     <>
       <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route exact path="/" element={<Home />} />
+          <Route path="/product/:id" element={<Product />} />
+          <Route path="/products" element={<ProductList />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/wishlist" element={<WishList />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="*" element={<Error />} />
+        </Routes>
         <ToastContainer
           autoClose={3000}
           hideProgressBar
@@ -26,18 +40,6 @@ function App() {
           pauseOnHover
           theme="colored"
         />
-        <Routes>
-          <Route exact path="/" element={<Home />} />
-          <Route path="/product/:id" element={<Product />} />
-          <Route path="/product-list/:category" element={<ProductList />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/wishlist" element={<WishList />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="*" element={<Error />} />
-        </Routes>
       </BrowserRouter>
     </>
   );

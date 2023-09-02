@@ -1,7 +1,6 @@
-@use "../../../assets/scss" as *;
+@use '../../../assets/scss' as *;
 
 #checkout {
-  margin-top: $topHeight;
   .wrapper {
     @include tablet {
       padding: 0 20px;

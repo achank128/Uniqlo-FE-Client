@@ -45,7 +45,6 @@ const Login = () => {
           <Loading />
         </div>
       ) : null}
-      <Navbar />
       <div id="login">
         <div className="container">
           <div className="wrapper">

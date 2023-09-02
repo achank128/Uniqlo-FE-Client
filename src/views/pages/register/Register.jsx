@@ -61,7 +61,6 @@ const Register = () => {
           <Loading />
         </div>
       ) : null}
-      <Navbar />
       <div id="register">
         <div className="container">
           <div className="wrapper">

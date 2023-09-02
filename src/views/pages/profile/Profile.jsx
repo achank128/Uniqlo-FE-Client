@@ -58,7 +58,6 @@ const Profile = () => {
           <Loading />
         </div>
       ) : null}
-      <Navbar />
       <div id="profile">
         <div className="container">
           <div className="wrapper">

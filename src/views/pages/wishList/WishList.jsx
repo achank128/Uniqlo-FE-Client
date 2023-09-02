@@ -16,7 +16,6 @@ const WishList = () => {
 
   return (
     <>
-      <Navbar />
       <div id="wish-list">
         <div className="container">
           <div className="wrapper">

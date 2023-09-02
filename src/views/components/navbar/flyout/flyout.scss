@@ -1,4 +1,4 @@
-@use "../../../assets/scss/" as *;
+@use '../../../../assets/scss/' as *;
 
 .fly-out-active {
   display: block !important;
@@ -12,7 +12,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 100;
+  z-index: 1000;
   background-color: $white-color;
   overflow-y: auto;
   &::-webkit-scrollbar {
@@ -31,7 +31,7 @@
         width: 60%;
         flex-direction: column;
       }
-      .accordion {
+      .category {
         width: 25%;
         display: flex;
         flex-direction: column;
@@ -41,10 +41,10 @@
       }
     }
 
-    .accordion-head {
+    .category-head {
       font-weight: 700;
       text-transform: uppercase;
-      margin-top: 10px;
+      margin-top: 16px;
       margin-bottom: 10px;
       cursor: pointer;
       @include tablet {
@@ -52,7 +52,7 @@
       }
     }
 
-    .accordion-item {
+    .category-item {
       font-size: $font-xsm;
       font-weight: 400;
       margin-bottom: 10px;

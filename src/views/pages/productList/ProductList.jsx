@@ -97,7 +97,6 @@ const ProductList = ({ showToast }) => {
   if (error) return <div>Something went wrong...</div>;
   return (
     <>
-      <Navbar />
       <div id="product-list">
         <div className="container">
           <div className="wrapper">
