@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
-import "./order.scss";
-import { useGlobalContext } from "../../../hooks/useGlobalContext";
-import { getSingleProduct } from "../../../api/apiProduct";
+import React, { useEffect, useState } from 'react';
+import './order.scss';
+import { useGlobalContext } from '../../../hooks/useGlobalContext';
 
 const Order = ({ order }) => {
   const { formater } = useGlobalContext();
@@ -19,8 +18,7 @@ const Order = ({ order }) => {
             <b>Phone:</b> {order.address.phone}
           </p>
           <p>
-            <b>Address:</b>{" "}
-            {` ${order.address.addressDetail}, ${order.address.address}`}
+            <b>Address:</b> {` ${order.address.addressDetail}, ${order.address.address}`}
           </p>
         </div>
         <div className="item-info">
@@ -56,7 +54,8 @@ function OrderProduct({ product }) {
     const apiProduct = async () => {
       try {
         setLoading(true);
-        const p = await getSingleProduct(product.productId);
+        //const p = await getSingleProduct(product.productId);
+        let p;
         setProductData(p);
         setLoading(false);
       } catch (err) {

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import { Link } from 'react-router-dom';
 import { useGlobalContext } from '../../../../hooks/useGlobalContext';
 //components
@@ -12,27 +11,42 @@ import {
   Twitter,
 } from '@mui/icons-material';
 import { toast } from 'react-toastify';
+import Loading from '../../../components/loading/Loading';
 
-const ProductContent = ({ productData }) => {
-  const { formater, addToCart, addToWishList, wishList } = useGlobalContext();
+const ProductContent = ({ product, productDetails }) => {
+  const { formater } = useGlobalContext();
   const [color, setColor] = useState();
   const [size, setSize] = useState();
   const [quantity, setQuantity] = useState(1);
-  const [addActive, setAddActive] = useState(false);
+  const [available, setAvailable] = useState(false);
   const [overviewOn, setOverviewOn] = useState(false);
   const [materialOn, setMaterialOn] = useState(false);
   const [quantityOn, setQuantityOn] = useState(false);
   const [index, setIndex] = useState(0);
 
+  console.log(product);
+
   useEffect(() => {
     if (color) {
       if (size) {
-        setAddActive(true);
+        console.log({ color, size });
+        var productDetail = productDetails.find(
+          (pd) => pd.colorId === color.colorId && pd.sizeId === size.sizeId,
+        );
+        if (productDetail) {
+          if (productDetail.inStock > 0) {
+            setAvailable(true);
+          } else {
+            setAvailable(false);
+          }
+        } else {
+          setAvailable(false);
+        }
       }
     }
   }, [color, size]);
 
-  const lengthImg = productData.img.length;
+  const lengthImg = product?.productImages?.length;
 
   const nextImg = () => {
     setIndex((oldIndex) => {
@@ -56,6 +70,8 @@ const ProductContent = ({ productData }) => {
     setIndex(indexImg);
   };
 
+  if (!product) return <Loading />;
+
   return (
     <div id="product">
       <div className="container">
@@ -67,17 +83,17 @@ const ProductContent = ({ productData }) => {
               </li>
               <li className="slash">/</li>
               <li>
-                <Link to="/product-list/ALL">All Products</Link>
+                <Link to="/products">All Products</Link>
               </li>
               <li className="slash">/</li>
-              <li>{productData.name}</li>
+              <li>{product.name}</li>
             </ul>
           </div>
           <div className="product-content">
             <div className="product-img-detail">
               <div className="product-img">
                 <div className="list-img">
-                  {productData.img.map((img, indexImg) => {
+                  {product.productImages?.map((img, indexImg) => {
                     let imgCurrent = '';
                     if (indexImg === index) {
                       imgCurrent = 'img-current';
@@ -90,13 +106,13 @@ const ProductContent = ({ productData }) => {
                         className={imgCurrent + ' img-item'}
                         onClick={() => changeImg(indexImg)}
                       >
-                        <img src={img} alt="" />
+                        <img src={img.imageUrl} alt="" />
                       </div>
                     );
                   })}
                 </div>
                 <div className="img-primary">
-                  {productData.img.map((img, indexImg) => {
+                  {product.productImages?.map((img, indexImg) => {
                     let positionImg = 'next-img';
                     if (indexImg === index) {
                       positionImg = 'active-img';
@@ -106,7 +122,7 @@ const ProductContent = ({ productData }) => {
                     }
                     return (
                       <div key={indexImg} className={positionImg + ' ipi'}>
-                        <img src={img} alt="" />
+                        <img src={img.imageUrl} alt="" />
                       </div>
                     );
                   })}
@@ -124,7 +140,7 @@ const ProductContent = ({ productData }) => {
               <div className="product-desc-detail">
                 <div className="title-id">
                   <h3>DESCRIPTION</h3>
-                  <p>Product ID: {productData._id}</p>
+                  <p>Product ID: {product.id}</p>
                 </div>
                 <div className="overview">
                   <div className="overview-head" onClick={() => setOverviewOn(!overviewOn)}>
@@ -134,9 +150,7 @@ const ProductContent = ({ productData }) => {
                     </span>
                   </div>
                   <div className={overviewOn ? 'overview-info active' : 'overview-info'}>
-                    {productData.overview.map((o, i) => {
-                      return <p key={i}>{o}</p>;
-                    })}
+                    {product.overview}
                   </div>
                 </div>
                 <div className="material">
@@ -147,9 +161,7 @@ const ProductContent = ({ productData }) => {
                     </span>
                   </div>
                   <div className={materialOn ? 'material-info active' : 'material-info'}>
-                    {productData.materials.map((m, i) => {
-                      return <p key={i}>{m}</p>;
-                    })}
+                    {product.materials}
                   </div>
                 </div>
                 <div className="return-policy">
@@ -167,54 +179,60 @@ const ProductContent = ({ productData }) => {
             <div className="product-info">
               <div className="top">
                 <div className="title-name">
-                  <h1>{productData.name}</h1>
+                  <h1>{product.name}</h1>
                 </div>
                 <div className="price-rating">
                   <div className="price">
                     <div className="price-original">
-                      {formater.format(productData.priceOriginal)} VND
+                      {formater.format(product.productPrice?.price)} VND
                     </div>
-                    <div className="price-limited">
-                      {formater.format(productData.priceLimited)} VND
-                    </div>
+                    {product.isSale && (
+                      <div className="price-limited">
+                        {formater.format(product.productPrice?.promoPrice)} VND
+                      </div>
+                    )}
                     <div className="price-flag">Sale</div>
                   </div>
-                  <div className="rating">
-                    <div className="star">
-                      <RatingStar rating={productData.rating} />
+                  {product.productReview && (
+                    <div className="rating">
+                      <div className="star">
+                        <RatingStar rating={product.productReview?.star} />
+                      </div>
+                      <span className="review-count">({product.productReview?.amount})</span>
                     </div>
-                    <span className="review-count">({productData.review})</span>
-                  </div>
+                  )}
                 </div>
-                <p className="description">{productData.desc}</p>
+                <p className="description">{product.description}</p>
               </div>
               <div className="bottom">
                 <div className="color">
-                  <div className="color-name">Color: {color}</div>
+                  <div className="color-name">Color: {color?.color.name}</div>
                   <ul className="color-list">
-                    {productData.colorList.map((c) => (
+                    {product.productColors?.map((pc) => (
                       <li
-                        key={c}
-                        className={color === c ? 'color-selected' : ''}
-                        onClick={() => setColor(c)}
+                        key={pc.id}
+                        className={color?.id === pc.id ? 'color-selected' : ''}
+                        onClick={() => setColor(pc)}
                       >
-                        <div style={{ backgroundColor: c }}></div>
+                        <div style={{ backgroundColor: pc.color?.code }}></div>
                       </li>
                     ))}
                   </ul>
                 </div>
                 <div className="size">
-                  <div className="size-name">SIZE: {size}</div>
+                  <div className="size-name">SIZE: {size?.size.name}</div>
                   <ul className="size-list">
-                    {productData.sizeList.map((s) => (
-                      <li
-                        key={s}
-                        className={size === s ? 'size-selected' : ''}
-                        onClick={() => setSize(s)}
-                      >
-                        {s}
-                      </li>
-                    ))}
+                    {product.productSizes
+                      ?.sort((a, b) => a.size.level - b.size.level)
+                      .map((ps) => (
+                        <li
+                          key={ps.id}
+                          className={size?.id === ps.id ? 'size-selected' : ''}
+                          onClick={() => setSize(ps)}
+                        >
+                          {ps.size.name}
+                        </li>
+                      ))}
                   </ul>
                 </div>
                 <div className="quanlity">
@@ -256,13 +274,13 @@ const ProductContent = ({ productData }) => {
                   </ul>
                 </div>
                 <button
-                  className={addActive ? 'add-to-cart add-active' : 'add-to-cart'}
+                  className={available ? 'add-to-cart add-active' : 'add-to-cart'}
                   onClick={() => {
-                    const itemId = uuidv4();
-                    if (addActive) {
-                      addToCart(productData, size, color, quantity, itemId);
-                      toast.info('Item has been added to your cart!');
-                    }
+                    // const itemId = uuidv4();
+                    // if (addActive) {
+                    //   addToCart(product, size, color, quantity, itemId);
+                    //   toast.info('Item has been added to your cart!');
+                    // }
                   }}
                 >
                   ADD TO CART
@@ -271,8 +289,8 @@ const ProductContent = ({ productData }) => {
                   <button
                     className="favorite-add"
                     // onClick={() => {
-                    //   let item = wishList.find((w) => w._id === productData._id);
-                    //   if (!item) addToWishList(productData);
+                    //   let item = wishList.find((w) => w._id === product._id);
+                    //   if (!item) addToWishList(product);
                     // }}
                     onClick={() => toast.info('Added to your wish list!')}
                   >

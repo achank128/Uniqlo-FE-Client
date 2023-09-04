@@ -31,40 +31,42 @@ const SliderItem = ({ collection, collections, sliderIndex }) => {
         modules={[Pagination, Navigation]}
         className="mySwiper"
       >
-        {collectionPosts.map((post, indexSlide) => {
-          if (post.type === 'VIDEO') {
+        {collectionPosts
+          .sort((a, b) => b.type.localeCompare(a.type))
+          .map((post, indexSlide) => {
+            if (post.type === 'VIDEO') {
+              return (
+                <SwiperSlide className="slide" key={indexSlide}>
+                  <div className="slide-img">
+                    <video loop autoPlay muted>
+                      <source src={post.imageUrl} type="video/mp4" />
+                    </video>
+                  </div>
+                  <div className={indexSlide === 2 ? 'slide-info-right' : 'slide-info-left'}>
+                    <div className="slide-title">{post.title}</div>
+                    <p className="slide-desc">{post.description}</p>
+                    <Link to={`/products?collection=${collection.id}`}>
+                      <button className="slide-btn">VIEW MORE</button>
+                    </Link>
+                  </div>
+                </SwiperSlide>
+              );
+            }
             return (
               <SwiperSlide className="slide" key={indexSlide}>
                 <div className="slide-img">
-                  <video loop autoPlay muted>
-                    <source src={post.imageUrl} type="video/mp4" />
-                  </video>
+                  <img src={post.imageUrl} alt="" />
                 </div>
                 <div className={indexSlide === 2 ? 'slide-info-right' : 'slide-info-left'}>
                   <div className="slide-title">{post.title}</div>
                   <p className="slide-desc">{post.description}</p>
-                  <Link to="/product-list/ALL">
+                  <Link to={`/products?collection=${collection.id}`}>
                     <button className="slide-btn">VIEW MORE</button>
                   </Link>
                 </div>
               </SwiperSlide>
             );
-          }
-          return (
-            <SwiperSlide className="slide" key={indexSlide}>
-              <div className="slide-img">
-                <img src={post.imageUrl} alt="" />
-              </div>
-              <div className={indexSlide === 2 ? 'slide-info-right' : 'slide-info-left'}>
-                <div className="slide-title">{post.title}</div>
-                <p className="slide-desc">{post.description}</p>
-                <Link to={`/products?collection=${collection.id}`}>
-                  <button className="slide-btn">VIEW MORE</button>
-                </Link>
-              </div>
-            </SwiperSlide>
-          );
-        })}
+          })}
       </Swiper>
     </div>
   );

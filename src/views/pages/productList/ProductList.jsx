@@ -1,75 +1,48 @@
 import React, { useEffect, useState } from 'react';
 import './productList.scss';
 import { Link, useParams } from 'react-router-dom';
-import { getProducts } from '../../../api/apiProduct';
-import { useGlobalContext } from '../../../hooks/useGlobalContext';
+import productApi from '../../../api/apiProduct';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
+import { useQuery } from 'react-query';
 //components
-import Navbar from '../../components/navbar/Navbar';
 import Footer from '../../components/footer/Footer';
 import Categories from '../../components/categories/Categories';
 import ProductItem from '../../components/productItem/ProductItem';
 import Loading from '../../components/loading/Loading';
-import { Products } from '../../../utils/data';
 
 const sorts = [
-  { title: 'Featured', query: '_id' },
-  { title: 'New arrials', query: '-_id' },
-  { title: 'Low to high', query: 'priceLimited' },
-  { title: 'High to low', query: '-priceLimited' },
-  { title: 'Top rated', query: '-rating' },
+  { title: 'Featured', query: 'name_asc' },
+  { title: 'New arrials', query: 'created_date_asc' },
+  { title: 'Low to high', query: 'price_asc' },
+  { title: 'High to low', query: 'price_desc' },
+  { title: 'Top rated', query: 'star_desc' },
 ];
 
-const ProductList = ({ showToast }) => {
-  const { category } = useParams();
-  const { search } = useGlobalContext();
-  const [productsData, setProductsData] = useState([]);
-  const [count, setCount] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [error, setError] = useState(false);
+const ProductList = () => {
   const [listSortOn, setListSortOn] = useState(false);
   const [backToTopOn, setBackToTopOn] = useState(false);
   const [sort, setSort] = useState(sorts[0]);
-  const [page, setPage] = useState(1);
+  const [filter, setFilter] = useState({
+    keyWord: '',
+    sortBy: '',
+    pageIndex: 1,
+    pageSize: 12,
+    categoryId: null,
+    collectionId: null,
+    sizeIds: [],
+    colorIds: [],
+    priceTypes: [],
+    isSale: null,
+    isOnlineOnly: null,
+    isLimited: null,
+  });
 
-  useEffect(() => {
-    // const apiProducts = async () => {
-    //   try {
-    //     setLoading(true);
-    //     setError(false);
-    //     setPage(1);
-    //     const data = await getProducts({
-    //       params: { category, sort: sort.query, search },
-    //     });
-    //     console.log(data);
-    //     setProductsData(data.products);
-    //     setCount(data.count);
-    //     setLoading(false);
-    //   } catch (err) {
-    //     setError(true);
-    //   }
-    // };
-    //apiProducts();
-    setLoading(true);
-    setProductsData(Products);
-    setCount(Products.length);
-    setLoading(false);
-  }, [sort, category, search]);
+  const { isLoading, isError, data } = useQuery(['products', filter], ({ queryKey }) =>
+    productApi.filterProducts(queryKey[1]),
+  );
 
   const getProductsMore = async () => {
-    try {
-      setLoadingMore(true);
-      setError(false);
-      const data = await getProducts({
-        params: { category, sort: sort.query, search, page: page + 1 },
-      });
-      setProductsData([...productsData, ...data.products]);
-      setPage(page + 1);
-      setLoadingMore(false);
-    } catch (err) {
-      setError(true);
-    }
+    setFilter({ ...filter, pageSize: filter.pageSize + 12 });
   };
 
   //Back to top
@@ -94,7 +67,7 @@ const ProductList = ({ showToast }) => {
     window.scrollTo(0, 0);
   }, []);
 
-  if (error) return <div>Something went wrong...</div>;
+  if (isError) return <div>Something went wrong...</div>;
   return (
     <>
       <div id="product-list">
@@ -109,16 +82,18 @@ const ProductList = ({ showToast }) => {
                 <li>
                   <Link to="/product-list/ALL">All Products</Link>
                 </li>
-                <li className="slash">/</li>
-                <li>{category}</li>
+                {/* <li className="slash">/</li>
+                <li>{category}</li> */}
               </ul>
             </div>
             <div className="sort-container">
               <div className="left">
-                <div className="results">
-                  <div className="title">RESULTS</div>
-                  <p>{count} Items</p>
-                </div>
+                {data?.totalRecords && (
+                  <div className="results">
+                    <div className="title">RESULTS</div>
+                    <p>{data.totalRecords} Items</p>
+                  </div>
+                )}
               </div>
               <div className="right">
                 <div className="sort">
@@ -136,6 +111,7 @@ const ProductList = ({ showToast }) => {
                         className={s.title === sort.title ? 'selected' : ''}
                         onClick={() => {
                           setSort(s);
+                          setFilter({ ...filter, sortBy: s.query });
                           setListSortOn(!listSortOn);
                         }}
                       >
@@ -148,29 +124,25 @@ const ProductList = ({ showToast }) => {
             </div>
             <div className="list">
               <Categories />
-              {loading ? (
+              {isLoading ? (
                 <Loading />
               ) : (
                 <div className="products">
                   <div className="products-container">
-                    {productsData.map((product) => {
-                      return (
-                        <ProductItem key={product._id} product={product} showToast={showToast} />
-                      );
+                    {data.data.map((product) => {
+                      return <ProductItem key={product.id} product={product} />;
                     })}
                   </div>
-                  {loadingMore ? (
+                  {isLoading ? (
                     <Loading />
                   ) : (
                     <>
-                      {productsData.length < count ? (
+                      {filter.pageSize <= data.totalRecords && (
                         <div className="load-more">
                           <button onClick={getProductsMore}>
                             LOAD MORE <KeyboardArrowDown className="icon-down" />
                           </button>
                         </div>
-                      ) : (
-                        <></>
                       )}
                     </>
                   )}

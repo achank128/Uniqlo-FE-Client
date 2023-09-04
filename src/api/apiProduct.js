@@ -1,11 +1,18 @@
-import { publicRequest } from "../request";
+import publicRequest from './configs/publicRequest';
 
-export const getProducts = async (params = {}) => {
-  const res = await publicRequest.get("/products", params);
-  return res.data;
+const productApi = {
+  filterProducts: async (body) => {
+    const res = await publicRequest.post('/products/filter', body);
+    return res;
+  },
+  getProduct: async (id) => {
+    const res = await publicRequest.get(`/products/${id}`);
+    return res.data;
+  },
+  getProductDetails: async (id) => {
+    const res = await publicRequest.get(`/productdetails/product/${id}`);
+    return res.data;
+  },
 };
 
-export const getSingleProduct = async (productId) => {
-  const res = await publicRequest.get(`/products/${productId}`);
-  return res.data.product;
-};
+export default productApi;
