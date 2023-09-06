@@ -19,6 +19,7 @@ const ProductContent = ({ product, productDetails }) => {
   const [size, setSize] = useState();
   const [quantity, setQuantity] = useState(1);
   const [available, setAvailable] = useState(false);
+  const [inStock, setInStock] = useState(0);
   const [overviewOn, setOverviewOn] = useState(false);
   const [materialOn, setMaterialOn] = useState(false);
   const [quantityOn, setQuantityOn] = useState(false);
@@ -36,15 +37,24 @@ const ProductContent = ({ product, productDetails }) => {
         if (productDetail) {
           if (productDetail.inStock > 0) {
             setAvailable(true);
+            setInStock(productDetail.inStock);
           } else {
             setAvailable(false);
+            setInStock(0);
           }
         } else {
           setAvailable(false);
+          setInStock(0);
         }
+      } else {
+        setAvailable(false);
+        setInStock(0);
       }
+    } else {
+      setAvailable(false);
+      setInStock(0);
     }
-  }, [color, size]);
+  }, [color, size, productDetails]);
 
   const lengthImg = product?.productImages?.length;
 

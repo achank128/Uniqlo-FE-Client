@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import './register.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import { LockOutlined } from '@mui/icons-material';
-import { register } from '../../../api/apiUser';
 //components
 import Navbar from '../../components/navbar/Navbar';
 import Loading from '../../components/loading/Loading';
@@ -34,10 +33,8 @@ const Register = () => {
       try {
         setError(false);
         setLoading(true);
-        const res = await register({ email, password, birthday, gender });
+        // const res = await register({ email, password, birthday, gender });
         setLoading(false);
-        localStorage.setItem('token', res.data.token);
-        localStorage.setItem('currentUser', JSON.stringify(res.data.user));
         navigate('/');
       } catch (error) {
         setLoading(false);

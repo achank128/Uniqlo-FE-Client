@@ -8,6 +8,8 @@ import {
   ShoppingCartOutlined,
   PersonOutlineOutlined,
 } from '@mui/icons-material';
+import { useDispatch, useSelector } from 'react-redux';
+import { authAction, userSelector } from '../../../redux/slices/authSlice';
 
 //components
 import Flyout from './flyout/Flyout';
@@ -17,7 +19,8 @@ import { genderTypeApi } from '../../../api/apiGenderType';
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  const dispatch = useDispatch();
+  const currentUser = useSelector(userSelector);
   const { amount, wishList, search, setSearch } = useGlobalContext();
   const [userOpen, setUserOpen] = useState(false);
   const [isFlyOutOn, setIsFlyOutOn] = useState(false);
@@ -180,8 +183,7 @@ const Navbar = () => {
                       </Link>
                       <li
                         onClick={() => {
-                          localStorage.removeItem('currentUser');
-                          localStorage.removeItem('token');
+                          dispatch(authAction.handleLogOut());
                           navigate('/login');
                         }}
                       >

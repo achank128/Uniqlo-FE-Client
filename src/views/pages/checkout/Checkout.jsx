@@ -2,12 +2,10 @@ import React, { useEffect, useState } from 'react';
 import './checkout.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import { useGlobalContext } from '../../../hooks/useGlobalContext';
-import { getProvinces, getDistricts, getWards } from '../../../api/apiAddress';
 import { createOrder } from '../../../api/apiOrder';
 
 import { KeyboardArrowDown, ConfirmationNumberOutlined } from '@mui/icons-material';
 //components
-import Navbar from '../../components/navbar/Navbar';
 import Footer from '../../components/footer/Footer';
 import Loading from '../../components/loading/Loading';
 import {
@@ -57,41 +55,41 @@ const Checkout = () => {
     }
   };
 
-  useEffect(() => {
-    const getProvince = async () => {
-      try {
-        const data = await getProvinces();
-        setProvincesList(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getProvince();
-  }, []);
+  // useEffect(() => {
+  //   const getProvince = async () => {
+  //     try {
+  //       const data = await getProvinces();
+  //       setProvincesList(data);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   getProvince();
+  // }, []);
 
-  useEffect(() => {
-    const getDistrict = async () => {
-      try {
-        const data = await getDistricts(provinceId);
-        setDistrictsList(data.districts);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getDistrict();
-  }, [provinceId]);
+  // useEffect(() => {
+  //   const getDistrict = async () => {
+  //     try {
+  //       const data = await getDistricts(provinceId);
+  //       setDistrictsList(data.districts);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   getDistrict();
+  // }, [provinceId]);
 
-  useEffect(() => {
-    const getWard = async () => {
-      try {
-        const data = await getWards(districtId);
-        setWardsList(data.wards);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getWard();
-  }, [districtId]);
+  // useEffect(() => {
+  //   const getWard = async () => {
+  //     try {
+  //       const data = await getWards(districtId);
+  //       setWardsList(data.wards);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   getWard();
+  // }, [districtId]);
 
   useEffect(() => {
     window.scrollTo(0, 0);

@@ -3,12 +3,17 @@ import './login.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import { InfoOutlined } from '@mui/icons-material';
 import { login } from '../../../api/apiUser';
+import authApi from '../../../api/apiAuth';
 //components
 import Navbar from '../../components/navbar/Navbar';
 import Loading from '../../components/loading/Loading';
+import { useDispatch } from 'react-redux';
+import { authAction } from '../../../redux/slices/authSlice';
+import { useQuery } from 'react-query';
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -21,16 +26,17 @@ const Login = () => {
     try {
       setError(false);
       setLoading(true);
-      const res = await login({ email, password });
+      //     const { isLoading, isError, data } = useQuery(['products', {email, password}], ({ queryKey }) =>
+      //   authApi.login(queryKey[1]),
+      // );
+      const res = await authApi.login({ email, password });
+      dispatch(authAction.handleLogin(res.data));
       setLoading(false);
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('currentUser', JSON.stringify(res.data.user));
       navigate('/');
     } catch (error) {
       setError(true);
       setLoading(false);
-      setMsg(error.response.data?.msg);
-      localStorage.removeItem('token');
+      setMsg(error.response.data.Message);
     }
   };
 
@@ -80,6 +86,7 @@ const Login = () => {
                     <input
                       required
                       type="email"
+                      name="email"
                       placeholder="Enter a valid email"
                       value={email}
                       className={error ? 'error-input' : ''}
@@ -92,6 +99,7 @@ const Login = () => {
                     <input
                       required
                       placeholder="Password"
+                      name="password"
                       type={showPassword ? 'text' : 'password'}
                       value={password}
                       className={error ? 'error-input' : ''}

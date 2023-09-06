@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import './profile.scss';
 import { Link } from 'react-router-dom';
-import { getUserOrder } from '../../../api/apiOrder';
-import { changePassword } from '../../../api/apiUser';
 
 //components
-import Navbar from '../../components/navbar/Navbar';
 import Footer from '../../components/footer/Footer';
 import Order from '../../components/order/Order';
 import Loading from '../../components/loading/Loading';
+import { useSelector } from 'react-redux';
+import { userSelector } from '../../../redux/slices/authSlice';
+import userApi from '../../../api/apiUser';
 
 const Profile = () => {
-  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  const currentUser = useSelector(userSelector);
   const [loading, setLoading] = useState(false);
   const [userOrders, setUserOrders] = useState([]);
   const [showChangePass, setShowChangePass] = useState(false);
@@ -20,31 +20,33 @@ const Profile = () => {
   const [errorPass, setErrorPass] = useState(false);
   const [msg, setMsg] = useState(null);
 
-  useEffect(() => {
-    const apiOrder = async () => {
-      try {
-        const orders = await getUserOrder(currentUser.userId);
-        setUserOrders(orders.userOrders);
-      } catch (error) {}
-    };
-    apiOrder();
-  }, [currentUser.userId]);
+  // useEffect(() => {
+  //   const apiOrder = async () => {
+  //     try {
+  //       const orders = await getUserOrder(currentUser.userId);
+  //       setUserOrders(orders.userOrders);
+  //     } catch (error) {}
+  //   };
+  //   apiOrder();
+  // }, [currentUser.userId]);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    try {
-      setErrorPass(false);
-      setLoading(true);
-      const res = await changePassword(currentUser.userId, oldPassword, newPassword);
-      setLoading(false);
-      setOldPassword('');
-      setNewPassword('');
-      setShowChangePass(false);
-    } catch (error) {
-      setLoading(false);
-      setErrorPass(true);
-      setMsg(error.response.data.msg);
-    }
+    const res = await userApi.getMe();
+    console.log(res);
+    // try {
+    //   setErrorPass(false);
+    //   setLoading(true);
+    //   const res = await changePassword(currentUser.userId, oldPassword, newPassword);
+    //   setLoading(false);
+    //   setOldPassword('');
+    //   setNewPassword('');
+    //   setShowChangePass(false);
+    // } catch (error) {
+    //   setLoading(false);
+    //   setErrorPass(true);
+    //   setMsg(error.response.data.msg);
+    // }
   };
 
   useEffect(() => {
