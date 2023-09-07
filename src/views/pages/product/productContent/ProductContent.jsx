@@ -10,54 +10,76 @@ import {
   KeyboardArrowDown,
   Twitter,
 } from '@mui/icons-material';
-import { toast } from 'react-toastify';
 import Loading from '../../../components/loading/Loading';
+import { useDispatch, useSelector } from 'react-redux';
+import { addCartItem, cartAction, cartSelector } from '../../../../redux/slices/cartSlice';
+import { addWishList } from '../../../../redux/slices/wishListSlice';
 
 const ProductContent = ({ product, productDetails }) => {
+  const dispatch = useDispatch();
+  const cart = useSelector(cartSelector);
   const { formater } = useGlobalContext();
   const [color, setColor] = useState();
   const [size, setSize] = useState();
   const [quantity, setQuantity] = useState(1);
-  const [available, setAvailable] = useState(false);
   const [inStock, setInStock] = useState(0);
   const [overviewOn, setOverviewOn] = useState(false);
   const [materialOn, setMaterialOn] = useState(false);
   const [quantityOn, setQuantityOn] = useState(false);
   const [index, setIndex] = useState(0);
+  const [productSizeSorted, setProductSizeSorted] = useState([]);
 
-  console.log(product);
+  useEffect(() => {
+    if (product) {
+      let productSizes = [...product?.productSizes];
+      setProductSizeSorted(productSizes.sort((a, b) => a.size.level - b.size.level));
+    }
+  }, [product]);
+
+  const handleAddToCart = () => {
+    if (inStock > 0) {
+      let productDetail = productDetails.find(
+        (pd) => pd.colorId === color.colorId && pd.sizeId === size.sizeId,
+      );
+
+      let body = {
+        cartId: cart.id,
+        productDetailId: productDetail.id,
+        productDetail,
+        product,
+        quantity: quantity,
+      };
+
+      dispatch(addCartItem(body)).then(() => {
+        dispatch(cartAction.updateTotal());
+      });
+    }
+  };
 
   useEffect(() => {
     if (color) {
       if (size) {
-        console.log({ color, size });
-        var productDetail = productDetails.find(
+        let productDetail = productDetails.find(
           (pd) => pd.colorId === color.colorId && pd.sizeId === size.sizeId,
         );
         if (productDetail) {
           if (productDetail.inStock > 0) {
-            setAvailable(true);
             setInStock(productDetail.inStock);
           } else {
-            setAvailable(false);
             setInStock(0);
           }
         } else {
-          setAvailable(false);
           setInStock(0);
         }
       } else {
-        setAvailable(false);
         setInStock(0);
       }
     } else {
-      setAvailable(false);
       setInStock(0);
     }
   }, [color, size, productDetails]);
 
   const lengthImg = product?.productImages?.length;
-
   const nextImg = () => {
     setIndex((oldIndex) => {
       let index = oldIndex + 1;
@@ -122,7 +144,7 @@ const ProductContent = ({ product, productDetails }) => {
                   })}
                 </div>
                 <div className="img-primary">
-                  {product.productImages?.map((img, indexImg) => {
+                  {product?.productImages?.map((img, indexImg) => {
                     let positionImg = 'next-img';
                     if (indexImg === index) {
                       positionImg = 'active-img';
@@ -232,17 +254,15 @@ const ProductContent = ({ product, productDetails }) => {
                 <div className="size">
                   <div className="size-name">SIZE: {size?.size.name}</div>
                   <ul className="size-list">
-                    {product.productSizes
-                      ?.sort((a, b) => a.size.level - b.size.level)
-                      .map((ps) => (
-                        <li
-                          key={ps.id}
-                          className={size?.id === ps.id ? 'size-selected' : ''}
-                          onClick={() => setSize(ps)}
-                        >
-                          {ps.size.name}
-                        </li>
-                      ))}
+                    {productSizeSorted.map((ps) => (
+                      <li
+                        key={ps.id}
+                        className={size?.id === ps.id ? 'size-selected' : ''}
+                        onClick={() => setSize(ps)}
+                      >
+                        {ps.size.name}
+                      </li>
+                    ))}
                   </ul>
                 </div>
                 <div className="quanlity">
@@ -284,26 +304,13 @@ const ProductContent = ({ product, productDetails }) => {
                   </ul>
                 </div>
                 <button
-                  className={available ? 'add-to-cart add-active' : 'add-to-cart'}
-                  onClick={() => {
-                    // const itemId = uuidv4();
-                    // if (addActive) {
-                    //   addToCart(product, size, color, quantity, itemId);
-                    //   toast.info('Item has been added to your cart!');
-                    // }
-                  }}
+                  className={inStock > 0 ? 'add-to-cart add-active' : 'add-to-cart'}
+                  onClick={handleAddToCart}
                 >
                   ADD TO CART
                 </button>
                 <div className="fav-find">
-                  <button
-                    className="favorite-add"
-                    // onClick={() => {
-                    //   let item = wishList.find((w) => w._id === product._id);
-                    //   if (!item) addToWishList(product);
-                    // }}
-                    onClick={() => toast.info('Added to your wish list!')}
-                  >
+                  <button className="favorite-add" onClick={() => dispatch(addWishList(product))}>
                     ADD TO WISH LIST
                   </button>
                   <button className="find-store">FIND STOCK IN STORE</button>

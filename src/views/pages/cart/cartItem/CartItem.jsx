@@ -2,16 +2,30 @@ import React, { useState } from 'react';
 import './cartItem.scss';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useGlobalContext } from '../../../hooks/useGlobalContext';
+import { useGlobalContext } from '../../../../hooks/useGlobalContext';
 import { Add, Close, KeyboardArrowDown } from '@mui/icons-material';
+import { useDispatch } from 'react-redux';
+import { cartAction, removeCartItem, updateQuantity } from '../../../../redux/slices/cartSlice';
 
 const CartItem = ({ item }) => {
-  const { formater, increase, setQuantity, removeItem } = useGlobalContext();
+  const dispatch = useDispatch();
+  const { formater } = useGlobalContext();
   const [quantityOn, setQuantityOn] = useState(false);
 
   const handleRemove = () => {
-    removeItem(item.itemId);
-    toast.info('Item has been removed!');
+    dispatch(removeCartItem(item.id)).then(() => {
+      dispatch(cartAction.updateTotal());
+    });
+  };
+
+  const handleUpdateQuantity = (quantity) => {
+    let body = {
+      id: item.id,
+      quantity,
+    };
+    dispatch(updateQuantity(body)).then(() => {
+      dispatch(cartAction.updateTotal());
+    });
   };
 
   return (
@@ -19,18 +33,18 @@ const CartItem = ({ item }) => {
       <button className="remove-item" onClick={handleRemove}>
         <Close />
       </button>
-      <Link to={`/product/${item._id}`}>
+      <Link to={`/product/${item.product.id}`}>
         <div className="img">
-          <img src={item.img[0]} alt="" />
+          <img src={item.product?.productImages[0]?.imageUrl} alt="" />
         </div>
       </Link>
       <div className="info">
-        <div className="name">{item.name}</div>
-        <p className="id">Product ID: {item._id}</p>
-        <p className="color">Color: {item.color}</p>
-        <p className="size">Size: {item.size}</p>
+        <div className="name">{item.product.name}</div>
+        <p className="id">Product ID: {item.product.id}</p>
+        <p className="color">Color: {item.productDetail.color?.name}</p>
+        <p className="size">Size: {item.productDetail.size?.name}</p>
         <p className="sale">Sale</p>
-        <p className="price">{formater.format(item.priceLimited)} VND</p>
+        <p className="price">{formater.format(item.product.productPrice?.price)} VND</p>
         <div className="quanlity-subtotal">
           <div className="quanlity">
             <div className="quanlity-name">QUANTITY</div>
@@ -40,13 +54,18 @@ const CartItem = ({ item }) => {
                 <KeyboardArrowDown className="arrow-down-icon" />
               </span>
             </div>
-            <button className="inc-quanlity" onClick={() => increase(item.itemId)}>
+            <button
+              className="inc-quanlity"
+              onClick={() => {
+                handleUpdateQuantity(item.quantity + 1);
+              }}
+            >
               <Add className="add-icon" />
             </button>
             <ul className={quantityOn ? 'quanlity-list active' : 'quanlity-list'}>
               <li
                 onClick={() => {
-                  setQuantity(item.itemId, 1);
+                  handleUpdateQuantity(1);
                   setQuantityOn(!quantityOn);
                 }}
               >
@@ -54,7 +73,7 @@ const CartItem = ({ item }) => {
               </li>
               <li
                 onClick={() => {
-                  setQuantity(item.itemId, 2);
+                  handleUpdateQuantity(2);
                   setQuantityOn(!quantityOn);
                 }}
               >
@@ -62,7 +81,7 @@ const CartItem = ({ item }) => {
               </li>
               <li
                 onClick={() => {
-                  setQuantity(item.itemId, 3);
+                  handleUpdateQuantity(3);
                   setQuantityOn(!quantityOn);
                 }}
               >
@@ -70,7 +89,7 @@ const CartItem = ({ item }) => {
               </li>
               <li
                 onClick={() => {
-                  setQuantity(item.itemId, 4);
+                  handleUpdateQuantity(4);
                   setQuantityOn(!quantityOn);
                 }}
               >
@@ -78,7 +97,7 @@ const CartItem = ({ item }) => {
               </li>
               <li
                 onClick={() => {
-                  setQuantity(item.itemId, 5);
+                  handleUpdateQuantity(5);
                   setQuantityOn(!quantityOn);
                 }}
               >
@@ -88,7 +107,9 @@ const CartItem = ({ item }) => {
           </div>
           <div className="subtotal">
             <div className="label">SUBTOTAL:</div>
-            <div className="total">{formater.format(item.priceLimited * item.quantity)} VND</div>
+            <div className="total">
+              {formater.format(item.product.productPrice?.price * item.quantity)} VND
+            </div>
           </div>
         </div>
       </div>

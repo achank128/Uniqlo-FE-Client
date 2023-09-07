@@ -4,11 +4,14 @@ import { Link } from 'react-router-dom';
 import { useGlobalContext } from '../../../hooks/useGlobalContext';
 import { Close } from '@mui/icons-material';
 //components
-import Navbar from '../../components/navbar/Navbar';
 import Footer from '../../components/footer/Footer';
+import { useDispatch, useSelector } from 'react-redux';
+import { removeWishList, wishListSelector } from '../../../redux/slices/wishListSlice';
 
 const WishList = () => {
-  const { wishList, formater, removeFromWishList } = useGlobalContext();
+  const { formater } = useGlobalContext();
+  const dispatch = useDispatch();
+  const wishList = useSelector(wishListSelector);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -37,42 +40,47 @@ const WishList = () => {
                   ? `${wishList.length} item(s)`
                   : 'YOUR WISH LIST HAS NO ITEMS.'}
               </div>
-              {wishList.map((item) => {
-                return (
-                  <div className="item" key={item._id}>
-                    <div
-                      className="btn-remove"
-                      onClick={() => {
-                        removeFromWishList(item._id);
-                      }}
-                    >
-                      <Close />
-                    </div>
-                    <div className="item-content">
-                      <Link to={`/product/${item._id}`}>
-                        <div className="img">
-                          <img src={item.img[0]} alt="" />
-                        </div>
-                      </Link>
-                      <div className="info">
-                        <div className="name">{item.name}</div>
-                        <div className="id">Product ID: {item._id}</div>
-                        <p>{item.size}</p>
-                        <p>Size: {item.for}</p>
-                        <div className="price">
-                          <div className="price-original">
-                            {formater.format(item.priceOriginal)} VND
+              {wishList.length > 0 &&
+                wishList.map((item) => {
+                  return (
+                    <div className="item" key={item.id}>
+                      <div
+                        className="btn-remove"
+                        onClick={() => {
+                          dispatch(removeWishList(item.id));
+                        }}
+                      >
+                        <Close />
+                      </div>
+                      <div className="item-content">
+                        <Link to={`/product/${item.productId}`}>
+                          <div className="img">
+                            <img src={item?.product?.productImages[0]?.imageUrl} alt="" />
                           </div>
-                          <div className="price-limited">
-                            {formater.format(item.priceLimited)} VND
+                        </Link>
+                        <div className="info">
+                          <div className="name">{item.product?.name}</div>
+                          <div className="id">Product ID: {item.productId}</div>
+                          <p>{item.product?.genderType.name}</p>
+                          {/* <p>Size: {item.for}</p> */}
+                          <div className="price">
+                            <div className="price-original">
+                              {formater.format(item.product?.productPrice.price)} VND
+                            </div>
+                            {item.product?.isSale && (
+                              <>
+                                <div className="price-limited">
+                                  {formater.format(item.product?.productPrice.promoPrice)} VND
+                                </div>
+                                <div className="sale">Sale</div>
+                              </>
+                            )}
                           </div>
                         </div>
-                        <div className="sale">Sale</div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
             </div>
           </div>
         </div>

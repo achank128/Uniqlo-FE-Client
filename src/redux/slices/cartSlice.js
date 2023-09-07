@@ -1,98 +1,136 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import cartApi from '../../api/apiCart';
+import { toast } from 'react-toastify';
+import { v4 as uuidv4 } from 'uuid';
+import { isUserLoggedIn } from '../../utils/auth';
+
+const cartDefault = {
+  id: uuidv4(),
+  cartItems: [],
+};
 
 const cartSlice = createSlice({
   name: 'cart',
   initialState: {
-    cart: [],
+    cart: JSON.parse(localStorage.getItem('cart')) || cartDefault,
     amount: 0,
-    subTotal: 0,
     total: 0,
+    isLoadingCart: false,
   },
   reducers: {
-    addToCart: (state, action) => {
-      let newCart = [];
-      const isItemInCart = state.cart.find((item) => item.id === action.payload.item.id);
-
-      if (isItemInCart) {
-        if (
-          isItemInCart.colorId === action.payload.colorId &&
-          isItemInCart.sizeId === action.payload.sizeId
-        ) {
-          newCart = state.cart.map((item) =>
-            item._id === action.payload.item._id
-              ? { ...item, quantity: item.quantity + action.payload.quantity }
-              : item,
-          );
-        } else {
-          newCart = [
-            ...state.cart,
-            {
-              ...action.payload.item,
-              itemId: action.payload.itemId,
-              color: action.payload.color,
-              size: action.payload.size,
-              quantity: action.payload.quantity,
-            },
-          ];
-        }
-      } else {
-        newCart = [
-          ...state.cart,
-          {
-            ...action.payload.item,
-            itemId: action.payload.itemId,
-            color: action.payload.color,
-            size: action.payload.size,
-            quantity: action.payload.quantity,
-          },
-        ];
-      }
-      localStorage.setItem('cart', JSON.stringify(newCart));
-      return { ...state, cart: newCart };
-    },
-
-    removeFormCart: (state, action) => {
-      state.cart = state.cart.filter((item) => item.id !== action.payload.id);
-
-      //update Amount,Total
-      let { amount, subTotal, total } = state.cart.reduce(
-        ({ amount, subTotal, total }, item) => {
-          const { quantity, promoPrice, basePrice } = item;
-          amount += quantity;
-          subTotal += quantity * basePrice;
-          total += quantity * promoPrice;
-          return { amount, subTotal, total };
-        },
-        { amount: 0, subTotal: 0, total: 0 },
-      );
-      state.amount = amount;
-      state.subTotal = subTotal;
-      state.total = total;
-    },
-
     updateTotal(state, action) {
-      //update Amount,Total
-      let { amount, subTotal, total } = state.cart.reduce(
-        ({ amount, subTotal, total }, item) => {
-          const { quantity, promoPrice, basePrice } = item;
-          amount += quantity;
-          subTotal += quantity * basePrice;
-          total += quantity * promoPrice;
-          return { amount, subTotal, total };
+      let { amount, total } = state.cart.cartItems.reduce(
+        ({ amount, total }, item) => {
+          let price = item.product.productPrice.price;
+          if (item.product.isSale) {
+            price = item.product.productPrice.promoPrice;
+          }
+          amount += item.quantity;
+          total += item.quantity * price;
+          return { amount, total };
         },
-        { amount: 0, subTotal: 0, total: 0 },
+        { amount: 0, total: 0 },
       );
       state.amount = amount;
-      state.subTotal = subTotal;
       state.total = total;
     },
   },
+
+  extraReducers: (builder) => {
+    builder
+      .addCase(getCart.pending, (state, action) => {
+        state.isLoadingCart = true;
+      })
+      .addCase(getCart.fulfilled, (state, action) => {
+        state.cart = action.payload;
+        state.isLoadingCart = false;
+        localStorage.setItem('cart', JSON.stringify(state.cart));
+      })
+      .addCase(addCartItem.fulfilled, (state, action) => {
+        const inCartItem = state.cart.cartItems.find((item) => item.id === action.payload.id);
+        if (inCartItem) {
+          state.cart.cartItems = state.cart.cartItems.map((item) => {
+            if (item.id === action.payload.id) {
+              return { ...item, quantity: action.payload.quantity };
+            }
+            return item;
+          });
+          toast.success('Item has been update in your cart!');
+        } else {
+          state.cart.cartItems.push(action.payload);
+          toast.success('Item has been add to your cart!');
+        }
+        localStorage.setItem('cart', JSON.stringify(state.cart));
+      })
+      .addCase(updateQuantity.fulfilled, (state, action) => {
+        console.log('update quantity:', action.payload);
+        state.cart.cartItems = state.cart.cartItems.map((item) => {
+          if (item.id === action.payload.id) {
+            return { ...item, quantity: action.payload.quantity };
+          }
+          return item;
+        });
+        localStorage.setItem('cart', JSON.stringify(state.cart));
+      })
+      .addCase(removeCartItem.fulfilled, (state, action) => {
+        state.cart.cartItems = state.cart.cartItems.filter((item) => item.id !== action.payload);
+        toast.info('Item has been removed from your cart!');
+        localStorage.setItem('cart', JSON.stringify(state.cart));
+      });
+  },
+});
+
+export const getCart = createAsyncThunk('cart/getCart', async () => {
+  const res = await cartApi.getMyCart();
+  return res.data;
+});
+
+export const addCartItem = createAsyncThunk('cart/addCartItem', async (body, thunkAPI) => {
+  let state = thunkAPI.getState().cartSlice;
+  const itemInCart = state.cart.cartItems.find(
+    (item) => item.productDetailId === body.productDetailId,
+  );
+
+  if (itemInCart) {
+    if (isUserLoggedIn()) {
+      let upbody = {
+        id: itemInCart.id,
+        quantity: itemInCart.quantity + body.quantity,
+      };
+      const res = await cartApi.updateQuantityCartItem(upbody);
+      return res.data;
+    } else {
+      itemInCart.quantity = itemInCart.quantity + body.quantity;
+      return itemInCart;
+    }
+  } else {
+    if (isUserLoggedIn()) {
+      const res = await cartApi.addCartItem(body);
+      return res.data;
+    } else {
+      body.id = uuidv4();
+      return body;
+    }
+  }
+});
+
+export const updateQuantity = createAsyncThunk('cart/updateQuantity', async (body) => {
+  const res = await cartApi.updateQuantityCartItem(body);
+  return res.data;
+});
+
+export const removeCartItem = createAsyncThunk('cart/removeCartItem', async (id) => {
+  if (isUserLoggedIn()) {
+    await cartApi.removeCartItem(id);
+  }
+  return id;
 });
 
 export const cartSelector = (state) => state.cartSlice.cart;
 export const amountSelector = (state) => state.cartSlice.amount;
 export const subTotalSelector = (state) => state.cartSlice.subTotal;
 export const totalSelector = (state) => state.cartSlice.total;
+
 export const cartAction = cartSlice.actions;
 
 export default cartSlice;

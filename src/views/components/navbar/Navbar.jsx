@@ -16,12 +16,16 @@ import Flyout from './flyout/Flyout';
 import Announcement from './announcement/Announcement';
 import { categoryApi } from '../../../api/apiCategory';
 import { genderTypeApi } from '../../../api/apiGenderType';
+import { amountSelector, cartAction, getCart } from '../../../redux/slices/cartSlice';
+import { getWishList, wishListSelector } from '../../../redux/slices/wishListSlice';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const currentUser = useSelector(userSelector);
-  const { amount, wishList, search, setSearch } = useGlobalContext();
+  const amount = useSelector(amountSelector);
+  const wishList = useSelector(wishListSelector);
+
   const [userOpen, setUserOpen] = useState(false);
   const [isFlyOutOn, setIsFlyOutOn] = useState(false);
   const [category, setCategory] = useState('');
@@ -31,7 +35,7 @@ const Navbar = () => {
   const [CategoriesMen, setCategoriesMen] = useState([]);
   const [CategoriesKids, setCategoriesKids] = useState([]);
   const [CategoriesBaby, setCategoriesBaby] = useState([]);
-  const [searchText, setSearchText] = useState(search);
+  const [searchText, setSearchText] = useState('');
 
   const getCategoriesWomen = async () => {
     const data = await categoryApi.getCategories(1);
@@ -66,6 +70,15 @@ const Navbar = () => {
     getCategoriesBaby();
   }, []);
 
+  useEffect(() => {
+    if (currentUser?.id) {
+      dispatch(getCart()).then(() => {
+        dispatch(cartAction.updateTotal());
+      });
+      dispatch(getWishList());
+    }
+  }, [currentUser]);
+
   //hover item
   const handleHoverOn = (item) => {
     if (item === 'WOMEN') {
@@ -85,28 +98,6 @@ const Navbar = () => {
       setCategory('');
     }
   };
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    navigate('/products');
-    setSearch(searchText);
-    window.scrollTo(0, 0);
-  };
-
-  // window.onscroll = function () {
-  //   myFunction();
-  // };
-
-  // var navbar = document.getElementById('navbar');
-  // var sticky = navbar.offsetTop;
-
-  // function myFunction() {
-  //   if (window.pageYOffset >= sticky) {
-  //     navbar.classList.add('sticky');
-  //   } else {
-  //     navbar.classList.remove('sticky');
-  //   }
-  // }
 
   return (
     <div id="topbar">
@@ -151,7 +142,7 @@ const Navbar = () => {
 
             <div className="nav-right">
               <div className="searchform item">
-                <form onSubmit={handleSearch}>
+                <form onSubmit={() => {}}>
                   <input
                     className="search-input"
                     type="text"
@@ -159,7 +150,7 @@ const Navbar = () => {
                     placeholder="Search by keyword"
                     onChange={(e) => setSearchText(e.target.value)}
                   />
-                  <button type="submit" className="search-btn" onSubmit={handleSearch}>
+                  <button type="submit" className="search-btn">
                     <Search className="search-icon" />
                   </button>
                 </form>

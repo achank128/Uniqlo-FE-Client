@@ -2,31 +2,45 @@ import React, { useEffect, useState } from 'react';
 import './productItem.scss';
 import { Link } from 'react-router-dom';
 import { Favorite, FavoriteBorder } from '@mui/icons-material';
-import { useGlobalContext } from '../../../hooks/useGlobalContext';
+import { useGlobalContext } from '../../../../hooks/useGlobalContext';
 //components
-import RatingStar from '../ratingStar/RatingStar';
-import { useDispatch } from 'react-redux';
+import RatingStar from '../../../components/ratingStar/RatingStar';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  addWishList,
+  removeWishList,
+  wishListSelector,
+} from '../../../../redux/slices/wishListSlice';
 
 const ProductItem = ({ product }) => {
   const { formater } = useGlobalContext();
-  //const [isAddToWishList, setIsAddToWishList] = useState(false);
   const dispatch = useDispatch();
+  const wishList = useSelector(wishListSelector);
+  const [isInWishList, setIsInWishList] = useState(null);
+
+  useEffect(() => {
+    let wish = wishList.find((w) => w.productId === product.id);
+    if (wish) {
+      setIsInWishList(wish);
+    } else {
+      setIsInWishList(null);
+    }
+  }, [wishList, product]);
 
   return (
     <div id="product-item">
       <div className="favorite-add">
         <span
           onClick={() => {
-            // if (isAddToWishList) {
-            //   removeFromWishList(product._id);
-            // } else {
-            //   addToWishList(product);
-            // }
-            // setIsAddToWishList(!isAddToWishList);
+            if (isInWishList) {
+              dispatch(removeWishList(isInWishList.id));
+            } else {
+              dispatch(addWishList(product));
+            }
           }}
         >
           <FavoriteBorder className="favorite-border-icon" />
-          {/* <Favorite className={isAddToWishList ? 'favorite-icon active' : 'favorite-icon'} /> */}
+          <Favorite className={isInWishList ? 'favorite-icon active' : 'favorite-icon'} />
         </span>
       </div>
       <Link to={`/product/${product.id}`}>

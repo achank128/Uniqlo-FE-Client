@@ -7,7 +7,7 @@ import { useQuery } from 'react-query';
 //components
 import Footer from '../../components/footer/Footer';
 import Categories from '../../components/categories/Categories';
-import ProductItem from '../../components/productItem/ProductItem';
+import ProductItem from './productItem/ProductItem';
 import Loading from '../../components/loading/Loading';
 
 const sorts = [

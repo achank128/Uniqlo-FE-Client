@@ -4,14 +4,19 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useGlobalContext } from '../../../hooks/useGlobalContext';
 import { InfoOutlined, KeyboardArrowDown, ConfirmationNumberOutlined } from '@mui/icons-material';
 //components
-import Navbar from '../../components/navbar/Navbar';
 import Footer from '../../components/footer/Footer';
-import CartItem from '../../components/cartItem/CartItem';
+import CartItem from './cartItem/CartItem';
+import { amountSelector, cartSelector, totalSelector } from '../../../redux/slices/cartSlice';
+import { useSelector } from 'react-redux';
+import { userSelector } from '../../../redux/slices/authSlice';
 
 const Cart = () => {
   const navigate = useNavigate();
-  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-  const { cart, subtotal, shippingFee, total, formater, amount } = useGlobalContext();
+  const { formater } = useGlobalContext();
+  const user = useSelector(userSelector);
+  const cart = useSelector(cartSelector);
+  const amount = useSelector(amountSelector);
+  const total = useSelector(totalSelector);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -34,18 +39,11 @@ const Cart = () => {
             <div className="cart-title">
               <h2>SHOPPING CART</h2>
             </div>
-            {cart.length < 1 ? (
-              <div className="no-item">
-                <p>Your cart is currently empty.</p>
-                <Link to="/product-list/ALL">
-                  <button className="no-item-shopping">CONTINUE SHOPPING</button>
-                </Link>
-              </div>
-            ) : (
+            {cart?.cartItems?.length > 0 ? (
               <div className="cart-content">
                 <div className="items">
-                  {cart.map((item, index) => (
-                    <CartItem item={item} key={index} />
+                  {cart.cartItems.map((item) => (
+                    <CartItem item={item} key={item.id} />
                   ))}
                 </div>
                 <div className="summary">
@@ -53,19 +51,15 @@ const Cart = () => {
                     <h3 className="title">ORDER SUMMARY| {amount} ITEM(S)</h3>
                     <div className="item-subtotal">
                       <div className="label">Item(s) subtotal</div>
-                      <div className="total">{formater.format(subtotal)} VND</div>
+                      <div className="total">{formater.format(total)} VND</div>
                     </div>
                     <div className="subtotal">
                       <div className="label">SUBTOTAL</div>
-                      <div className="total">{formater.format(subtotal)} VND</div>
+                      <div className="total">{formater.format(total)} VND</div>
                     </div>
                     <div className="vat">
                       <div className="label">VAT included</div>
-                      <div className="total">{formater.format(subtotal * 0.1)} VND</div>
-                    </div>
-                    <div className="shipping">
-                      <div className="label">Shipping Fee</div>
-                      <div className="total">{formater.format(shippingFee)} VND</div>
+                      <div className="total">{formater.format(total * 0.1)} VND</div>
                     </div>
                     <div className="order-total">
                       <div className="label">ORDER TOTAL</div>
@@ -93,7 +87,8 @@ const Cart = () => {
                   <button
                     className="btn-checkout"
                     onClick={() => {
-                      if (currentUser) navigate('/checkout');
+                      if (user) navigate('/checkout');
+                      else navigate('/login');
                     }}
                   >
                     CHECKOUT
@@ -106,6 +101,13 @@ const Cart = () => {
                     shipping.
                   </div>
                 </div>
+              </div>
+            ) : (
+              <div className="no-item">
+                <p>Your cart is currently empty.</p>
+                <Link to="/products">
+                  <button className="no-item-shopping">CONTINUE SHOPPING</button>
+                </Link>
               </div>
             )}
           </div>
