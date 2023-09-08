@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './order.scss';
-import { useGlobalContext } from '../../../hooks/useGlobalContext';
+import { useGlobalContext } from '../../../../hooks/useGlobalContext';
 
 const Order = ({ order }) => {
   const { formater } = useGlobalContext();

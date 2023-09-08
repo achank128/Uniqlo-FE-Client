@@ -129,10 +129,6 @@
         margin-bottom: 16px;
       }
       .subscribe-checkbox,
-      .show-pass {
-        @include checkbox;
-        margin-bottom: 20px;
-      }
       .notify-privacy {
         padding: 20px 0;
         margin: 20px 0;
@@ -150,13 +146,6 @@
           line-height: 1.4;
           padding-bottom: 20px;
         }
-        .push-checkbox {
-          @include checkbox;
-          padding-bottom: 20px;
-        }
-        .push2-checkbox {
-          @include checkbox;
-        }
       }
       .submit {
         overflow: hidden;
@@ -166,10 +155,6 @@
         }
         .agree-desc {
           color: $gray-color;
-          margin-bottom: 10px;
-        }
-        .argee-checkbox {
-          @include checkbox;
           margin-bottom: 10px;
         }
         .term-privacy {

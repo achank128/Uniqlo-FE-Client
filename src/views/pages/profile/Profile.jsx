@@ -1,65 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import './profile.scss';
-import { Link } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 //components
 import Footer from '../../components/footer/Footer';
-import Order from '../../components/order/Order';
 import Loading from '../../components/loading/Loading';
+import Details from './details/Details';
+import Coupon from './coupon/Coupon';
+import Address from './address/Address';
+
+//other
 import { useSelector } from 'react-redux';
 import { userSelector } from '../../../redux/slices/authSlice';
-import userApi from '../../../api/apiUser';
 
 const Profile = () => {
-  const currentUser = useSelector(userSelector);
-  const [loading, setLoading] = useState(false);
-  const [userOrders, setUserOrders] = useState([]);
-  const [showChangePass, setShowChangePass] = useState(false);
-  const [oldPassword, setOldPassword] = useState();
-  const [newPassword, setNewPassword] = useState();
-  const [errorPass, setErrorPass] = useState(false);
-  const [msg, setMsg] = useState(null);
-
-  // useEffect(() => {
-  //   const apiOrder = async () => {
-  //     try {
-  //       const orders = await getUserOrder(currentUser.userId);
-  //       setUserOrders(orders.userOrders);
-  //     } catch (error) {}
-  //   };
-  //   apiOrder();
-  // }, [currentUser.userId]);
-
-  const handleUpdate = async (e) => {
-    e.preventDefault();
-    const res = await userApi.getMe();
-    console.log(res);
-    // try {
-    //   setErrorPass(false);
-    //   setLoading(true);
-    //   const res = await changePassword(currentUser.userId, oldPassword, newPassword);
-    //   setLoading(false);
-    //   setOldPassword('');
-    //   setNewPassword('');
-    //   setShowChangePass(false);
-    // } catch (error) {
-    //   setLoading(false);
-    //   setErrorPass(true);
-    //   setMsg(error.response.data.msg);
-    // }
-  };
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   return (
     <>
-      {loading ? (
-        <div id="loading-overlay">
-          <Loading />
-        </div>
-      ) : null}
       <div id="profile">
         <div className="container">
           <div className="wrapper">
@@ -76,81 +37,27 @@ const Profile = () => {
             <div className="profile-title">
               <h2>MEMBERSHIP</h2>
             </div>
-            <div className="content">
-              <div className="profile">
-                <div className="profile-content">
-                  <div className="heading">
-                    <h3>PROFILE</h3>
-                  </div>
-                  <div className="item-info">
-                    <h4>EMAIL ADDRESS</h4>
-                    <p>{currentUser.email}</p>
-                  </div>
-                  <div className="item-info">
-                    <h4>BIRTHDAY</h4>
-                    <p>{currentUser.birthday?.slice(0, 10)}</p>
-                  </div>
-                  <div className="item-info">
-                    <h4>GENDER</h4>
-                    <p className="gender">{currentUser.gender}</p>
-                  </div>
-                  <button
-                    className="btn-change-pass"
-                    onClick={() => setShowChangePass(!showChangePass)}
-                  >
-                    Change Password
-                  </button>
-                </div>
-                <div className={showChangePass ? 'change-pass active' : 'change-pass'}>
-                  <form>
-                    {errorPass ? (
-                      <p className="error">{msg}</p>
-                    ) : (
-                      <p>*Please enter your old Password</p>
-                    )}
-                    <label>OLD PASSWORD</label>
-                    <div className="input">
-                      <input
-                        required
-                        type="password"
-                        className={errorPass ? 'error-input' : ''}
-                        value={oldPassword}
-                        onChange={(e) => setOldPassword(e.target.value)}
-                      />
-                    </div>
-                    <label>NEW PASSWORD</label>
-                    <div className="input">
-                      <input
-                        required
-                        type="password"
-                        className={errorPass ? 'error-input' : ''}
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                      />
-                    </div>
-                    <button className="btn-update" onClick={handleUpdate}>
-                      UPDATE PASSWORD
-                    </button>
-                  </form>
-                </div>
+            <div className="content-wrapper">
+              <div className="tab-content">
+                <h4 className="heading">Membership</h4>
+                <ul className="tab">
+                  <li>
+                    <Link to={'/profile'}>Profile</Link>
+                  </li>
+                  <li>
+                    <Link to={'coupon'}>Coupons</Link>
+                  </li>
+                  <li>
+                    <Link to={'address'}>Addresses</Link>
+                  </li>
+                  <li>
+                    <Link to={'/order'}>Order hisroty</Link>
+                  </li>
+                </ul>
               </div>
-
-              {userOrders ? (
-                <div className="order">
-                  <div className="heading">
-                    <h3>ORDER</h3>
-                  </div>
-                  <div className="list">
-                    {userOrders.map((order) => (
-                      <Order key={order._id} order={order} />
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <div id="loading-container">
-                  <Loading />
-                </div>
-              )}
+              <div className="content">
+                <Outlet />
+              </div>
             </div>
           </div>
         </div>

@@ -16,32 +16,36 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
+import regionApi from '../../../api/apiRegion';
+import { useQuery } from 'react-query';
+import { useSelector } from 'react-redux';
+import { userSelector } from '../../../redux/slices/authSlice';
+import { amountSelector, cartSelector, totalSelector } from '../../../redux/slices/cartSlice';
 
 const Checkout = () => {
-  const { cart, amount, subtotal, shippingFee, total, formater, checkout } = useGlobalContext();
   const navigate = useNavigate();
-  const [provincesList, setProvincesList] = useState([]);
-  const [districtsList, setDistrictsList] = useState([]);
-  const [wardsList, setWardsList] = useState([]);
-  const [provinceId, setProvinceId] = useState(1);
-  const [districtId, setDistrictId] = useState(1);
-  const [ward, setWard] = useState('');
-  //error
+  const { formater } = useGlobalContext();
+  const user = useSelector(userSelector);
+  const cart = useSelector(cartSelector);
+  const amount = useSelector(amountSelector);
+  const total = useSelector(totalSelector);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [msg, setMsg] = useState();
-  //output
+
+  //Address
   const [fullName, setFullName] = useState();
   const [phone, setPhone] = useState();
   const [addressDetail, setAddressDetail] = useState();
   const [address, setAddress] = useState({});
+  const [provinceId, setProvinceId] = useState('01');
+  const [districtId, setDistrictId] = useState('001');
+  const [ward, setWard] = useState('');
 
   //confirm
   const [openConfirm, setOpenConfirm] = useState(false);
   const handleOpenConfirm = () => {
     if (!fullName || !phone || !addressDetail) {
-      setMsg('Please provide Full Name, Phone, Address Detail');
-      setError(true);
+      // setMsg('Please provide Full Name, Phone, Address Detail');
+      // setError(true);
     } else {
       const pp = provincesList.find((p) => p.code === parseInt(provinceId));
       const dd = districtsList.find((d) => d.code === parseInt(districtId));
@@ -55,89 +59,53 @@ const Checkout = () => {
     }
   };
 
-  // useEffect(() => {
-  //   const getProvince = async () => {
-  //     try {
-  //       const data = await getProvinces();
-  //       setProvincesList(data);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   getProvince();
-  // }, []);
+  const { data: provincesList } = useQuery(['provinces'], () => regionApi.getProvinces());
 
-  // useEffect(() => {
-  //   const getDistrict = async () => {
-  //     try {
-  //       const data = await getDistricts(provinceId);
-  //       setDistrictsList(data.districts);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   getDistrict();
-  // }, [provinceId]);
+  const { data: districtsList } = useQuery(['districts', provinceId], ({ queryKey }) =>
+    regionApi.getDistricts(queryKey[1]),
+  );
 
-  // useEffect(() => {
-  //   const getWard = async () => {
-  //     try {
-  //       const data = await getWards(districtId);
-  //       setWardsList(data.wards);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   getWard();
-  // }, [districtId]);
+  const { data: wardsList } = useQuery(['wards', districtId], ({ queryKey }) =>
+    regionApi.getWards(queryKey[1]),
+  );
+
+  // const handleOrder = async () => {
+  //   const products = cart.map((c) => {
+  //     const { _id, color, size, quantity } = c;
+  //     return { productId: _id, color, size, quantity };
+  //   });
+
+  //   try {
+  //     setLoading(true);
+  //     await createOrder({
+  //       address,
+  //       products,
+  //       amount,
+  //       subtotal,
+  //       shippingFee,
+  //       total,
+  //     });
+  //     checkout();
+  //     setLoading(false);
+  //     navigate('/');
+  //   } catch (error) {
+  //     setLoading(false);
+  //     setError(true);
+  //     setMsg(error.response.data?.msg);
+  //   }
+  // };
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const hanleProvince = (e) => {
-    setProvinceId(e.target.value);
-  };
-  const hanleDistrict = (e) => {
-    setDistrictId(e.target.value);
-  };
-  const handleWard = (e) => {
-    setWard(e.target.value);
-  };
-
-  const handleOrder = async () => {
-    const products = cart.map((c) => {
-      const { _id, color, size, quantity } = c;
-      return { productId: _id, color, size, quantity };
-    });
-
-    try {
-      setLoading(true);
-      await createOrder({
-        address,
-        products,
-        amount,
-        subtotal,
-        shippingFee,
-        total,
-      });
-      checkout();
-      setLoading(false);
-      navigate('/');
-    } catch (error) {
-      setLoading(false);
-      setError(true);
-      setMsg(error.response.data?.msg);
-    }
-  };
-
   return (
-    <div>
-      {loading ? (
+    <>
+      {loading && (
         <div id="loading-overlay">
           <Loading />
         </div>
-      ) : null}
+      )}
       <div id="checkout">
         <Dialog
           open={openConfirm}
@@ -164,7 +132,7 @@ const Checkout = () => {
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setOpenConfirm(false)}>Disagree</Button>
-            <Button onClick={handleOrder} autoFocus>
+            <Button onClick={() => {}} autoFocus>
               Confirm
             </Button>
           </DialogActions>
@@ -188,133 +156,202 @@ const Checkout = () => {
               <h2>CHECKOUT</h2>
             </div>
             <div className="checkout-content">
-              <div className="form-address">
-                <div className="heading">
-                  <h2>ENTER YOUR ADDRESS</h2>
+              <div className="checkout-form">
+                <div className="form-item">
+                  <div className="heading">
+                    <h2>1. DELIVERY OPTION</h2>
+                  </div>
+
+                  <div className="form-shipping">
+                    <div className="radio-input">
+                      <label className={' checked'}>
+                        <input type="radio" />
+                        <span className="checkmark"></span>
+                        <span>Ship To Address</span>
+                      </label>
+                      <p>
+                        Shipping: <span className="fee">50000 VND</span>{' '}
+                      </p>
+                      <p>
+                        <b>
+                          Free shipping applies for home delivery orders above 1,500,000VND and all
+                          in store pick up (Click & Collect). After you click Checkout, your items
+                          will be reserved in cart for 30 minutes.
+                        </b>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="form-address">
+                    <div className="heading">
+                      <h3>ENTER YOUR ADDRESS</h3>
+                    </div>
+                    <div className="form">
+                      <div className="input-container">
+                        <label className="label">
+                          FULL NAME<span>*</span>
+                        </label>
+                        <div className="form-input">
+                          <input
+                            type="text"
+                            placeholder="Please enter your full name in alphabets"
+                            onChange={(e) => setFullName(e.target.value)}
+                          />
+                        </div>
+                      </div>
+                      <div className="input-container">
+                        <label className="label">
+                          PHONE<span>*</span>
+                        </label>
+                        <div className="form-input">
+                          <input
+                            type="text"
+                            placeholder="Please enter your phone number"
+                            onChange={(e) => setPhone(e.target.value)}
+                          />
+                          <p>Please enter valid 10 digits phone number starting from 0</p>
+                        </div>
+                      </div>
+                      {provincesList?.length > 0 && (
+                        <div className="input-container">
+                          <label className="label" htmlFor="province">
+                            PROVINCE<span>*</span>
+                          </label>
+                          <div className="select-input">
+                            <select
+                              name="province"
+                              id="provice"
+                              onChange={(e) => setProvinceId(e.target.value)}
+                            >
+                              {provincesList.map((p) => (
+                                <option value={p.code} key={p.code}>
+                                  {p.name}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      )}
+
+                      {districtsList?.length > 0 && (
+                        <div className="input-container">
+                          <label className="label" htmlFor="district">
+                            DISTRICT<span>*</span>
+                          </label>
+                          <div className="select-input">
+                            <select
+                              name="district"
+                              id="district"
+                              onChange={(e) => {
+                                setDistrictId(e.target.value);
+                              }}
+                            >
+                              {districtsList.map((d) => (
+                                <option value={d.code} key={d.code}>
+                                  {d.fullName}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      )}
+
+                      {wardsList?.length > 0 && (
+                        <div className="input-container">
+                          <label className="label" htmlFor="ward">
+                            WARD<span>*</span>
+                          </label>
+                          <div className="select-input">
+                            <select
+                              name="ward"
+                              id="ward"
+                              onChange={(e) => {
+                                setWard(e.target.value);
+                              }}
+                            >
+                              {wardsList.map((w) => (
+                                <option value={w.name} key={w.code}>
+                                  {w.fullName}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="input-container">
+                        <label className="label">
+                          ADDRESS DETAILS<span>*</span>
+                        </label>
+                        <div className="form-input">
+                          <input
+                            type="text"
+                            placeholder="Apt, suite, unit, building, floor, etc"
+                            onChange={(e) => setAddressDetail(e.target.value)}
+                          />
+                          <p>For invoice purposes, please input only in Vietnamese.</p>
+                        </div>
+                      </div>
+                      <div className="input-container">
+                        <label className="label">NOTE</label>
+                        <div className="form-input">
+                          <input type="text" placeholder="Address note" />
+                        </div>
+                      </div>
+
+                      <p className="via">
+                        You may be contacted via phone or email if we have questions about your
+                        order and delivery option.
+                      </p>
+
+                      <button className="btn-submit">CONTINUE TO PAYMENT</button>
+                    </div>
+                  </div>
                 </div>
-                <div className="form">
-                  <div className="input-container">
-                    <label className="label">FULL NAME</label>
-                    <div className="name-input">
-                      <input
-                        type="text"
-                        placeholder="Please enter your full name in alphabets"
-                        onChange={(e) => setFullName(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <div className="input-container">
-                    <label className="label">PHONE</label>
-                    <div className="phone-input">
-                      <input
-                        type="text"
-                        placeholder="Please enter your phone number"
-                        onChange={(e) => setPhone(e.target.value)}
-                      />
-                      <p>Please enter valid 10 digits phone number starting from 0</p>
-                    </div>
-                  </div>
-                  <div className="input-container">
-                    <label className="label" htmlFor="province">
-                      PROVINCE
-                    </label>
-                    <div className="address-input">
-                      <select name="province" id="provice" onChange={hanleProvince}>
-                        {provincesList.map((p) => (
-                          <option value={p.code} key={p.code}>
-                            {p.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
 
-                  <div className="input-container">
-                    <label className="label" htmlFor="district">
-                      DISTRICT
-                    </label>
-                    <div className="address-input">
-                      <select name="district" id="district" onChange={hanleDistrict}>
-                        {districtsList.map((d) => (
-                          <option value={d.code} key={d.code}>
-                            {d.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                <div className="form-item disabled">
+                  <div className="heading">
+                    <h2>2. PAYMENT OPTION</h2>
                   </div>
+                </div>
 
-                  <div className="input-container">
-                    <label className="label" htmlFor="ward">
-                      WARD
-                    </label>
-                    <div className="address-input">
-                      <select name="ward" id="ward" onChange={handleWard}>
-                        {wardsList.map((w) => (
-                          <option value={w.name} key={w.code}>
-                            {w.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                <div className="form-item">
+                  <div className="heading">
+                    <h2>3. ORDER SUMMARY</h2>
                   </div>
-
-                  <div className="input-container">
-                    <label className="label">ADDRESS DETAILS</label>
-                    <div className="address-details-input">
-                      <input
-                        type="text"
-                        placeholder="Apt, suite, unit, building, floor, etc"
-                        onChange={(e) => setAddressDetail(e.target.value)}
-                      />
-                      <p>For invoice purposes, please input only in Vietnamese.</p>
-                    </div>
-                  </div>
-
-                  {error ? (
-                    <p className="error via">{msg}</p>
-                  ) : (
-                    <p className="via">
-                      You may be contacted via phone or email if we have questions about your order
-                      and delivery option.
-                    </p>
-                  )}
-
-                  <button className="order-submit" onClick={handleOpenConfirm}>
-                    PLACE ORDER
-                  </button>
                 </div>
               </div>
+
               <div className="summary">
                 <div className="summary-content">
                   <h3 className="title">ORDER SUMMARY| {amount} ITEM(S)</h3>
                   <div className="item-subtotal">
                     <div className="label">Item(s) subtotal</div>
-                    <div className="total">{formater.format(subtotal)} VND</div>
+                    <div className="total">{formater.format(total)} VND</div>
                   </div>
                   <div className="subtotal">
                     <div className="label">SUBTOTAL</div>
-                    <div className="total">{formater.format(subtotal)} VND</div>
+                    <div className="total">{formater.format(total)} VND</div>
                   </div>
                   <div className="vat">
                     <div className="label">VAT included</div>
-                    <div className="total">{formater.format(subtotal * 0.1)} VND</div>
+                    <div className="total">{formater.format(total * 0.1)} VND</div>
                   </div>
                   <div className="shipping">
                     <div className="label">Shipping Fee</div>
-                    <div className="total">{formater.format(shippingFee)} VND</div>
+                    <div className="total">{formater.format(30000)} VND</div>
                   </div>
                   <div className="order-total">
                     <div className="label">ORDER TOTAL</div>
-                    <div className="total">{formater.format(total)} VND</div>
+                    <div className="total">{formater.format(total + 30000)} VND</div>
                   </div>
                 </div>
                 <div className="summary-content">
                   <h3 className="title">ORDER {amount} ITEM (S)</h3>
                   <div className="list-img-item">
-                    {cart.map((item, index) => (
-                      <div className="item-img" key={index}>
-                        <img src={item.img[0]} alt="" />
+                    {cart.cartItems.map((item) => (
+                      <div className="item-img" key={item.id}>
+                        <img src={item.product?.productImages[0]?.imageUrl} alt="" />
                         <p className="quantity-item">x{item.quantity}</p>
                       </div>
                     ))}
@@ -334,7 +371,7 @@ const Checkout = () => {
         </div>
       </div>
       <Footer />
-    </div>
+    </>
   );
 };
 

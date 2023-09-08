@@ -3,8 +3,8 @@ import './register.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import { LockOutlined } from '@mui/icons-material';
 //components
-import Navbar from '../../components/navbar/Navbar';
 import Loading from '../../components/loading/Loading';
+import { Box } from '@mui/material';
 
 const genders = ['male', 'female', 'unselect'];
 
@@ -120,7 +120,7 @@ const Register = () => {
                   </div>
                 </div>
 
-                <label className="show-pass">
+                <label className="checkbox-input">
                   <input type="checkbox" onClick={() => setShowPassword(!showPassword)} />
                   <span className="checkmark"></span>
                   Show my password
@@ -156,7 +156,7 @@ const Register = () => {
                 </div>
 
                 <label className="subscribe-label">SUBSCRIBE ME TO UNIQLO’S MAILING LIST</label>
-                <label className="subscribe-checkbox">
+                <label className="checkbox-input">
                   <input type="checkbox" />
                   <span className="checkmark"></span>
                   UNIQLO e-newsletter
@@ -178,7 +178,7 @@ const Register = () => {
                     I consent to Uniqlo's use of my personal data to send me marketing messages in
                     the form of non-personalized push messages
                   </p>
-                  <label className="push-checkbox">
+                  <label className="checkbox-input">
                     <input type="checkbox" name="push-1" />
                     <span className="checkmark"></span>
                     Push Notification
@@ -188,7 +188,7 @@ const Register = () => {
                     I consent to Uniqlo's analysis and processing of my data to send me marketing
                     messages in the form of personalized push messages
                   </p>
-                  <label className="push2-checkbox">
+                  <label className="checkbox-input">
                     <input type="checkbox" name="push-2" />
                     <span className="checkmark"></span>
                     Push Notification
@@ -203,7 +203,7 @@ const Register = () => {
                       By creating an account, you agree to UNIQLO’s privacy policy and terms of use.
                     </p>
                   )}
-                  <label className="argee-checkbox">
+                  <label className="checkbox-input">
                     <input
                       type="checkbox"
                       onClick={() => {
@@ -213,6 +213,7 @@ const Register = () => {
                     <span className={errorAgree ? 'checkmark error' : 'checkmark'}></span>I agree to
                     the UNIQLO’s TERMS OF USE and PRIVACY POLICY
                   </label>
+                  <Box sx={{ mb: 2 }} />
                   <div className="term-privacy">
                     <span className="term">TERMS OF USE</span>
                     <span className="privacy">PRIVACY POLICY</span>

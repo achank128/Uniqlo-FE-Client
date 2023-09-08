@@ -12,7 +12,7 @@
       }
     }
     .checkout-content {
-      padding: 40px 0;
+      padding-top: 10px;
       margin-bottom: 100px;
       display: flex;
       gap: 80px;
@@ -22,19 +22,26 @@
         gap: 40px;
       }
     }
-    .form-address {
+
+    .btn-submit {
+      @include btnIn;
+      margin-bottom: 30px;
+    }
+
+    .form-item {
       flex: 2;
       border: 1px solid $border-color;
-      padding: 20px;
-      .heading {
-        margin: 24px 0;
+      padding: 0px 20px;
+      margin-bottom: 30px;
+      &.disabled {
+        background-color: rgba($color: #d0d0d0, $alpha: 0.4);
+        opacity: 0.5;
         h2 {
-          font-weight: 700;
+          font-size: $font-lg;
         }
       }
-      .form {
-        display: flex;
-        flex-direction: column;
+      .heading {
+        margin: 24px 0;
       }
       .input-container {
         display: flex;
@@ -47,10 +54,13 @@
         width: 30%;
         font-weight: 700;
         padding: 10px 0;
+        span {
+          color: $teal-color;
+        }
       }
-      .name-input,
-      .phone-input,
-      .address-details-input {
+      .form-input,
+      .form-input,
+      .form-input {
         width: 70%;
         @include inputLog;
         p {
@@ -59,7 +69,7 @@
         }
       }
 
-      .address-input {
+      .select-input {
         width: 40%;
         select {
           width: 100%;
@@ -76,14 +86,22 @@
         margin-bottom: 40px;
       }
 
-      .order-submit {
-        @include btnIn;
-        margin-bottom: 30px;
-      }
       .error {
         color: $red-color;
       }
     }
+
+    .form-shipping {
+      padding-bottom: 20px;
+      border-bottom: 1px solid $border-color;
+      .radio-input {
+        max-width: 500px;
+        .fee {
+          color: $teal-color;
+        }
+      }
+    }
+
     .summary {
       flex: 1;
       top: 140px;
