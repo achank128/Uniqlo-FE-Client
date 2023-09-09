@@ -17,6 +17,10 @@ const cartApi = {
     const res = await userRequest.delete('/cartitems/' + id);
     return res;
   },
+  clearCart: async (id) => {
+    const res = await userRequest.put('/carts/clear/' + id);
+    return res;
+  },
 };
 
 export default cartApi;

@@ -15,8 +15,9 @@
       height: 60vh;
       padding: 40px 0;
       .no-item-shopping {
+        @include btnBlack;
         margin-top: 40px;
-        @include btnIn;
+        max-width: 300px;
       }
     }
     .cart-content {

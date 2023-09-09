@@ -1,31 +1,4 @@
 @use '../../../assets/scss/' as *;
 
 #order {
-  .wrapper {
-    @include tablet {
-      padding: 0 20px;
-    }
-    .profile-title {
-      margin: 40px 0;
-      h2 {
-        font-weight: 700;
-      }
-    }
-
-    .content {
-      border: 1px solid $border-color;
-      padding: 30px 20px;
-      margin-bottom: 100px;
-      h3 {
-        font-weight: 700;
-        margin: 20px 0;
-      }
-      .item-info {
-        margin-bottom: 16px;
-        .gender {
-          text-transform: capitalize;
-        }
-      }
-    }
-  }
 }

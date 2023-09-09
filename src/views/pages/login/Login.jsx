@@ -2,14 +2,11 @@ import React, { useEffect, useState } from 'react';
 import './login.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import { InfoOutlined } from '@mui/icons-material';
-import { login } from '../../../api/apiUser';
 import authApi from '../../../api/apiAuth';
 //components
-import Navbar from '../../components/navbar/Navbar';
 import Loading from '../../components/loading/Loading';
 import { useDispatch } from 'react-redux';
 import { authAction } from '../../../redux/slices/authSlice';
-import { useQuery } from 'react-query';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -26,9 +23,6 @@ const Login = () => {
     try {
       setError(false);
       setLoading(true);
-      //     const { isLoading, isError, data } = useQuery(['products', {email, password}], ({ queryKey }) =>
-      //   authApi.login(queryKey[1]),
-      // );
       const res = await authApi.login({ email, password });
       dispatch(authAction.handleLogin(res.data));
       setLoading(false);

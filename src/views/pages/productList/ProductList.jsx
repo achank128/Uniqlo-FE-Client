@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import './productList.scss';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import productApi from '../../../api/apiProduct';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import { useQuery } from 'react-query';
 //components
-import Footer from '../../components/footer/Footer';
 import Categories from '../../components/categories/Categories';
 import ProductItem from './productItem/ProductItem';
 import Loading from '../../components/loading/Loading';
@@ -160,7 +159,6 @@ const ProductList = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 };

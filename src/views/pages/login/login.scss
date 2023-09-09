@@ -82,7 +82,7 @@
         margin: 4px 0;
       }
       .login-submit {
-        @include btnIn;
+        @include btnBlack;
         margin-top: 20px;
       }
     }
@@ -102,7 +102,7 @@
         margin-bottom: 30px;
       }
       .btn-create-acc {
-        @include btnIn;
+        @include btnBlack;
       }
     }
   }

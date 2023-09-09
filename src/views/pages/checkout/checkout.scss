@@ -14,105 +14,171 @@
     .checkout-content {
       padding-top: 10px;
       margin-bottom: 100px;
-      display: flex;
-      gap: 80px;
       @include tablet {
         flex-direction: column-reverse;
         padding: 0;
-        gap: 40px;
       }
     }
 
-    .btn-submit {
-      @include btnIn;
-      margin-bottom: 30px;
-    }
+    .checkout-form {
+      .btn-continue {
+        @include btnBlack;
+        max-width: 300px;
+        margin-bottom: 6px;
+      }
+      .btn-submit {
+        @include btnRed;
+        max-width: 300px;
+      }
+      .btn-edit {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+      }
 
-    .form-item {
-      flex: 2;
-      border: 1px solid $border-color;
-      padding: 0px 20px;
-      margin-bottom: 30px;
-      &.disabled {
-        background-color: rgba($color: #d0d0d0, $alpha: 0.4);
-        opacity: 0.5;
-        h2 {
-          font-size: $font-lg;
-        }
-      }
-      .heading {
-        margin: 24px 0;
-      }
-      .input-container {
-        display: flex;
-        align-items: flex-start;
-        justify-content: flex-start;
+      .form-item {
+        flex: 2;
+        border: 1px solid $border-color;
+        padding: 24px 20px;
         margin-bottom: 30px;
-      }
-
-      .label {
-        width: 30%;
-        font-weight: 700;
-        padding: 10px 0;
-        span {
-          color: $teal-color;
+        &.disabled {
+          background-color: rgba($color: #d0d0d0, $alpha: 0.4);
+          opacity: 0.5;
+          h2 {
+            font-size: $font-lg;
+          }
         }
-      }
-      .form-input,
-      .form-input,
-      .form-input {
-        width: 70%;
-        @include inputLog;
-        p {
-          margin-top: 6px;
-          font-size: $font-xsm;
+        .input-container {
+          display: flex;
+          align-items: flex-start;
+          justify-content: flex-start;
+          margin-bottom: 30px;
         }
-      }
-
-      .select-input {
-        width: 40%;
-        select {
-          width: 100%;
-          padding: 12px;
-          color: $gray-color;
-        }
-        @include mobile {
+        .form-input,
+        .form-input,
+        .form-input {
           width: 70%;
+          @include inputLog;
+          p {
+            margin-top: 6px;
+            font-size: $font-xsm;
+          }
+        }
+
+        .select-input {
+          width: 40%;
+          select {
+            width: 100%;
+            padding: 12px;
+            color: $gray-color;
+          }
+          @include mobile {
+            width: 70%;
+          }
         }
       }
 
-      .via {
-        width: 70%;
-        margin-bottom: 40px;
-      }
-
-      .error {
-        color: $red-color;
-      }
-    }
-
-    .form-shipping {
-      padding-bottom: 20px;
-      border-bottom: 1px solid $border-color;
-      .radio-input {
-        max-width: 500px;
+      //1. delivery
+      .shipping-type {
+        padding: 20px 0;
+        border-bottom: 1px solid $border-color;
         .fee {
           color: $teal-color;
         }
       }
+      .shipping-date {
+        padding: 20px 0;
+        border-bottom: 1px solid $border-color;
+        h4 {
+          font-size: $font-med;
+          margin-bottom: 10px;
+        }
+        .fee {
+          color: $teal-color;
+        }
+      }
+      .shipping-address {
+        position: relative;
+        padding: 20px 0;
+        h4 {
+          font-size: $font-med;
+          margin-bottom: 10px;
+        }
+        .info {
+          display: flex;
+          flex-direction: column;
+          .name {
+            font-weight: 700;
+            font-size: $font-sm;
+            margin-bottom: 4px;
+            span {
+              padding-left: 6px;
+              font-size: $font-xsm;
+              font-weight: 500;
+              color: $teal-color;
+            }
+          }
+        }
+        .btn-absolute {
+          position: absolute;
+          top: 30px;
+          right: 30px;
+        }
+      }
+
+      //2. Payment
+      .payment-option {
+        display: flex;
+        padding: 20px 0;
+        border-bottom: 1px solid $border-color;
+      }
+      .payment-content {
+        padding: 20px 0;
+        position: relative;
+      }
+
+      //3. Order summary
+      .order-summary {
+        padding: 20px 0;
+        margin-bottom: 20px;
+        .subtotal {
+          border-top: 1px solid $border-color;
+          margin-top: 20px;
+          padding-top: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          font-weight: 700;
+          font-size: 1.175rem;
+        }
+
+        .item-subtotal,
+        .vat,
+        .shipping {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-top: 6px;
+        }
+
+        .order-total {
+          border-top: 1px solid $border-color;
+          margin-top: 20px;
+          padding-top: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          font-weight: 700;
+          font-size: $font-med;
+        }
+      }
+      .place-order-text {
+        font-size: $font-xsm;
+        color: $gray-color;
+      }
     }
 
     .summary {
-      flex: 1;
-      top: 140px;
-      position: sticky;
-      height: calc(100vh);
-      margin-bottom: 50px;
-      @include tablet {
-        top: 0;
-        position: relative;
-        margin-bottom: 0;
-      }
       .summary-content {
         border: 1px solid $border-color;
         padding: 30px 20px;
@@ -122,31 +188,27 @@
           font-weight: 700;
           margin-bottom: 30px;
         }
-        .item-subtotal {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 30px;
-          font-size: $font-xsm;
-        }
+
         .subtotal {
+          margin-top: 30px;
           display: flex;
           align-items: center;
           justify-content: space-between;
           font-weight: 700;
+          font-size: 1.175rem;
         }
+
+        .item-subtotal,
         .vat,
         .shipping {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          font-size: $font-xsm;
-        }
-        .shipping {
-          margin-bottom: 30px;
+          margin-top: 6px;
         }
 
         .order-total {
+          margin-top: 30px;
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -156,20 +218,21 @@
         .list-img-item {
           display: flex;
           flex-wrap: wrap;
-        }
-        .item-img {
-          width: 100px;
-          padding-right: 20px;
-          margin-bottom: 10px;
-          img {
-            width: 100%;
-          }
-          .quantity-item {
-            text-align: right;
-            line-height: 1.1;
+          .item-img {
+            width: 100px;
+            padding-right: 20px;
+            margin-bottom: 10px;
+            img {
+              width: 100%;
+            }
+            .quantity-item {
+              text-align: right;
+              line-height: 1.1;
+            }
           }
         }
       }
+
       .coupon {
         display: flex;
         align-items: center;

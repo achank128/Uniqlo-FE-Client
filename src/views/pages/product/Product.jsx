@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import './product.scss';
 import { useParams } from 'react-router-dom';
 //components
-import Footer from '../../components/footer/Footer';
 import Loading from '../../components/loading/Loading';
 import ProductContent from './productContent/ProductContent';
 import productApi from '../../../api/apiProduct';
@@ -36,7 +35,6 @@ const Product = () => {
       ) : (
         <ProductContent product={product} productDetails={productDetails} />
       )}
-      <Footer />
     </>
   );
 };

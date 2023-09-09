@@ -4,8 +4,6 @@ import './home.scss';
 import Slider from '../../components/slider/Slider';
 import Notice from '../../components/notice/Notice';
 import AppBenefits from '../../components/appbenefits/AppBenefits';
-import Navbar from '../../components/navbar/Navbar';
-import Footer from '../../components/footer/Footer';
 
 const Home = () => {
   useEffect(() => {
@@ -17,7 +15,6 @@ const Home = () => {
       <Slider />
       <Notice />
       <AppBenefits />
-      <Footer />
     </>
   );
 };

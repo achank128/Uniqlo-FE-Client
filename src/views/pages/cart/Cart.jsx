@@ -4,9 +4,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useGlobalContext } from '../../../hooks/useGlobalContext';
 import { InfoOutlined, KeyboardArrowDown, ConfirmationNumberOutlined } from '@mui/icons-material';
 //components
-import Footer from '../../components/footer/Footer';
 import CartItem from './cartItem/CartItem';
-import { amountSelector, cartSelector, totalSelector } from '../../../redux/slices/cartSlice';
+import { amountSelector, cartSelector, subTotalSelector } from '../../../redux/slices/cartSlice';
 import { useSelector } from 'react-redux';
 import { userSelector } from '../../../redux/slices/authSlice';
 
@@ -16,7 +15,7 @@ const Cart = () => {
   const user = useSelector(userSelector);
   const cart = useSelector(cartSelector);
   const amount = useSelector(amountSelector);
-  const total = useSelector(totalSelector);
+  const subtotal = useSelector(subTotalSelector);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -51,19 +50,19 @@ const Cart = () => {
                     <h3 className="title">ORDER SUMMARY| {amount} ITEM(S)</h3>
                     <div className="item-subtotal">
                       <div className="label">Item(s) subtotal</div>
-                      <div className="total">{formater.format(total)} VND</div>
+                      <div className="total">{formater.format(subtotal)} VND</div>
                     </div>
                     <div className="subtotal">
                       <div className="label">SUBTOTAL</div>
-                      <div className="total">{formater.format(total)} VND</div>
+                      <div className="total">{formater.format(subtotal)} VND</div>
                     </div>
                     <div className="vat">
                       <div className="label">VAT included</div>
-                      <div className="total">{formater.format(total * 0.1)} VND</div>
+                      <div className="total">{formater.format(subtotal * 0.1)} VND</div>
                     </div>
                     <div className="order-total">
                       <div className="label">ORDER TOTAL</div>
-                      <div className="total">{formater.format(total)} VND</div>
+                      <div className="total">{formater.format(subtotal)} VND</div>
                     </div>
                   </div>
                   <div className="coupon">
@@ -113,7 +112,6 @@ const Cart = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 };

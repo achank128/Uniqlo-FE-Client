@@ -1,0 +1,59 @@
+@use '../../../assets/scss' as *;
+
+#form-address {
+  .heading {
+    margin: 24px 0;
+  }
+  .input-container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin-bottom: 30px;
+  }
+
+  .label {
+    width: 30%;
+    font-weight: 700;
+    padding: 10px 0;
+    span {
+      color: $teal-color;
+    }
+  }
+  .form-input,
+  .form-input,
+  .form-input {
+    width: 70%;
+    @include inputLog;
+    p {
+      margin-top: 6px;
+      font-size: $font-xsm;
+    }
+  }
+
+  .select-input {
+    width: 40%;
+    select {
+      width: 100%;
+      padding: 12px;
+      color: $gray-color;
+    }
+    @include mobile {
+      width: 70%;
+    }
+  }
+
+  .via {
+    width: 70%;
+    margin-bottom: 40px;
+  }
+
+  .error {
+    color: $red-color;
+  }
+
+  .btn-submit {
+    @include btnBlack;
+    max-width: 300px;
+    margin-bottom: 30px;
+  }
+}

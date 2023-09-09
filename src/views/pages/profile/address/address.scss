@@ -1,0 +1,34 @@
+@use '../../../../assets/scss/' as *;
+
+#address {
+  .item {
+    position: relative;
+  }
+  .btn-edit {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    cursor: pointer;
+    padding: 4px;
+  }
+  .item-content {
+    display: flex;
+    padding: 20px 0;
+    border-bottom: 1px solid $border-color;
+    .info {
+      display: flex;
+      flex-direction: column;
+      .name {
+        font-weight: 700;
+        font-size: $font-sm;
+        margin-bottom: 4px;
+        span {
+          padding-left: 6px;
+          font-size: $font-xsm;
+          font-weight: 500;
+          color: $teal-color;
+        }
+      }
+    }
+  }
+}

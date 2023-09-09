@@ -14,25 +14,25 @@ const cartSlice = createSlice({
   initialState: {
     cart: JSON.parse(localStorage.getItem('cart')) || cartDefault,
     amount: 0,
-    total: 0,
+    subtotal: 0,
     isLoadingCart: false,
   },
   reducers: {
     updateTotal(state, action) {
-      let { amount, total } = state.cart.cartItems.reduce(
-        ({ amount, total }, item) => {
+      let { amount, subtotal } = state.cart.cartItems.reduce(
+        ({ amount, subtotal }, item) => {
           let price = item.product.productPrice.price;
           if (item.product.isSale) {
             price = item.product.productPrice.promoPrice;
           }
           amount += item.quantity;
-          total += item.quantity * price;
-          return { amount, total };
+          subtotal += item.quantity * price;
+          return { amount, subtotal };
         },
-        { amount: 0, total: 0 },
+        { amount: 0, subtotal: 0 },
       );
       state.amount = amount;
-      state.total = total;
+      state.subtotal = subtotal;
     },
   },
 
@@ -75,6 +75,12 @@ const cartSlice = createSlice({
       .addCase(removeCartItem.fulfilled, (state, action) => {
         state.cart.cartItems = state.cart.cartItems.filter((item) => item.id !== action.payload);
         toast.info('Item has been removed from your cart!');
+        localStorage.setItem('cart', JSON.stringify(state.cart));
+      })
+      .addCase(clearCart.fulfilled, (state, action) => {
+        state.cart.cartItems = [];
+        state.amount = 0;
+        state.subtotal = 0;
         localStorage.setItem('cart', JSON.stringify(state.cart));
       });
   },
@@ -126,10 +132,16 @@ export const removeCartItem = createAsyncThunk('cart/removeCartItem', async (id)
   return id;
 });
 
+export const clearCart = createAsyncThunk('cart/clearCart', async (id) => {
+  if (isUserLoggedIn()) {
+    await cartApi.clearCart(id);
+  }
+  return id;
+});
+
 export const cartSelector = (state) => state.cartSlice.cart;
 export const amountSelector = (state) => state.cartSlice.amount;
-export const subTotalSelector = (state) => state.cartSlice.subTotal;
-export const totalSelector = (state) => state.cartSlice.total;
+export const subTotalSelector = (state) => state.cartSlice.subtotal;
 
 export const cartAction = cartSlice.actions;
 

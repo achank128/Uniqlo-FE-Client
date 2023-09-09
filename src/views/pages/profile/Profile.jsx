@@ -1,20 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import './profile.scss';
-import { Link, Outlet } from 'react-router-dom';
-import { Routes, Route } from 'react-router-dom';
-
-//components
-import Footer from '../../components/footer/Footer';
-import Loading from '../../components/loading/Loading';
-import Details from './details/Details';
-import Coupon from './coupon/Coupon';
-import Address from './address/Address';
-
-//other
-import { useSelector } from 'react-redux';
-import { userSelector } from '../../../redux/slices/authSlice';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 
 const Profile = () => {
+  const location = useLocation();
+  console.log(location);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -41,17 +31,17 @@ const Profile = () => {
               <div className="tab-content">
                 <h4 className="heading">Membership</h4>
                 <ul className="tab">
-                  <li>
+                  <li className={location.pathname === '/profile' ? 'active' : ''}>
                     <Link to={'/profile'}>Profile</Link>
                   </li>
-                  <li>
+                  <li className={location.pathname === '/profile/coupon' ? 'active' : ''}>
                     <Link to={'coupon'}>Coupons</Link>
                   </li>
-                  <li>
+                  <li className={location.pathname === '/profile/address' ? 'active' : ''}>
                     <Link to={'address'}>Addresses</Link>
                   </li>
-                  <li>
-                    <Link to={'/order'}>Order hisroty</Link>
+                  <li className={location.pathname === '/profile/order' ? 'active' : ''}>
+                    <Link to={'order'}>Order hisroty</Link>
                   </li>
                 </ul>
               </div>
@@ -62,7 +52,6 @@ const Profile = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 };

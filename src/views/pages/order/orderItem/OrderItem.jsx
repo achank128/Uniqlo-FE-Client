@@ -2,34 +2,18 @@ import React, { useEffect, useState } from 'react';
 import './orderItem.scss';
 const formater = Intl.NumberFormat('de-DE');
 
-const OrderProductItem = ({ product }) => {
-  const [productData, setProductData] = useState({});
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const apiProduct = async () => {
-      try {
-        setLoading(true);
-        //const p = await getSingleProduct(product.productId);
-        let p;
-        setProductData(p);
-        setLoading(false);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    apiProduct();
-  }, [product.productId]);
-  return loading ? null : (
+const OrderProductItem = ({ product, productDetail }) => {
+  return (
     <div className="product-item">
       <div className="product-img">
-        <img src={productData.img[0]} alt="" />
+        <img src={product.img[0]} alt="" />
       </div>
       <div className="product-info">
-        <div className="name">{productData.name}</div>
+        <div className="name">{product.name}</div>
         <p className="color">Color: {product.color}</p>
         <p className="size">Size: {product.size}</p>
         <p className="quantity">Quantity: {product.quantity}</p>
-        <p className="price">{formater.format(productData.priceLimited)}</p>
+        <p className="price">{formater.format(product.priceLimited)}</p>
       </div>
     </div>
   );
@@ -37,11 +21,11 @@ const OrderProductItem = ({ product }) => {
 
 const OrderItem = ({ order }) => {
   return (
-    <div id="order">
+    <div id="orderItem">
       <div className="info">
         <div className="item-info address">
           <h4>DELIVERY ADDRESS:</h4>
-          <p>
+          {/* <p>
             <b>Full Name: </b>
             {order.address.fullName}
           </p>
@@ -50,7 +34,7 @@ const OrderItem = ({ order }) => {
           </p>
           <p>
             <b>Address:</b> {` ${order.address.addressDetail}, ${order.address.address}`}
-          </p>
+          </p> */}
         </div>
         <div className="item-info">
           <h4>AMOUNT: {order.amount}</h4>
@@ -69,9 +53,10 @@ const OrderItem = ({ order }) => {
         </div>
       </div>
       <div className="list-product">
-        {order.products.map((item, index) => (
-          <OrderProductItem key={index} product={item} />
-        ))}
+        {order.orderItems.map(
+          (item, index) => null,
+          // <OrderProductItem key={index} product={item} />
+        )}
       </div>
     </div>
   );

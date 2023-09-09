@@ -1,12 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { userSelector } from '../../../../redux/slices/authSlice';
-
+import './details.scss';
 const Details = () => {
   const currentUser = useSelector(userSelector);
 
   return (
-    <div className="profile">
+    <div id="details">
       <div className="profile-content">
         <div className="heading">
           <h3>PROFILE</h3>

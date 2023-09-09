@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom';
 import { useGlobalContext } from '../../../hooks/useGlobalContext';
 import { Close } from '@mui/icons-material';
 //components
-import Footer from '../../components/footer/Footer';
 import { useDispatch, useSelector } from 'react-redux';
 import { removeWishList, wishListSelector } from '../../../redux/slices/wishListSlice';
+import { IconButton } from '@mui/material';
 
 const WishList = () => {
   const { formater } = useGlobalContext();
@@ -44,14 +44,15 @@ const WishList = () => {
                 wishList.map((item) => {
                   return (
                     <div className="item" key={item.id}>
-                      <div
+                      <IconButton
+                        aria-label="delete"
                         className="btn-remove"
                         onClick={() => {
                           dispatch(removeWishList(item.id));
                         }}
                       >
                         <Close />
-                      </div>
+                      </IconButton>
                       <div className="item-content">
                         <Link to={`/product/${item.productId}`}>
                           <div className="img">
@@ -85,7 +86,6 @@ const WishList = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 };

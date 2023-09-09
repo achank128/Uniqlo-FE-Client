@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './navbar.scss';
 import { Link, useNavigate } from 'react-router-dom';
-import { useGlobalContext } from '../../../hooks/useGlobalContext';
 import {
   Search,
   FavoriteBorder,
@@ -163,19 +162,23 @@ const Navbar = () => {
                   </span>
                   <div className={userOpen ? 'user open' : 'user'}>
                     <ul>
-                      <Link to="/profile">
+                      <Link to="/profile" onClick={() => setUserOpen(false)}>
                         <li>Profile</li>
                       </Link>
-                      <Link to="/profile">
+                      <Link to="/profile/coupon" onClick={() => setUserOpen(false)}>
+                        <li>Coupons</li>
+                      </Link>
+                      <Link to="/profile/order" onClick={() => setUserOpen(false)}>
                         <li>Order history</li>
                       </Link>
-                      <Link to="/wishlist">
+                      <Link to="/wishlist" onClick={() => setUserOpen(false)}>
                         <li>Wish list</li>
                       </Link>
                       <li
                         onClick={() => {
                           dispatch(authAction.handleLogOut());
                           navigate('/login');
+                          setUserOpen(false);
                         }}
                       >
                         Logout
