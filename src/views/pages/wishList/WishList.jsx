@@ -1,15 +1,14 @@
 import React, { useEffect } from 'react';
 import './wishList.scss';
 import { Link } from 'react-router-dom';
-import { useGlobalContext } from '../../../hooks/useGlobalContext';
 import { Close } from '@mui/icons-material';
 //components
 import { useDispatch, useSelector } from 'react-redux';
 import { removeWishList, wishListSelector } from '../../../redux/slices/wishListSlice';
 import { IconButton } from '@mui/material';
+const formater = Intl.NumberFormat('de-DE');
 
 const WishList = () => {
-  const { formater } = useGlobalContext();
   const dispatch = useDispatch();
   const wishList = useSelector(wishListSelector);
 

@@ -1,17 +1,18 @@
 import React, { useEffect } from 'react';
 import './cart.scss';
 import { Link, useNavigate } from 'react-router-dom';
-import { useGlobalContext } from '../../../hooks/useGlobalContext';
+import { useTranslation } from 'react-i18next';
 import { InfoOutlined, KeyboardArrowDown, ConfirmationNumberOutlined } from '@mui/icons-material';
 //components
 import CartItem from './cartItem/CartItem';
 import { amountSelector, cartSelector, subTotalSelector } from '../../../redux/slices/cartSlice';
 import { useSelector } from 'react-redux';
 import { userSelector } from '../../../redux/slices/authSlice';
+const formater = Intl.NumberFormat('de-DE');
 
 const Cart = () => {
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const { formater } = useGlobalContext();
   const user = useSelector(userSelector);
   const cart = useSelector(cartSelector);
   const amount = useSelector(amountSelector);
@@ -29,14 +30,14 @@ const Cart = () => {
             <div className="breadcrumb">
               <ul>
                 <li>
-                  <Link to="/">UNIQLO Home Page</Link>
+                  <Link to="/">{t('common_uniqlo')}</Link>
                 </li>
                 <li className="slash">/</li>
-                <li>Shopping Cart</li>
+                <li>{t('cart_shopping_cart')}</li>
               </ul>
             </div>
             <div className="cart-title">
-              <h2>SHOPPING CART</h2>
+              <h2>{t('cart_shopping_cart')}</h2>
             </div>
             {cart?.cartItems?.length > 0 ? (
               <div className="cart-content">
@@ -47,21 +48,23 @@ const Cart = () => {
                 </div>
                 <div className="summary">
                   <div className="summary-content">
-                    <h3 className="title">ORDER SUMMARY| {amount} ITEM(S)</h3>
+                    <h3 className="title">
+                      {t('common_order_summary')}| {amount} {t('common_items')}
+                    </h3>
                     <div className="item-subtotal">
-                      <div className="label">Item(s) subtotal</div>
+                      <div className="label">{t('common_items_subtotal')}</div>
                       <div className="total">{formater.format(subtotal)} VND</div>
                     </div>
                     <div className="subtotal">
-                      <div className="label">SUBTOTAL</div>
+                      <div className="label">{t('common_subtotal')}</div>
                       <div className="total">{formater.format(subtotal)} VND</div>
                     </div>
                     <div className="vat">
-                      <div className="label">VAT included</div>
+                      <div className="label">{t('common_vat_included')}</div>
                       <div className="total">{formater.format(subtotal * 0.1)} VND</div>
                     </div>
                     <div className="order-total">
-                      <div className="label">ORDER TOTAL</div>
+                      <div className="label">{t('common_order_total')}</div>
                       <div className="total">{formater.format(subtotal)} VND</div>
                     </div>
                   </div>
@@ -74,10 +77,7 @@ const Cart = () => {
                     </span>
                   </div>
                   <div className="text">
-                    <p>
-                      Your items will be reserved for the next 30 minutes after the "Checkout"
-                      button has been pressed.
-                    </p>
+                    <p>{t('cart_checkout_desc')}</p>
                     <span>
                       <InfoOutlined className="icon" />
                     </span>
@@ -90,22 +90,21 @@ const Cart = () => {
                       else navigate('/login');
                     }}
                   >
-                    CHECKOUT
+                    {t('common_checkout')}
                   </button>
-                  <Link to="/product-list/ALL">
-                    <button className="btn-continue-shopping">CONTINUE SHOPPING</button>
+                  <Link to="/products">
+                    <button className="btn-continue-shopping">
+                      {t('common_continue_shopping')}
+                    </button>
                   </Link>
-                  <div className="info-shipping">
-                    If you purchase additional 1.354.000 VND (VAT included), you will get free
-                    shipping.
-                  </div>
+                  <div className="info-shipping">{t('cart_info_shipping')}</div>
                 </div>
               </div>
             ) : (
               <div className="no-item">
-                <p>Your cart is currently empty.</p>
+                <p>{t('cart_empty')}</p>
                 <Link to="/products">
-                  <button className="no-item-shopping">CONTINUE SHOPPING</button>
+                  <button className="no-item-shopping">{t('common_continue_shopping')}</button>
                 </Link>
               </div>
             )}

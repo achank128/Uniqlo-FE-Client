@@ -1,9 +1,9 @@
 import React from 'react';
 import './slider.scss';
-import SliderItem from './sliderItem/SliderItem';
-import { collectionApi } from '../../../api/apiCollection';
 import { useQuery } from 'react-query';
-import Loading from '../loading/Loading';
+import SliderItem from './sliderItem/SliderItem';
+import { collectionApi } from '../../../../api/apiCollection';
+import Loading from '../../../components/loading/Loading';
 
 const Slider = () => {
   const { isLoading, data } = useQuery(['collections'], collectionApi.getCollections);

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './checkout.scss';
 import { Link, useNavigate } from 'react-router-dom';
-import { useGlobalContext } from '../../../hooks/useGlobalContext';
-
 import { KeyboardArrowDown, ConfirmationNumberOutlined, Edit, Check } from '@mui/icons-material';
 //components
 import Loading from '../../components/loading/Loading';
@@ -24,15 +22,16 @@ import {
   clearCart,
   subTotalSelector,
 } from '../../../redux/slices/cartSlice';
+import { toast } from 'react-toastify';
 import AddressForm from '../../components/addressForm/AddressForm';
 import addressApi from '../../../api/apiAddress';
 import orderApi from '../../../api/apiOrder';
-import { toast } from 'react-toastify';
+
+const formater = Intl.NumberFormat('de-DE');
 
 const Checkout = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { formater } = useGlobalContext();
   const user = useSelector(userSelector);
   const cart = useSelector(cartSelector);
   const amount = useSelector(amountSelector);

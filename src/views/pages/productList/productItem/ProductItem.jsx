@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import './productItem.scss';
 import { Link } from 'react-router-dom';
 import { Favorite, FavoriteBorder } from '@mui/icons-material';
-import { useGlobalContext } from '../../../../hooks/useGlobalContext';
 //components
 import RatingStar from '../../../components/ratingStar/RatingStar';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,9 +10,9 @@ import {
   removeWishList,
   wishListSelector,
 } from '../../../../redux/slices/wishListSlice';
+const formater = Intl.NumberFormat('de-DE');
 
 const ProductItem = ({ product }) => {
-  const { formater } = useGlobalContext();
   const dispatch = useDispatch();
   const wishList = useSelector(wishListSelector);
   const [isInWishList, setIsInWishList] = useState(null);

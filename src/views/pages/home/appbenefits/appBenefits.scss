@@ -1,4 +1,4 @@
-@use "../../../assets/scss/" as *;
+@use '../../../../assets/scss/' as *;
 
 #app-benefits {
   margin-top: 80px;
@@ -63,6 +63,7 @@
     }
     .btn-download-app {
       @include btnRed;
+      text-transform: uppercase;
       margin-bottom: 28px;
     }
   }

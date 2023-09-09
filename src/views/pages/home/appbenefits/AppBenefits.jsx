@@ -1,11 +1,13 @@
-import React, { useState } from "react";
-import "./appBenefits.scss";
-import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
+import React, { useState } from 'react';
+import './appBenefits.scss';
+import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
 const AppBenefits = () => {
+  const { t } = useTranslation();
   const [index, setIndex] = useState(0);
   const carousel = (direction) => {
-    if (direction === "next") {
+    if (direction === 'next') {
       setIndex(1);
     } else {
       setIndex(0);
@@ -16,12 +18,9 @@ const AppBenefits = () => {
       <div className="container">
         <div className="wrapper">
           <div className="title">
-            <h2>UNIQLO APP BENEFITS</h2>
+            <h2>{t('home_uniqlo_app_benefits')}</h2>
           </div>
-          <div
-            className="slider"
-            style={{ transform: `translateX(-${index * 100}%)` }}
-          >
+          <div className="slider" style={{ transform: `translateX(-${index * 100}%)` }}>
             <div className="app-image-1">
               <img
                 src="https://im.uniqlo.com/global-cms/spa/res7d62c6c4a214338e9eb85cc7e73199d0fr.gif"
@@ -35,23 +34,23 @@ const AppBenefits = () => {
               />
             </div>
           </div>
-          <button className="slide-prev" onClick={() => carousel("prev")}>
+          <button className="slide-prev" onClick={() => carousel('prev')}>
             <ArrowBackIos className="prev-icon" />
           </button>
-          <button className="slide-next" onClick={() => carousel("next")}>
+          <button className="slide-next" onClick={() => carousel('next')}>
             <ArrowForwardIos className="next-icon" />
           </button>
           <div className="controls">
             <div
-              className={index === 0 ? "dot1 dot-active" : "dot1"}
+              className={index === 0 ? 'dot1 dot-active' : 'dot1'}
               onClick={() => setIndex(0)}
             ></div>
             <div
-              className={index === 1 ? "dot2 dot-active" : "dot2"}
+              className={index === 1 ? 'dot2 dot-active' : 'dot2'}
               onClick={() => setIndex(1)}
             ></div>
           </div>
-          <button className="btn-download-app">DOWNLOAD APP</button>
+          <button className="btn-download-app">{t('home_download_app')}</button>
         </div>
       </div>
     </div>

@@ -5,8 +5,10 @@ import { Pagination, Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import { useTranslation } from 'react-i18next';
 
 const SliderItem = ({ collection, collections, sliderIndex }) => {
+  const { t } = useTranslation();
   const { id, collectionPosts } = collection;
   return (
     <div className="slider-item" key={id}>
@@ -46,7 +48,7 @@ const SliderItem = ({ collection, collections, sliderIndex }) => {
                     <div className="slide-title">{post.title}</div>
                     <p className="slide-desc">{post.description}</p>
                     <Link to={`/products?collection=${collection.id}`}>
-                      <button className="slide-btn">VIEW MORE</button>
+                      <button className="slide-btn">{t('common_view_more')}</button>
                     </Link>
                   </div>
                 </SwiperSlide>
@@ -61,7 +63,7 @@ const SliderItem = ({ collection, collections, sliderIndex }) => {
                   <div className="slide-title">{post.title}</div>
                   <p className="slide-desc">{post.description}</p>
                   <Link to={`/products?collection=${collection.id}`}>
-                    <button className="slide-btn">VIEW MORE</button>
+                    <button className="slide-btn">{t('common_view_more')}</button>
                   </Link>
                 </div>
               </SwiperSlide>

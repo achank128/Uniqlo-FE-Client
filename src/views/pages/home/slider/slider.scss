@@ -1,4 +1,4 @@
-@use '../../../assets/scss/' as *;
+@use '../../../../assets/scss/' as *;
 #slider {
   .warpper {
     scroll-snap-type: y mandatory;
@@ -116,6 +116,7 @@
         margin-top: 12px;
         background-color: $white-color;
         font-weight: 700;
+        text-transform: uppercase;
         cursor: pointer;
         &:hover {
           opacity: 0.8;

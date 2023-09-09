@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useGlobalContext } from '../../../../hooks/useGlobalContext';
 //components
 import RatingStar from '../../../components/ratingStar/RatingStar';
 import {
@@ -14,11 +13,11 @@ import Loading from '../../../components/loading/Loading';
 import { useDispatch, useSelector } from 'react-redux';
 import { addCartItem, cartAction, cartSelector } from '../../../../redux/slices/cartSlice';
 import { addWishList } from '../../../../redux/slices/wishListSlice';
+const formater = Intl.NumberFormat('de-DE');
 
 const ProductContent = ({ product, productDetails }) => {
   const dispatch = useDispatch();
   const cart = useSelector(cartSelector);
-  const { formater } = useGlobalContext();
   const [color, setColor] = useState();
   const [size, setSize] = useState();
   const [quantity, setQuantity] = useState(1);

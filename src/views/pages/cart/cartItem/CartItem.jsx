@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import './cartItem.scss';
 import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { useGlobalContext } from '../../../../hooks/useGlobalContext';
 import { Add, Close, KeyboardArrowDown } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
 import { cartAction, removeCartItem, updateQuantity } from '../../../../redux/slices/cartSlice';
+import { useTranslation } from 'react-i18next';
+const formater = Intl.NumberFormat('de-DE');
 
 const CartItem = ({ item }) => {
+  const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
-  const { formater } = useGlobalContext();
   const [quantityOn, setQuantityOn] = useState(false);
 
   const handleRemove = () => {
@@ -39,15 +39,47 @@ const CartItem = ({ item }) => {
         </div>
       </Link>
       <div className="info">
-        <div className="name">{item.product.name}</div>
-        <p className="id">Product ID: {item.product.id}</p>
-        <p className="color">Color: {item.productDetail.color?.name}</p>
-        <p className="size">Size: {item.productDetail.size?.name}</p>
-        <p className="sale">Sale</p>
-        <p className="price">{formater.format(item.product.productPrice?.price)} VND</p>
+        <div className="name">
+          {i18n.language === 'en'
+            ? item.product.nameEn
+            : i18n.language === 'vi'
+            ? item.product.nameVi
+            : item.product.name}
+        </div>
+        <p className="id">
+          {t('common_product_id')}: {item.product.id}
+        </p>
+        <p className="color">
+          {t('common_color')}:{' '}
+          {i18n.language === 'en'
+            ? item.productDetail.color?.nameEn
+            : i18n.language === 'vi'
+            ? item.productDetail.color?.nameVi
+            : item.productDetail.color?.name}
+        </p>
+        <p className="size">
+          {t('common_size')}:{' '}
+          {i18n.language === 'en'
+            ? item.productDetail.size?.nameEn
+            : i18n.language === 'vi'
+            ? item.productDetail.size?.nameVi
+            : item.productDetail.size?.name}
+        </p>
+        {item.product.isSale ? (
+          <>
+            <p className="price" style={{ textDecorationLine: 'line-through' }}>
+              {formater.format(item.product.productPrice?.price)} VND
+            </p>
+            <p className="promo-price">
+              {formater.format(item.product.productPrice?.promoPrice)} VND
+            </p>
+          </>
+        ) : (
+          <p className="price">{formater.format(item.product.productPrice?.price)} VND</p>
+        )}
         <div className="quanlity-subtotal">
           <div className="quanlity">
-            <div className="quanlity-name">QUANTITY</div>
+            <div className="quanlity-name">{t('common_quantity')}</div>
             <div className="quality-select" onClick={() => setQuantityOn(!quantityOn)}>
               <span>{item.quantity}</span>
               <span className={quantityOn ? 'arrow-up arrow-down' : 'arrow-down'}>
@@ -106,10 +138,16 @@ const CartItem = ({ item }) => {
             </ul>
           </div>
           <div className="subtotal">
-            <div className="label">SUBTOTAL:</div>
-            <div className="total">
-              {formater.format(item.product.productPrice?.price * item.quantity)} VND
-            </div>
+            <div className="label">{t('common_subtotal')}:</div>
+            {item.product.isSale ? (
+              <div className="total">
+                {formater.format(item.product.productPrice?.promoPrice * item.quantity)} VND
+              </div>
+            ) : (
+              <div className="total">
+                {formater.format(item.product.productPrice?.price * item.quantity)} VND
+              </div>
+            )}
           </div>
         </div>
       </div>

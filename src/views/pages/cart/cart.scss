@@ -8,6 +8,7 @@
     .cart-title {
       margin: 20px 0;
       h2 {
+        text-transform: uppercase;
         font-weight: 700;
       }
     }
@@ -16,6 +17,7 @@
       padding: 40px 0;
       .no-item-shopping {
         @include btnBlack;
+        text-transform: uppercase;
         margin-top: 40px;
         max-width: 300px;
       }
@@ -49,6 +51,7 @@
         padding: 30px 20px;
         margin-bottom: 30px;
         .title {
+          text-transform: uppercase;
           font-size: $font-med;
           font-weight: 700;
           margin-bottom: 30px;
@@ -61,6 +64,7 @@
           font-size: $font-xsm;
         }
         .subtotal {
+          text-transform: uppercase;
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -78,6 +82,7 @@
         }
 
         .order-total {
+          text-transform: uppercase;
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -110,10 +115,12 @@
       }
       .btn-checkout {
         @include btnRed;
+        text-transform: uppercase;
         margin-bottom: 16px;
       }
       .btn-continue-shopping {
         @include btnWhite;
+        text-transform: uppercase;
         margin-bottom: 16px;
       }
       .info-shipping {
