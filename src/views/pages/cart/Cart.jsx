@@ -11,7 +11,7 @@ import { userSelector } from '../../../redux/slices/authSlice';
 const formater = Intl.NumberFormat('de-DE');
 
 const Cart = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const user = useSelector(userSelector);
   const cart = useSelector(cartSelector);

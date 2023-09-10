@@ -13,9 +13,11 @@ import Loading from '../../../components/loading/Loading';
 import { useDispatch, useSelector } from 'react-redux';
 import { addCartItem, cartAction, cartSelector } from '../../../../redux/slices/cartSlice';
 import { addWishList } from '../../../../redux/slices/wishListSlice';
+import { useTranslation } from 'react-i18next';
 const formater = Intl.NumberFormat('de-DE');
 
 const ProductContent = ({ product, productDetails }) => {
+  const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const cart = useSelector(cartSelector);
   const [color, setColor] = useState();
@@ -110,11 +112,11 @@ const ProductContent = ({ product, productDetails }) => {
           <div className="breadcrumb">
             <ul>
               <li>
-                <Link to="/">UNIQLO Home Page</Link>
+                <Link to="/">{t('common_uniqlo')}</Link>
               </li>
               <li className="slash">/</li>
               <li>
-                <Link to="/products">All Products</Link>
+                <Link to="/products">{t('product_all')}</Link>
               </li>
               <li className="slash">/</li>
               <li>{product.name}</li>
@@ -170,35 +172,45 @@ const ProductContent = ({ product, productDetails }) => {
               </div>
               <div className="product-desc-detail">
                 <div className="title-id">
-                  <h3>DESCRIPTION</h3>
-                  <p>Product ID: {product.id}</p>
+                  <h3>{t('common_description')}</h3>
+                  <p>
+                    {t('product_id')}: {product.id}
+                  </p>
                 </div>
                 <div className="overview">
                   <div className="overview-head" onClick={() => setOverviewOn(!overviewOn)}>
-                    <span className={overviewOn ? 'bold' : null}>Overview</span>
+                    <span className={overviewOn ? 'bold' : null}>{t('common_overview')}</span>
                     <span className={overviewOn ? 'arrow-up arrow-down' : 'arrow-down'}>
                       <KeyboardArrowDown className="arrow-down-icon" />
                     </span>
                   </div>
                   <div className={overviewOn ? 'overview-info active' : 'overview-info'}>
-                    {product.overview}
+                    {i18n.language === 'en'
+                      ? product.overviewEn
+                      : i18n.language === 'vi'
+                      ? product.overviewVi
+                      : product.overview}
                   </div>
                 </div>
                 <div className="material">
                   <div className="material-head" onClick={() => setMaterialOn(!materialOn)}>
-                    <span className={materialOn ? 'bold' : null}>Material</span>
+                    <span className={materialOn ? 'bold' : null}>{t('common_material')}</span>
                     <span className={materialOn ? 'arrow-up arrow-down' : 'arrow-down'}>
                       <KeyboardArrowDown className="arrow-down-icon" />
                     </span>
                   </div>
                   <div className={materialOn ? 'material-info active' : 'material-info'}>
-                    {product.materials}
+                    {i18n.language === 'en'
+                      ? product.materialsEn
+                      : i18n.language === 'vi'
+                      ? product.materialsVi
+                      : product.materials}
                   </div>
                 </div>
                 <div className="return-policy">
                   <Link to="/">
                     <div className="return-policy-head">
-                      <span>Return Policy</span>
+                      <span>{t('common_return_policy')}</span>
                       <span className="arrow-down">
                         <KeyboardArrowDown className="arrow-down-icon" />
                       </span>
@@ -214,15 +226,21 @@ const ProductContent = ({ product, productDetails }) => {
                 </div>
                 <div className="price-rating">
                   <div className="price">
-                    <div className="price-original">
-                      {formater.format(product.productPrice?.price)} VND
-                    </div>
-                    {product.isSale && (
-                      <div className="price-limited">
-                        {formater.format(product.productPrice?.promoPrice)} VND
+                    {product.isSale ? (
+                      <>
+                        <div className="price-original">
+                          {formater.format(product.productPrice?.price)} VND
+                        </div>
+                        <div className="price-limited">
+                          {formater.format(product.productPrice?.promoPrice)} VND
+                        </div>
+                        <div className="price-flag">Sale</div>
+                      </>
+                    ) : (
+                      <div className="price-only">
+                        {formater.format(product.productPrice?.price)} VND
                       </div>
                     )}
-                    <div className="price-flag">Sale</div>
                   </div>
                   {product.productReview && (
                     <div className="rating">
@@ -233,11 +251,19 @@ const ProductContent = ({ product, productDetails }) => {
                     </div>
                   )}
                 </div>
-                <p className="description">{product.description}</p>
+                <p className="description">
+                  {i18n.language === 'en'
+                    ? product.descriptionEn
+                    : i18n.language === 'vi'
+                    ? product.descriptionVi
+                    : product.description}
+                </p>
               </div>
               <div className="bottom">
                 <div className="color">
-                  <div className="color-name">Color: {color?.color.name}</div>
+                  <div className="color-name">
+                    {t('common_color')}: {color?.color.name}
+                  </div>
                   <ul className="color-list">
                     {product.productColors?.map((pc) => (
                       <li
@@ -251,7 +277,9 @@ const ProductContent = ({ product, productDetails }) => {
                   </ul>
                 </div>
                 <div className="size">
-                  <div className="size-name">SIZE: {size?.size.name}</div>
+                  <div className="size-name">
+                    {t('common_size')}: {size?.size.name}
+                  </div>
                   <ul className="size-list">
                     {productSizeSorted.map((ps) => (
                       <li
@@ -265,7 +293,7 @@ const ProductContent = ({ product, productDetails }) => {
                   </ul>
                 </div>
                 <div className="quanlity">
-                  <div className="quanlity-name">QUANTITY</div>
+                  <div className="quanlity-name">{t('common_quantity')}</div>
                   <div className="quality-select" onClick={() => setQuantityOn(!quantityOn)}>
                     <span>{quantity}</span>
                     <span className={quantityOn ? 'arrow-up arrow-down' : 'arrow-down'}>
@@ -306,16 +334,16 @@ const ProductContent = ({ product, productDetails }) => {
                   className={inStock > 0 ? 'add-to-cart add-active' : 'add-to-cart'}
                   onClick={handleAddToCart}
                 >
-                  ADD TO CART
+                  {t('product_add_to_cart')}
                 </button>
                 <div className="fav-find">
                   <button className="favorite-add" onClick={() => dispatch(addWishList(product))}>
-                    ADD TO WISH LIST
+                    {t('product_add_to_wishlist')}
                   </button>
-                  <button className="find-store">FIND STOCK IN STORE</button>
+                  <button className="find-store"> {t('product_find_in_store')}</button>
                 </div>
                 <div className="share">
-                  <div className="share-name">SHARE</div>
+                  <div className="share-name"> {t('common_share')}</div>
                   <div className="share-icon">
                     <Twitter className="icon-tw" />
                     <Facebook className="icon-fb" />

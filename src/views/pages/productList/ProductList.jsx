@@ -8,16 +8,18 @@ import { useQuery } from 'react-query';
 import Categories from '../../components/categories/Categories';
 import ProductItem from './productItem/ProductItem';
 import Loading from '../../components/loading/Loading';
+import { useTranslation } from 'react-i18next';
 
 const sorts = [
-  { title: 'Featured', query: 'name_asc' },
-  { title: 'New arrials', query: 'created_date_asc' },
-  { title: 'Low to high', query: 'price_asc' },
-  { title: 'High to low', query: 'price_desc' },
-  { title: 'Top rated', query: 'star_desc' },
+  { title: 'product_featured', query: 'name_asc' },
+  { title: 'product_new_arrials', query: 'created_date_asc' },
+  { title: 'product_low_to_high', query: 'price_asc' },
+  { title: 'product_high_to_low', query: 'price_desc' },
+  { title: 'product_top_rated', query: 'star_desc' },
 ];
 
 const ProductList = () => {
+  const { t } = useTranslation();
   const [listSortOn, setListSortOn] = useState(false);
   const [backToTopOn, setBackToTopOn] = useState(false);
   const [sort, setSort] = useState(sorts[0]);
@@ -75,30 +77,30 @@ const ProductList = () => {
             <div className="breadcrumb">
               <ul>
                 <li>
-                  <Link to="/">UNIQLO Home Page</Link>
+                  <Link to="/">{t('common_uniqlo')}</Link>
                 </li>
                 <li className="slash">/</li>
                 <li>
-                  <Link to="/product-list/ALL">All Products</Link>
+                  <Link to="/products">{t('product_all')}</Link>
                 </li>
-                {/* <li className="slash">/</li>
-                <li>{category}</li> */}
               </ul>
             </div>
             <div className="sort-container">
               <div className="left">
                 {data?.totalRecords && (
                   <div className="results">
-                    <div className="title">RESULTS</div>
-                    <p>{data.totalRecords} Items</p>
+                    <div className="title">{t('common_results')}</div>
+                    <p>
+                      {data.totalRecords} {t('common_items')}
+                    </p>
                   </div>
                 )}
               </div>
               <div className="right">
                 <div className="sort">
-                  <div className="title">SORT BY</div>
+                  <div className="title">{t('common_sort_by')}</div>
                   <div className="sort-content" onClick={() => setListSortOn(!listSortOn)}>
-                    <span>{sort.title}</span>
+                    <span>{t(sort.title)}</span>
                     <span className={listSortOn ? 'arrow-up arrow-down' : 'arrow-down'}>
                       <KeyboardArrowDown className="arrow-down-icon" />
                     </span>
@@ -114,7 +116,7 @@ const ProductList = () => {
                           setListSortOn(!listSortOn);
                         }}
                       >
-                        {s.title}
+                        {t(s.title)}
                       </li>
                     ))}
                   </ul>
@@ -139,7 +141,7 @@ const ProductList = () => {
                       {filter.pageSize <= data.totalRecords && (
                         <div className="load-more">
                           <button onClick={getProductsMore}>
-                            LOAD MORE <KeyboardArrowDown className="icon-down" />
+                            {t('common_load_more')} <KeyboardArrowDown className="icon-down" />
                           </button>
                         </div>
                       )}

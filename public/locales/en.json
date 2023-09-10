@@ -33,6 +33,15 @@
   "common_checkout": "Checkout",
   "common_continue_shopping": "Continue Shopping",
   "common_uniqlo": "UNIQLO",
+  "common_search_by_keyword": "Search by keyword",
+  "common_results": "Results",
+  "common_sort_by": "Sort by",
+  "common_load_more": "Load more",
+  "common_description": "Description",
+  "common_overview": "Overview",
+  "common_material": "Material",
+  "common_share": "Share",
+  "common_required": "Required",
 
   "home": "Home",
   "home_important_notice": "Important Notice",
@@ -67,5 +76,41 @@
   "cart_shopping_cart": "Shoppong Cart",
   "cart_checkout_desc": "Your items will be reserved for the next 30 minutes after the 'Checkout' button has been pressed.",
   "cart_info_shipping": "If you purchase additional 1.500.000 VND (VAT included), you will get free shipping.",
-  "cart_empty": "Your cart is currently empty."
+  "cart_empty": "Your cart is currently empty.",
+
+  "profile": "Profile",
+
+  "wish_list": "Wish list",
+  "wish_list_no_item": "YOUR WISH LIST HAS NO ITEMS.",
+
+  "order": "Order",
+  "order_history": "Order history",
+
+  "auth": "Auth",
+  "auth_login": "Login",
+  "auth_logout": "Logout",
+  "auth_login_desc": "Log in with your email address and password.",
+  "auth_create_account": "Create an account",
+  "auth_create_account_desc": "If you create an account, you can get personalized services like checking purchase history and getting discount coupons with your membership. Register today for free!",
+  "auth_email_address": "Email Address",
+  "auth_email_placehoder": "Email Address",
+  "auth_password": "Password",
+  "auth_password_desc": "Password must be at least 8 characters, and contain both letters and numbers.",
+  "auth_show_password": "Show my password",
+  "auth_forgot_password": "Forgot your password?",
+
+  "product": "Product",
+  "product_list": "Products List",
+  "product_all": "All Products",
+  "product_featured": "Featured",
+  "product_new_arrials": "New arrials",
+  "product_low_to_high": "Low to high",
+  "product_high_to_low": "High to low",
+  "product_top_rated": "Top rated",
+  "product_id": "Product ID",
+  "product_add_to_cart": "Add to cart",
+  "product_add_to_wishlist": "Add to Wish list",
+  "product_find_in_store": "Find stock in store",
+  "product_in_stock": "In stock",
+  "product_out_of_stock": "Out of stock"
 }

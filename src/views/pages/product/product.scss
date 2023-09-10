@@ -176,6 +176,12 @@
           margin-bottom: 40px;
           .price {
             font-weight: 700;
+            .price-only {
+              font-size: $font-xlg;
+              @include mobile {
+                font-size: 1.75rem;
+              }
+            }
             .price-original {
               text-decoration: line-through;
               font-size: $font-sm;
@@ -241,6 +247,7 @@
         }
         .size {
           .size-name {
+            text-transform: uppercase;
             font-size: $font-xsm;
             font-weight: 700;
             margin: 10px 0;
@@ -276,6 +283,7 @@
           position: relative;
           margin-bottom: 40px;
           .quanlity-name {
+            text-transform: uppercase;
             font-weight: 700;
             font-size: $font-xsm;
             margin: 10px 0;
@@ -310,6 +318,7 @@
           }
         }
         .add-to-cart {
+          text-transform: uppercase;
           @include btnRed;
           background-color: #dadada;
           cursor: default;
@@ -335,6 +344,7 @@
           .favorite-add,
           .find-store {
             @include btnWhite;
+            text-transform: uppercase;
             flex: 1;
           }
         }
@@ -342,8 +352,6 @@
           font-size: $font-xsm;
           font-weight: 700;
           margin-top: 20px;
-          .share-icon {
-          }
           .icon-tw {
             font-size: 55px;
             color: #1da1f2;

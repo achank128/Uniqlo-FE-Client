@@ -7,8 +7,10 @@ import authApi from '../../../api/apiAuth';
 import Loading from '../../components/loading/Loading';
 import { useDispatch } from 'react-redux';
 import { authAction } from '../../../redux/slices/authSlice';
+import { useTranslation } from 'react-i18next';
 
 const Login = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
@@ -51,48 +53,44 @@ const Login = () => {
             <div className="breadcrumb">
               <ul>
                 <li>
-                  <Link to="/">UNIQLO Home Page</Link>
+                  <Link to="/">{t('common_uniqlo')}</Link>
                 </li>
                 <li className="slash">/</li>
-                <li>LOGIN</li>
+                <li>{t('auth_login')}</li>
               </ul>
             </div>
             <div className="login-container">
               <div className="login-content">
                 <div className="title">
-                  <h2>LOGIN</h2>
-                  <div className="required">Required*</div>
+                  <h2>{t('auth_login')}</h2>
+                  <div className="required">{t('common_required')}*</div>
                 </div>
                 <div className="text">
-                  {error ? (
-                    <p className="error">{msg}</p>
-                  ) : (
-                    <p>Log in with your email address and password.</p>
-                  )}
+                  {error ? <p className="error">{msg}</p> : <p>{t('auth_login_desc')}</p>}
 
                   <div className="text-info">
                     <InfoOutlined />
                   </div>
                 </div>
                 <form>
-                  <label className="email-label">EMAIL ADDRESS</label>
+                  <label className="email-label">{t('auth_email_address')}</label>
                   <div className="input-email">
                     <input
                       required
                       type="email"
                       name="email"
-                      placeholder="Enter a valid email"
+                      placeholder={t('auth_email_placehoder')}
                       value={email}
                       className={error ? 'error-input' : ''}
                       onChange={(e) => setEmail(e.target.value)}
                       onFocus={() => setError(false)}
                     />
                   </div>
-                  <label className="pass-label">PASSWORD</label>
+                  <label className="pass-label">{t('auth_password')}</label>
                   <div className="input-pass">
                     <input
                       required
-                      placeholder="Password"
+                      placeholder={t('auth_password')}
                       name="password"
                       type={showPassword ? 'text' : 'password'}
                       value={password}
@@ -101,39 +99,33 @@ const Login = () => {
                       onFocus={() => setError(false)}
                     />
                   </div>
-                  <p className="pass-text">
-                    Password must be at least 8 characters, and contain both letters and numbers.
-                  </p>
+                  <p className="pass-text">{t('auth_password_desc')}</p>
                   <label className="show-pass">
                     <input type="checkbox" onClick={() => setShowPassword(!showPassword)} />
                     <span className="checkmark"></span>
-                    Show my password
+                    {t('auth_show_password')}
                   </label>
-                  <span className="term">TERMS OF USE</span>
-                  <span className="privacy">PRIVACY POLICY</span>
+                  <span className="term">{t('common_terms_of_use')}</span>
+                  <span className="privacy">{t('common_privacy_policy')}</span>
                   <button className="login-submit" type="submit" onClick={handleLogin}>
-                    LOG IN
+                    {t('auth_login')}
                   </button>
-                  <span className="forgot">FORGOT YOUR PASSWORD?</span>
+                  <span className="forgot">{t('auth_forgot_password')}</span>
                 </form>
               </div>
               <div className="create-account">
-                <h2 className="title">CREATE AN ACCOUNT</h2>
+                <h2 className="title">{t('auth_create_account')}</h2>
                 <div className="text">
-                  <p>
-                    If you create an account, you can get personalized services like checking
-                    purchase history and getting discount coupons with your membership. Register
-                    today for free!
-                  </p>
+                  <p>{t('auth_create_account_desc')}</p>
                 </div>
                 <Link to="/register">
-                  <button className="btn-create-acc">CREATE AN ACCOUNT</button>
+                  <button className="btn-create-acc">{t('auth_create_account')}</button>
                 </Link>
               </div>
             </div>
           </div>
           <div className="footer-login">
-            <p>COPYRIGHT © UNIQLO CO., LTD. ALL RIGHTS RESERVED.</p>
+            <p>{t('footer_copyright')}</p>
           </div>
         </div>
       </div>

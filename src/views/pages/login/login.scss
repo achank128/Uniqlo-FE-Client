@@ -31,6 +31,7 @@
         justify-content: space-between;
         margin-bottom: 20px;
         h2 {
+          text-transform: uppercase;
           font-weight: 700;
         }
         .required {
@@ -52,6 +53,7 @@
       }
       .email-label,
       .pass-label {
+        text-transform: uppercase;
         font-weight: 700;
         margin-top: 10px;
         margin-bottom: 4px;
@@ -76,6 +78,7 @@
       .term,
       .privacy,
       .forgot {
+        text-transform: uppercase;
         font-weight: 700;
         text-decoration: underline;
         font-size: $font-xsm;
@@ -95,6 +98,7 @@
         margin-top: 50px;
       }
       .title {
+        text-transform: uppercase;
         font-weight: 700;
         margin-bottom: 20px;
       }

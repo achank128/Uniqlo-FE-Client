@@ -10,9 +10,11 @@ import {
   removeWishList,
   wishListSelector,
 } from '../../../../redux/slices/wishListSlice';
+import { useTranslation } from 'react-i18next';
 const formater = Intl.NumberFormat('de-DE');
 
 const ProductItem = ({ product }) => {
+  const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const wishList = useSelector(wishListSelector);
   const [isInWishList, setIsInWishList] = useState(null);
@@ -48,21 +50,37 @@ const ProductItem = ({ product }) => {
         </div>
         <div className="product-info">
           <div className="for-size">
-            <div className="for">{product.genderType?.name}</div>
+            <div className="for">
+              {i18n.language === 'en'
+                ? product.genderType?.nameEn
+                : i18n.language === 'vi'
+                ? product.genderType?.nameVi
+                : product.genderType?.name}
+            </div>
             <div className="size">{product.size}</div>
           </div>
-          <p className="name">{product.name}</p>
+          <p className="name">
+            {i18n.language === 'en'
+              ? product.nameEn
+              : i18n.language === 'vi'
+              ? product.nameVi
+              : product.name}
+          </p>
           <div className="price">
-            <span className="price-original">
-              {formater.format(product.productPrice?.price)} VND
-            </span>
-            {product.isSale && (
-              <span className="price-limited">
-                {formater.format(product.productPrice?.promoPrice)} VND
-              </span>
+            {product.isSale ? (
+              <>
+                <span className="price-original">
+                  {formater.format(product.productPrice?.price)} VND
+                </span>
+                <span className="price-limited">
+                  {formater.format(product.productPrice?.promoPrice)} VND
+                </span>
+                <div className="price-flag">{t('common_sale')}</div>
+              </>
+            ) : (
+              <span className="price-only">{formater.format(product.productPrice?.price)} VND</span>
             )}
           </div>
-          <div className="price-flag">Sale</div>
           {product.productReview && (
             <div className="rating">
               <div className="star">

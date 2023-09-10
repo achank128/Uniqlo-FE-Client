@@ -17,8 +17,10 @@ import { categoryApi } from '../../../api/apiCategory';
 import { genderTypeApi } from '../../../api/apiGenderType';
 import { amountSelector, cartAction, getCart } from '../../../redux/slices/cartSlice';
 import { getWishList, wishListSelector } from '../../../redux/slices/wishListSlice';
+import { useTranslation } from 'react-i18next';
 
 const Navbar = () => {
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const currentUser = useSelector(userSelector);
@@ -129,7 +131,11 @@ const Navbar = () => {
                           setCategory(item.name);
                         }}
                       >
-                        {item.name}
+                        {i18n.language === 'en'
+                          ? item.nameEn
+                          : i18n.language === 'vi'
+                          ? item.nameVi
+                          : item.name}
                       </span>
                     </li>
                   </Link>
@@ -146,7 +152,7 @@ const Navbar = () => {
                     className="search-input"
                     type="text"
                     value={searchText}
-                    placeholder="Search by keyword"
+                    placeholder={t('common_search_by_keyword')}
                     onChange={(e) => setSearchText(e.target.value)}
                   />
                   <button type="submit" className="search-btn">
@@ -163,16 +169,16 @@ const Navbar = () => {
                   <div className={userOpen ? 'user open' : 'user'}>
                     <ul>
                       <Link to="/profile" onClick={() => setUserOpen(false)}>
-                        <li>Profile</li>
+                        <li>{t('profile')}</li>
                       </Link>
                       <Link to="/profile/coupon" onClick={() => setUserOpen(false)}>
-                        <li>Coupons</li>
+                        <li>{t('common_coupon')}</li>
                       </Link>
                       <Link to="/profile/order" onClick={() => setUserOpen(false)}>
-                        <li>Order history</li>
+                        <li>{t('order_history')}</li>
                       </Link>
                       <Link to="/wishlist" onClick={() => setUserOpen(false)}>
-                        <li>Wish list</li>
+                        <li>{t('wish_list')}</li>
                       </Link>
                       <li
                         onClick={() => {
@@ -181,7 +187,7 @@ const Navbar = () => {
                           setUserOpen(false);
                         }}
                       >
-                        Logout
+                        {t('auth_logout')}
                       </li>
                     </ul>
                   </div>
