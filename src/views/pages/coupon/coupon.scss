@@ -1,6 +1,14 @@
 @use '../../../assets/scss/' as *;
 
 #coupon {
+  .heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    h3 {
+      text-transform: uppercase;
+    }
+  }
   .item {
     position: relative;
   }
@@ -40,6 +48,9 @@
         color: $red-color;
         font-weight: 500;
       }
+    }
+    .discount {
+      font-size: $font-xsm;
     }
   }
 }

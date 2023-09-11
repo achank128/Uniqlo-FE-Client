@@ -5,12 +5,8 @@ const couponApi = {
     const res = await userRequest.get('/coupons/mycoupon');
     return res.data;
   },
-  addWishList: async (productId) => {
-    const res = await userRequest.post('/wishlists/add/' + productId);
-    return res;
-  },
-  removeWishList: async (id) => {
-    const res = await userRequest.delete('/wishlists/' + id);
+  addCoupon: async (code) => {
+    const res = await userRequest.post('/usercoupons/add/' + code);
     return res;
   },
 };
