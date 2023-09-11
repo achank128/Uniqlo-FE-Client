@@ -1,6 +1,11 @@
 @use '../../../assets/scss/' as *;
 
 #address {
+  .heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
   .item {
     position: relative;
   }

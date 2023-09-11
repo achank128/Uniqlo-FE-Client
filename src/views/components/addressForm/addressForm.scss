@@ -3,6 +3,7 @@
 #form-address {
   .heading {
     margin: 24px 0;
+    text-transform: uppercase;
   }
   .input-container {
     display: flex;
@@ -12,6 +13,7 @@
   }
 
   .label {
+    text-transform: uppercase;
     width: 30%;
     font-weight: 700;
     padding: 10px 0;

@@ -17,6 +17,10 @@ const addressApi = {
     const res = await userRequest.delete('/userAddresses/' + id);
     return res;
   },
+  setDefaultAddress: async (id) => {
+    const res = await userRequest.put('/userAddresses/setdefault/' + id);
+    return res;
+  },
 };
 
 export default addressApi;

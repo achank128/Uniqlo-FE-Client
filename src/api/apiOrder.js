@@ -9,8 +9,8 @@ const orderApi = {
     const res = await userRequest.post('/orders/createfull', body);
     return res;
   },
-  cancelOrder: async (body) => {
-    const res = await userRequest.put('/orders/cancel', body);
+  updateStatusOrder: async (body) => {
+    const res = await userRequest.put('/orders/status', body);
     return res;
   },
 };

@@ -48,10 +48,11 @@ const OrderItem = ({ order, refetch }) => {
   const handleCancelOrder = async (cancelReason) => {
     const body = {
       id: order.id,
-      cancelReason,
+      status: 'CANCELLED',
+      reason: cancelReason,
     };
     try {
-      const res = await orderApi.cancelOrder(body);
+      const res = await orderApi.updateStatusOrder(body);
       toast.success(toast(res.message));
       setOpenCancelConfirm(false);
       refetch();
