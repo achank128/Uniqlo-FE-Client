@@ -320,6 +320,9 @@
                 color: $teal-color;
               }
             }
+            &.active {
+              display: block;
+            }
           }
           .in-stock {
             font-size: $font-xsm;

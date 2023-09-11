@@ -115,6 +115,9 @@
           color: $teal-color;
         }
       }
+      &.active {
+        display: block;
+      }
     }
   }
   .subtotal {

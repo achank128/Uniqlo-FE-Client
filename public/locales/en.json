@@ -46,6 +46,8 @@
   "common_price": "Price",
   "common_notice": "Notice",
   "common_continue": "Continue",
+  "common_confirm": "Confirm",
+  "common_cancel": "Cancel",
 
   "home": "Home",
   "home_important_notice": "Important Notice",
@@ -127,6 +129,8 @@
   "order_continue_payment": "Continue to payment",
   "order_place_notice": "Press Place Order to complete your purchase.",
   "order_place": "Place order",
+  "order_place_confirm": "Confirm Place Order",
+  "order_place_confirm_content": "Confirm place this order.",
 
   "auth": "Auth",
   "auth_login": "Login",

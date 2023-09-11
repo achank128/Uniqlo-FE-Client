@@ -27,6 +27,7 @@ import AddressForm from '../../components/addressForm/AddressForm';
 import addressApi from '../../../api/apiAddress';
 import orderApi from '../../../api/apiOrder';
 import { useTranslation } from 'react-i18next';
+import Confirm from '../../components/confirm/Confirm';
 
 const formater = Intl.NumberFormat('de-DE');
 
@@ -70,49 +71,50 @@ const Checkout = () => {
   };
 
   const handleSubmitOrder = async () => {
-    const orderItems = cart.cartItems.map((item) => {
-      return {
-        productDetailId: item.productDetailId,
-        quantity: item.quantity,
-        price: item.product.isSale
-          ? item.product.productPrice.promoPrice
-          : item.product.productPrice.price,
-      };
-    });
-    const body = {
-      userId: user.id,
-      note: '',
-      couponId: coupon?.id,
-      items: cart.cartItems.length,
-      amount: amount,
-      subtotal: subtotal,
-      vatIncluded: subtotal * 0.1,
-      discount: discount,
-      shippingFee: shippingFee,
-      total: total,
-      status: 'OPEN',
-      userAddressId: address.id,
-      receivedDate: new Date(),
-      shipmentPay: total,
-      shipmentNote: '',
-      paymentType: paymentType,
-      paymentDate: new Date(),
-      creditCardName: '',
-      creditCardType: '',
-      creditCardDate: '',
-      creditCardNumber: '',
-      creditCardNumberDisplay: '',
-      paymentNote: '',
-      orderItems: orderItems,
-    };
     try {
       setLoading(true);
+      setOpenConfirm(false);
+      const orderItems = cart.cartItems.map((item) => {
+        return {
+          productDetailId: item.productDetailId,
+          quantity: item.quantity,
+          price: item.product.isSale
+            ? item.product.productPrice.promoPrice
+            : item.product.productPrice.price,
+        };
+      });
+      const body = {
+        userId: user.id,
+        note: '',
+        couponId: coupon?.id,
+        items: cart.cartItems.length,
+        amount: amount,
+        subtotal: subtotal,
+        vatIncluded: subtotal * 0.1,
+        discount: discount,
+        shippingFee: shippingFee,
+        total: total,
+        status: 'OPEN',
+        userAddressId: address.id,
+        receivedDate: new Date(),
+        shipmentPay: total,
+        shipmentNote: '',
+        paymentType: paymentType,
+        paymentDate: new Date(),
+        creditCardName: '',
+        creditCardType: '',
+        creditCardDate: '',
+        creditCardNumber: '',
+        creditCardNumberDisplay: '',
+        paymentNote: '',
+        orderItems: orderItems,
+      };
       const res = await orderApi.createOrder(body);
-      setLoading(false);
       dispatch(clearCart(cart.id)).then(() => {
         toast.success(res.message);
-        navigate('/order');
+        navigate('/profile/order');
       });
+      setLoading(false);
     } catch (error) {
       setLoading(false);
       toast.error(error.response.data.Message);
@@ -131,21 +133,6 @@ const Checkout = () => {
         </div>
       )}
       <div id="checkout">
-        <Dialog
-          open={openConfirm}
-          onClose={() => setOpenConfirm(false)}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{'Confirm your order'}</DialogTitle>
-          <DialogContent></DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpenConfirm(false)}>Disagree</Button>
-            <Button onClick={() => {}} autoFocus>
-              Confirm
-            </Button>
-          </DialogActions>
-        </Dialog>
         <div className="container">
           <div className="wrapper">
             <div className="breadcrumb">
@@ -351,7 +338,7 @@ const Checkout = () => {
                       </div>
                     </div>
 
-                    <button className="btn-submit" onClick={handleSubmitOrder}>
+                    <button className="btn-submit" onClick={() => setOpenConfirm(true)}>
                       {t('order_place')}
                     </button>
                     <p className="place-order-text">{t('order_place_notice')}</p>
@@ -416,6 +403,14 @@ const Checkout = () => {
             </Grid>
           </div>
         </div>
+
+        <Confirm
+          open={openConfirm}
+          setOpen={setOpenConfirm}
+          Content={() => <p>{t('order_place_confirm_content')}</p>}
+          titleText={'order_place_confirm'}
+          onConfirm={handleSubmitOrder}
+        />
       </div>
     </>
   );

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './product.scss';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -24,12 +24,14 @@ import { addWishList } from '../../../redux/slices/wishListSlice';
 import productApi from '../../../api/apiProduct';
 import RatingStar from '../../components/ratingStar/RatingStar';
 import Loading from '../../components/loading/Loading';
+import Confirm from '../../components/confirm/Confirm';
 
 const formater = Intl.NumberFormat('de-DE');
 
 const Product = () => {
-  const { id } = useParams();
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const { id } = useParams();
   const dispatch = useDispatch();
   const cart = useSelector(cartSelector);
   const amount = useSelector(amountSelector);
@@ -408,33 +410,26 @@ const Product = () => {
           </div>
         </div>
       )}
-      <Dialog
-        id="cart-confirm"
+      <Confirm
         open={openCartConfirm}
-        onClose={() => setOpenCartConfirm(false)}
-        fullWidth={true}
-        maxWidth={'sm'}
-      >
-        <DialogTitle className="title">{t('cart_item_added')}</DialogTitle>
-        <DialogContent>
-          <div className="item-confirm">
-            <div>{t('common_items')}:</div>
-            <div>{amount}</div>
-          </div>
-          <div className="total-confirm">
-            <div>{t('common_order_total')}</div>
-            <div>{formater.format(subtotal)} VND</div>
-          </div>
-        </DialogContent>
-        <div className="confirm-action">
-          <Link to={'/cart'} style={{ flex: '1' }}>
-            <button className="btn-cart-view">{t('cart_view')}</button>
-          </Link>
-          <button className="btn-continue" onClick={() => setOpenCartConfirm(false)}>
-            {t('common_continue_shopping')}
-          </button>
-        </div>
-      </Dialog>
+        setOpen={setOpenCartConfirm}
+        titleText="cart_item_added"
+        confirmText="cart_view"
+        cancelText="common_continue_shopping"
+        Content={() => (
+          <>
+            <div className="item-confirm">
+              <div>{t('common_items')}:</div>
+              <div>{amount}</div>
+            </div>
+            <div className="total-confirm">
+              <div>{t('common_order_total')}</div>
+              <div>{formater.format(subtotal)} VND</div>
+            </div>
+          </>
+        )}
+        onConfirm={() => navigate('/cart')}
+      />
     </div>
   );
 };

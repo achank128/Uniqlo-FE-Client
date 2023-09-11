@@ -89,7 +89,6 @@ const Navbar = () => {
       });
       dispatch(getWishList());
     }
-    console.log(wishList);
   }, [currentUser]);
 
   //hover item

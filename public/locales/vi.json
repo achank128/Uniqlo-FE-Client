@@ -46,6 +46,8 @@
   "common_price": "Giá",
   "common_notice": "Chú ý",
   "common_continue": "Tiếp tục",
+  "common_confirm": "Xác nhận",
+  "common_cancel": "Hủy bỏ",
 
   "home": "Trang chủ",
   "home_important_notice": "Thông báo quan trọng",
@@ -127,6 +129,8 @@
   "order_continue_payment": "Tiếp tục thanh toán",
   "order_place_notice": "Nhấn đặt hàng để hoàn tất mua hàng",
   "order_place": "Đặt hàng",
+  "order_place_confirm": "Xác nhận đơn đặt hàng",
+  "order_place_confirm_content": "Xác nhận đơn đặt hàng của bạn.",
 
   "auth": "Auth",
   "auth_login": "Đăng nhập",
