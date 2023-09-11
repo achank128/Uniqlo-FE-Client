@@ -26,10 +26,12 @@ import { toast } from 'react-toastify';
 import AddressForm from '../../components/addressForm/AddressForm';
 import addressApi from '../../../api/apiAddress';
 import orderApi from '../../../api/apiOrder';
+import { useTranslation } from 'react-i18next';
 
 const formater = Intl.NumberFormat('de-DE');
 
 const Checkout = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector(userSelector);
@@ -103,12 +105,18 @@ const Checkout = () => {
       paymentNote: '',
       orderItems: orderItems,
     };
-
-    const res = await orderApi.createOrder(body);
-    dispatch(clearCart(cart.id)).then(() => {
-      toast.success(res.message);
-      navigate('/order');
-    });
+    try {
+      setLoading(true);
+      const res = await orderApi.createOrder(body);
+      setLoading(false);
+      dispatch(clearCart(cart.id)).then(() => {
+        toast.success(res.message);
+        navigate('/order');
+      });
+    } catch (error) {
+      setLoading(false);
+      toast.error(error.response.data.Message);
+    }
   };
 
   useEffect(() => {
@@ -130,22 +138,7 @@ const Checkout = () => {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">{'Confirm your order'}</DialogTitle>
-          <DialogContent>
-            {/* <DialogContentText id="alert-dialog-description">
-              Full Name: <b>{address.fullName}</b>
-              <br></br>
-              Phone: <b>{address.phone}</b>
-              <br></br>
-              Address:{' '}
-              <b>
-                {address.addressDetail}, {address.address}
-              </b>
-              <br></br>
-              Order Items: <b>{amount}</b>
-              <br></br>
-              Order Total: <b>{formater.format(total)} VND</b>
-            </DialogContentText> */}
-          </DialogContent>
+          <DialogContent></DialogContent>
           <DialogActions>
             <Button onClick={() => setOpenConfirm(false)}>Disagree</Button>
             <Button onClick={() => {}} autoFocus>
@@ -158,62 +151,56 @@ const Checkout = () => {
             <div className="breadcrumb">
               <ul>
                 <li>
-                  <Link to="/">UNIQLO Home Page</Link>
+                  <Link to="/">{t('common_uniqlo')}</Link>
                 </li>
                 <li className="slash">/</li>
                 <li>
-                  <Link to="/cart">Shopping Cart</Link>
+                  <Link to="/cart">{t('cart_shopping_cart')}</Link>
                 </li>
                 <li className="slash">/</li>
-                <li>Checkout</li>
+                <li>{t('common_checkout')}</li>
               </ul>
             </div>
             <div className="checkout-title">
-              <h2>CHECKOUT</h2>
+              <h2>{t('common_checkout')}</h2>
             </div>
             <Grid container spacing={6} className="checkout-content">
               <Grid item md={8} className="checkout-form">
                 <div className="form-item">
                   <div className="heading">
-                    <h2>1. DELIVERY OPTION</h2>
+                    <h2>1. {t('order_delivery_option')}</h2>
                   </div>
 
                   {address ? (
                     <div className="shipping-date">
-                      <h4>DELIVERY DATE</h4>
+                      <h4>{t('order_delivery_date')}</h4>
                       <p>
-                        Shipping:{' '}
+                        {t('order_shipping')}:{' '}
                         <span className="fee">
-                          <b>50000 VND</b>
+                          <b>{formater.format(shippingFee)} VND</b>
                         </span>
                       </p>
-                      <p>Estimated delivery time: 13/09/2023</p>
+                      <p>{t('order_shipping_estimated_date')}: 13/09/2023</p>
                       <p>
-                        Notice: please find the details of delivery information in the email send
-                        after shipping containing alteration will take additional 2-4 days to
-                        deliver.
+                        {t('common_notice')}: {t('order_shipping_notice')}
                       </p>
                     </div>
                   ) : (
                     <div className="shipping-type">
                       <div className="radio-input">
-                        <label className={' checked'}>
+                        <label className={'checked'}>
                           <input type="radio" />
                           <span className="checkmark"></span>
-                          <span>Ship To Address</span>
+                          <span>{t('order_ship_to_address')}</span>
                         </label>
                         <p>
-                          Shipping:{' '}
+                          {t('order_shipping')}:{' '}
                           <span className="fee">
-                            <b>50000 VND</b>
+                            <b>{formater.format(shippingFee)} VND</b>
                           </span>
                         </p>
                         <p>
-                          <b>
-                            Free shipping applies for home delivery orders above 1,500,000VND and
-                            all in store pick up (Click & Collect). After you click Checkout, your
-                            items will be reserved in cart for 30 minutes.
-                          </b>
+                          <b>{t('order_ship_notice')}</b>
                         </p>
                       </div>
                     </div>
@@ -221,7 +208,7 @@ const Checkout = () => {
 
                   {address ? (
                     <div className="shipping-address">
-                      <h4>SHIPPING ADDRESS</h4>
+                      <h4>{t('order_shipping_address')}</h4>
                       <div className="info">
                         <div className="name">{address.fullName}</div>
                         <p>
@@ -229,7 +216,11 @@ const Checkout = () => {
                           {address.district?.fullName}, {address.province?.fullName}
                         </p>
                         <p>{address.phone}</p>
-                        {address.note && <p>Note: {address.note}</p>}
+                        {address.note && (
+                          <p>
+                            {t('common_note')}: {address.note}
+                          </p>
+                        )}
                       </div>
                       <IconButton aria-label="edit" className="btn-edit">
                         <Edit />
@@ -241,7 +232,7 @@ const Checkout = () => {
 
                   {!shipmentSubmit && address && (
                     <button className="btn-continue" onClick={handleSubmitShipment}>
-                      CONTINUE TO PAYMENT
+                      {t('order_continue_payment')}
                     </button>
                   )}
                 </div>
@@ -250,12 +241,12 @@ const Checkout = () => {
                   paymentSubmit ? (
                     <div className="form-item">
                       <div className="heading">
-                        <h2>2. PAYMENT OPTION</h2>
+                        <h2>2. {t('order_payment_option')}</h2>
                       </div>
                       <div className="payment-content">
                         <p>
                           <Check style={{ marginBottom: '-6px', marginRight: '6px' }} />
-                          <b>CASH ON DELIVERY</b>
+                          <b>{t('order_payment_cash')}</b>
                         </p>
                         <IconButton
                           aria-label="edit"
@@ -269,8 +260,8 @@ const Checkout = () => {
                   ) : (
                     <div className="form-item">
                       <div className="heading">
-                        <h2>2. PAYMENT OPTION</h2>
-                        <p>Please select your payment option</p>
+                        <h2>2. {t('order_payment_option')}</h2>
+                        <p>{t('order_plese_select_payment_option')}</p>
                       </div>
 
                       <div className="payment-option">
@@ -284,7 +275,7 @@ const Checkout = () => {
                               onChange={(e) => setPaymentType(e.target.value)}
                             />
                             <span className="checkmark"></span>
-                            <span>Card On Delivery</span>
+                            <span>{t('order_payment_cash')}</span>
                           </label>
                         </div>
                         <div className="radio-input">
@@ -297,7 +288,7 @@ const Checkout = () => {
                               onChange={(e) => setPaymentType(e.target.value)}
                             />
                             <span className="checkmark"></span>
-                            <span>Credit/Debit Card</span>
+                            <span>{t('order_payment_credit')}</span>
                           </label>
                         </div>
                         <div className="radio-input">
@@ -310,26 +301,24 @@ const Checkout = () => {
                               onChange={(e) => setPaymentType(e.target.value)}
                             />
                             <span className="checkmark"></span>
-                            <span>ATM Card</span>
+                            <span>{t('order_payment_atm')}</span>
                           </label>
                         </div>
                       </div>
 
                       <div className="payment-content">
-                        <p>
-                          Please make payment to carrier in cash when carrier deliveries your order.
-                        </p>
+                        <p>{t('order_payment_cash_notice')}</p>
                       </div>
 
                       <button className="btn-continue" onClick={handleSubmitPayment}>
-                        CONTINUE
+                        {t('common_continue')}
                       </button>
                     </div>
                   )
                 ) : (
                   <div className="form-item disabled">
                     <div className="heading">
-                      <h2>2. PAYMENT OPTION</h2>
+                      <h2>2. {t('order_payment_option')}</h2>
                     </div>
                   </div>
                 )}
@@ -337,40 +326,40 @@ const Checkout = () => {
                 {shipmentSubmit && paymentSubmit ? (
                   <div className="form-item">
                     <div className="heading">
-                      <h2>3. ORDER SUMMARY</h2>
+                      <h2>3. {t('common_order_summary')}</h2>
                     </div>
                     <div className="order-summary">
                       <div className="item-subtotal">
-                        <div>Item(s) subtotal</div>
+                        <div>{t('common_items_subtotal')}</div>
                         <div className="total">{formater.format(subtotal)} VND</div>
                       </div>
                       <div className="shipping">
-                        <div>Shipping Fee</div>
+                        <div>{t('common_shipping_fee')}</div>
                         <div className="total">{formater.format(shippingFee)} VND</div>
                       </div>
                       <div className="subtotal">
-                        <div>SUBTOTAL</div>
+                        <div>{t('common_subtotal')}</div>
                         <div className="total">{formater.format(subtotal)} VND</div>
                       </div>
                       <div className="vat">
-                        <div>VAT included</div>
+                        <div>{t('common_vat_included')}</div>
                         <div className="total">{formater.format(subtotal * 0.1)} VND</div>
                       </div>
                       <div className="order-total">
-                        <div>ORDER TOTAL</div>
+                        <div>{t('common_order_total')}</div>
                         <div className="total">{formater.format(total)} VND</div>
                       </div>
                     </div>
 
                     <button className="btn-submit" onClick={handleSubmitOrder}>
-                      PLACE ORDER
+                      {t('order_place')}
                     </button>
-                    <p className="place-order-text">Press Place Order to complete your purchase.</p>
+                    <p className="place-order-text">{t('order_place_notice')}</p>
                   </div>
                 ) : (
                   <div className="form-item disabled">
                     <div className="heading">
-                      <h2>3. ORDER SUMMARY</h2>
+                      <h2>3. {t('common_order_summary')}</h2>
                     </div>
                   </div>
                 )}
@@ -378,30 +367,34 @@ const Checkout = () => {
 
               <Grid item md={4} className="summary">
                 <div className="summary-content">
-                  <h3 className="title">ORDER SUMMARY| {amount} ITEM(S)</h3>
+                  <h3 className="title">
+                    {t('common_order_summary')}| {amount} {t('common_items')}
+                  </h3>
                   <div className="item-subtotal">
-                    <div className="label">Item(s) subtotal</div>
+                    <div className="label">{t('common_items_subtotal')}</div>
                     <div className="total">{formater.format(subtotal)} VND</div>
                   </div>
                   <div className="shipping">
-                    <div className="label">Shipping Fee</div>
+                    <div className="label">{t('common_shipping_fee')}</div>
                     <div className="total">{formater.format(shippingFee)} VND</div>
                   </div>
                   <div className="subtotal">
-                    <div className="label">SUBTOTAL</div>
+                    <div className="label">{t('common_subtotal')}</div>
                     <div className="total">{formater.format(subtotal)} VND</div>
                   </div>
                   <div className="vat">
-                    <div className="label">VAT included</div>
+                    <div className="label">{t('common_vat_included')}</div>
                     <div className="total">{formater.format(subtotal * 0.1)} VND</div>
                   </div>
                   <div className="order-total">
-                    <div className="label">ORDER TOTAL</div>
+                    <div className="label">{t('common_order_total')}</div>
                     <div className="total">{formater.format(total)} VND</div>
                   </div>
                 </div>
                 <div className="summary-content">
-                  <h3 className="title">ORDER {amount} ITEM (S)</h3>
+                  <h3 className="title">
+                    {t('order')} {amount} {t('common_items')}
+                  </h3>
                   <div className="list-img-item">
                     {cart.cartItems.map((item) => (
                       <div className="item-img" key={item.id}>
@@ -413,7 +406,7 @@ const Checkout = () => {
                 </div>
                 <div className="coupon">
                   <span>
-                    <ConfirmationNumberOutlined className="icon-coupon" /> Coupon
+                    <ConfirmationNumberOutlined className="icon-coupon" /> {t('common_coupon')}
                   </span>
                   <span className="arrow-down">
                     <KeyboardArrowDown className="arrow-down-icon" />

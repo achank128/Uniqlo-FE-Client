@@ -1,10 +1,6 @@
 import axios from 'axios';
 import queryString from 'query-string';
-
-const getAccessToken = async () => {
-  var token = localStorage.getItem('accessToken');
-  return token;
-};
+import { getAccessToken } from '../../utils/auth';
 
 const userRequest = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
