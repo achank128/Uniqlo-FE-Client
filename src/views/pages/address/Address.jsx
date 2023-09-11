@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import './address.scss';
-import addressApi from '../../../../api/apiAddress';
+import addressApi from '../../../api/apiAddress';
 import { useQuery } from 'react-query';
-import Loading from '../../../components/loading/Loading';
+import Loading from '../../components/loading/Loading';
 import { Dialog, DialogContent, IconButton } from '@mui/material';
 import { Close, Edit } from '@mui/icons-material';
-import AddressForm from '../../../components/addressForm/AddressForm';
+import AddressForm from '../../components/addressForm/AddressForm';
 const Address = () => {
   const [openAddressForm, setOpenAddressForm] = useState(false);
   const { isLoading, data: addresses } = useQuery(['addresses'], () => addressApi.getMyAddress());

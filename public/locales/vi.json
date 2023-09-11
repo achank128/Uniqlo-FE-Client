@@ -42,6 +42,7 @@
   "common_material": "Chất liệu",
   "common_share": "Chia sẻ",
   "common_required": "Bắt buộc",
+  "common_price": "Giá",
 
   "home": "Trang chủ",
   "home_important_notice": "Thông báo quan trọng",
@@ -77,6 +78,9 @@
   "cart_checkout_desc": "Các mặt hàng của bạn sẽ được bảo lưu trong 30 phút tiếp theo sau khi nhấn nút 'Thanh toán'.",
   "cart_info_shipping": "Miễn phí giao hàng áp dụng cho đơn hàng giao tận nơi từ 1.500.000VND và tất cả các đơn nhận tại cửa hàng (Click & Collect).",
   "cart_empty": "Không có sản phẩm nào trong giỏ hàng của bạn.",
+  "cart_view": "Xem giỏ hàng",
+  "cart_item_added": "Sản phẩm đã được thêm vào giỏ hàng",
+  "cart_item_out_of_quantity": "Số lượng sản phẩm đã vượt quá giới hạn",
 
   "profile": "Hồ sơ",
 
@@ -112,5 +116,6 @@
   "product_add_to_wishlist": "Thêm vào danh sách mong muốn",
   "product_find_in_store": "Tìm sản phẩm còn tại cửa hàng",
   "product_in_stock": "Còn hàng",
-  "product_out_of_stock": "Hết hàng"
+  "product_out_of_stock": "Hết hàng",
+  "product_no_item": "Không tìm thấy sản phẩm nào."
 }

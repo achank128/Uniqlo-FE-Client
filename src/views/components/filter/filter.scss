@@ -1,0 +1,109 @@
+@use '../../../assets/scss/' as *;
+
+#filter {
+  padding-top: 8px;
+  .filter-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 4px;
+  }
+  .filter-active {
+    display: flex !important;
+  }
+  .size-list {
+    display: none;
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: $font-xsm;
+      color: $gray-color;
+      width: 46px;
+      height: 46px;
+      border: 1px solid $border-color;
+      margin-right: -1px;
+      cursor: pointer;
+      &:hover,
+      &.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid $text-color !important;
+        color: $text-color;
+        z-index: 1;
+      }
+    }
+  }
+  .color-list {
+    display: none;
+    flex-wrap: wrap;
+    li {
+      margin: 0px;
+      width: 46px;
+      height: 46px;
+      cursor: pointer;
+      &:hover,
+      &.active {
+        border: 2px solid $text-color;
+      }
+    }
+  }
+  .price-list {
+    display: none;
+    flex-direction: column;
+    li {
+      display: flex;
+      align-items: center;
+      font-size: $font-xsm;
+      color: $gray-color;
+      margin-bottom: 6px;
+      cursor: pointer;
+      .icon-check {
+        color: $border-color;
+        margin-right: 6px;
+      }
+      &:hover,
+      &.active {
+        color: $teal-color;
+        .icon-check {
+          color: $teal-color;
+        }
+      }
+    }
+    .price-selected {
+      color: $teal-color;
+      .icon-check {
+        color: $teal-color;
+      }
+    }
+  }
+  .ac-list {
+    display: none;
+    flex-direction: column;
+    li {
+      display: flex;
+      align-items: center;
+      font-size: $font-xsm;
+      color: $gray-color;
+      margin-bottom: 6px;
+      cursor: pointer;
+      .icon-check {
+        color: $border-color;
+        margin-right: 6px;
+      }
+      &:hover {
+        color: $teal-color;
+        .icon-check {
+          color: $teal-color;
+        }
+      }
+    }
+    .ac-selected {
+      color: $teal-color;
+      .icon-check {
+        color: $teal-color;
+      }
+    }
+  }
+}

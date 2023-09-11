@@ -4,7 +4,6 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 
 const Profile = () => {
   const location = useLocation();
-  console.log(location);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);

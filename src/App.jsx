@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 //components
 import Navbar from './views/layouts/navbar/Navbar';
 import Footer from './views/layouts/footer/Footer';
+import Error from './views/pages/Error';
 import Home from './views/pages/home/Home';
 import Product from './views/pages/product/Product';
 import ProductList from './views/pages/productList/ProductList';
@@ -16,11 +17,10 @@ import Login from './views/pages/login/Login';
 import Register from './views/pages/register/Register';
 import Profile from './views/pages/profile/Profile';
 import Checkout from './views/pages/checkout/Checkout';
-import Error from './views/pages/Error';
-import Order from './views/pages/order/Order';
 import Details from './views/pages/profile/details/Details';
-import Coupon from './views/pages/profile/coupon/Coupon';
-import Address from './views/pages/profile/address/Address';
+import Order from './views/pages/order/Order';
+import Coupon from './views/pages/coupon/Coupon';
+import Address from './views/pages/address/Address';
 
 function App() {
   return (

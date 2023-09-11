@@ -3,6 +3,7 @@ import cartApi from '../../api/apiCart';
 import { toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
 import { isUserLoggedIn } from '../../utils/auth';
+import { t } from 'i18next';
 
 const cartDefault = {
   id: uuidv4(),
@@ -43,10 +44,21 @@ const cartSlice = createSlice({
       })
       .addCase(getCart.fulfilled, (state, action) => {
         state.cart = action.payload;
+        state.cart.cartItems = state.cart.cartItems.map((item) => {
+          if (item.quantity > item.productDetail.inStock) {
+            item.quantity = item.productDetail.inStock;
+            return item;
+          }
+          return item;
+        });
         state.isLoadingCart = false;
         localStorage.setItem('cart', JSON.stringify(state.cart));
       })
+      .addCase(addCartItem.pending, (state, action) => {
+        state.isLoadingCart = true;
+      })
       .addCase(addCartItem.fulfilled, (state, action) => {
+        state.isLoadingCart = false;
         const inCartItem = state.cart.cartItems.find((item) => item.id === action.payload.id);
         if (inCartItem) {
           state.cart.cartItems = state.cart.cartItems.map((item) => {
@@ -55,15 +67,16 @@ const cartSlice = createSlice({
             }
             return item;
           });
-          toast.success('Item has been update in your cart!');
         } else {
           state.cart.cartItems.push(action.payload);
-          toast.success('Item has been add to your cart!');
         }
         localStorage.setItem('cart', JSON.stringify(state.cart));
       })
+      .addCase(updateQuantity.pending, (state, action) => {
+        state.isLoadingCart = true;
+      })
       .addCase(updateQuantity.fulfilled, (state, action) => {
-        console.log('update quantity:', action.payload);
+        state.isLoadingCart = false;
         state.cart.cartItems = state.cart.cartItems.map((item) => {
           if (item.id === action.payload.id) {
             return { ...item, quantity: action.payload.quantity };
@@ -72,7 +85,11 @@ const cartSlice = createSlice({
         });
         localStorage.setItem('cart', JSON.stringify(state.cart));
       })
+      .addCase(removeCartItem.pending, (state, action) => {
+        state.isLoadingCart = true;
+      })
       .addCase(removeCartItem.fulfilled, (state, action) => {
+        state.isLoadingCart = false;
         state.cart.cartItems = state.cart.cartItems.filter((item) => item.id !== action.payload);
         toast.info('Item has been removed from your cart!');
         localStorage.setItem('cart', JSON.stringify(state.cart));
@@ -98,15 +115,21 @@ export const addCartItem = createAsyncThunk('cart/addCartItem', async (body, thu
   );
 
   if (itemInCart) {
-    if (isUserLoggedIn()) {
-      let upbody = {
-        id: itemInCart.id,
-        quantity: itemInCart.quantity + body.quantity,
-      };
-      const res = await cartApi.updateQuantityCartItem(upbody);
-      return res.data;
+    let newQuantity = itemInCart.quantity + body.quantity;
+    if (newQuantity < itemInCart.productDetail.inStock) {
+      if (isUserLoggedIn()) {
+        let upbody = {
+          id: itemInCart.id,
+          quantity: newQuantity,
+        };
+        const res = await cartApi.updateQuantityCartItem(upbody);
+        return res.data;
+      } else {
+        itemInCart.quantity = newQuantity;
+        return itemInCart;
+      }
     } else {
-      itemInCart.quantity = itemInCart.quantity + body.quantity;
+      toast.warning(t('cart_item_out_of_quantity'));
       return itemInCart;
     }
   } else {
@@ -140,6 +163,7 @@ export const clearCart = createAsyncThunk('cart/clearCart', async (id) => {
 });
 
 export const cartSelector = (state) => state.cartSlice.cart;
+export const loadingCartSelector = (state) => state.cartSlice.isLoadingCart;
 export const amountSelector = (state) => state.cartSlice.amount;
 export const subTotalSelector = (state) => state.cartSlice.subtotal;
 

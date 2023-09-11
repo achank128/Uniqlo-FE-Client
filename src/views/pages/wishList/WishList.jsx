@@ -32,7 +32,7 @@ const WishList = () => {
                 <li>{t('wish_list')}</li>
               </ul>
             </div>
-            <div className="title">
+            <div className="wishlist-title">
               <h2>{t('wish_list')}</h2>
             </div>
             <div className="list-items">

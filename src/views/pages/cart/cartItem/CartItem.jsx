@@ -119,22 +119,6 @@ const CartItem = ({ item }) => {
               >
                 3
               </li>
-              <li
-                onClick={() => {
-                  handleUpdateQuantity(4);
-                  setQuantityOn(!quantityOn);
-                }}
-              >
-                4
-              </li>
-              <li
-                onClick={() => {
-                  handleUpdateQuantity(5);
-                  setQuantityOn(!quantityOn);
-                }}
-              >
-                5
-              </li>
             </ul>
           </div>
           <div className="subtotal">

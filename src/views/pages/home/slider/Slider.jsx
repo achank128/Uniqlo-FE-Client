@@ -2,7 +2,7 @@ import React from 'react';
 import './slider.scss';
 import { useQuery } from 'react-query';
 import SliderItem from './sliderItem/SliderItem';
-import { collectionApi } from '../../../../api/apiCollection';
+import collectionApi from '../../../../api/apiCollection';
 import Loading from '../../../components/loading/Loading';
 
 const Slider = () => {
@@ -14,7 +14,7 @@ const Slider = () => {
         <Loading />
       ) : (
         <div className="warpper">
-          {data.map((collection, index) => {
+          {data?.map((collection, index) => {
             return (
               <SliderItem
                 key={collection.id}

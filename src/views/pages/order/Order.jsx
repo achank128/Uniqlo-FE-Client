@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import './order.scss';
 import Loading from '../../components/loading/Loading';
-import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import orderApi from '../../../api/apiOrder';
 import OrderItem from './orderItem/OrderItem';
@@ -18,27 +17,23 @@ const Order = () => {
     window.scrollTo(0, 0);
   }, [userOrders]);
 
-  if (isError) return <div>Something wrong...</div>;
+  if (isError) return <div>Something went wrong...</div>;
 
   return (
-    <>
+    <div id="order">
+      <div className="heading">
+        <h3>ORDER</h3>
+      </div>
       {isLoading ? (
-        <div id="loading-overlay">
-          <Loading />
-        </div>
+        <Loading />
       ) : (
-        <div id="order">
-          <div className="heading">
-            <h3>ORDER</h3>
-          </div>
-          <div className="list">
-            {userOrders.map((order) => (
-              <OrderItem key={order.id} order={order} />
-            ))}
-          </div>
+        <div className="list">
+          {userOrders.map((order) => (
+            <OrderItem key={order.id} order={order} />
+          ))}
         </div>
       )}
-    </>
+    </div>
   );
 };
 

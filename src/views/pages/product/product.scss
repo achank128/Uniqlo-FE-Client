@@ -292,11 +292,16 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            cursor: pointer;
             border: 1px solid $border-color;
             user-select: none;
             padding: 0 8px 0 16px;
             width: 135px;
             height: 45px;
+            &.disabled {
+              cursor: default;
+              opacity: 0.8;
+            }
           }
           .quanlity-list {
             display: none;
@@ -315,6 +320,10 @@
                 color: $teal-color;
               }
             }
+          }
+          .in-stock {
+            font-size: $font-xsm;
+            color: $gray-color;
           }
         }
         .add-to-cart {
@@ -364,6 +373,39 @@
           }
         }
       }
+    }
+  }
+}
+#cart-confirm {
+  .title {
+    text-transform: uppercase;
+    font-size: $font-lg;
+    font-weight: 700;
+  }
+  .item-confirm,
+  .total-confirm {
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .total-confirm {
+    font-size: $font-med;
+  }
+
+  .confirm-action {
+    display: flex;
+    padding: 0 20px;
+    margin-bottom: 30px;
+    gap: 20px;
+    .btn-cart-view {
+      @include btnBlack;
+    }
+    .btn-continue {
+      flex: 1;
+      @include btnWhite;
     }
   }
 }

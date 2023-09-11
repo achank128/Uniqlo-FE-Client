@@ -5,9 +5,10 @@
     @include tablet {
       padding: 0 20px;
     }
-    .title {
+    .wishlist-title {
       margin: 40px 0;
       h2 {
+        text-transform: uppercase;
         font-weight: 700;
       }
     }

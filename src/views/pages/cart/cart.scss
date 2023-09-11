@@ -6,7 +6,7 @@
       padding: 0 20px;
     }
     .cart-title {
-      margin: 20px 0;
+      margin: 40px 0;
       h2 {
         text-transform: uppercase;
         font-weight: 700;
@@ -60,10 +60,10 @@
           display: flex;
           align-items: center;
           justify-content: space-between;
-          margin-bottom: 30px;
           font-size: $font-xsm;
         }
         .subtotal {
+          margin-top: 30px;
           text-transform: uppercase;
           display: flex;
           align-items: center;
@@ -77,11 +77,9 @@
           justify-content: space-between;
           font-size: $font-xsm;
         }
-        .shipping {
-          margin-bottom: 30px;
-        }
 
         .order-total {
+          margin-top: 30px;
           text-transform: uppercase;
           display: flex;
           align-items: center;

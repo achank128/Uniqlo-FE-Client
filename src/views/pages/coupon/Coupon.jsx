@@ -3,8 +3,8 @@ import { IconButton } from '@mui/material';
 import React from 'react';
 import './coupon.scss';
 import { useQuery } from 'react-query';
-import couponApi from '../../../../api/apiCoupon';
-import Loading from '../../../components/loading/Loading';
+import couponApi from '../../../api/apiCoupon';
+import Loading from '../../components/loading/Loading';
 
 const Coupon = () => {
   const { isLoading, data: coupons } = useQuery(['coupons'], () => couponApi.getMyCoupon());

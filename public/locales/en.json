@@ -42,6 +42,7 @@
   "common_material": "Material",
   "common_share": "Share",
   "common_required": "Required",
+  "common_price": "Price",
 
   "home": "Home",
   "home_important_notice": "Important Notice",
@@ -77,6 +78,9 @@
   "cart_checkout_desc": "Your items will be reserved for the next 30 minutes after the 'Checkout' button has been pressed.",
   "cart_info_shipping": "If you purchase additional 1.500.000 VND (VAT included), you will get free shipping.",
   "cart_empty": "Your cart is currently empty.",
+  "cart_view": "View Cart",
+  "cart_item_added": "Items added to your cart",
+  "cart_item_out_of_quantity": "Item quantity has exceeded the limit",
 
   "profile": "Profile",
 
@@ -112,5 +116,6 @@
   "product_add_to_wishlist": "Add to Wish list",
   "product_find_in_store": "Find stock in store",
   "product_in_stock": "In stock",
-  "product_out_of_stock": "Out of stock"
+  "product_out_of_stock": "Out of stock",
+  "product_no_item": "No items found."
 }

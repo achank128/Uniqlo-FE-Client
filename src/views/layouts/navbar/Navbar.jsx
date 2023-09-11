@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './navbar.scss';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Search,
   FavoriteBorder,
@@ -13,8 +13,8 @@ import { authAction, userSelector } from '../../../redux/slices/authSlice';
 //components
 import Flyout from './flyout/Flyout';
 import Announcement from './announcement/Announcement';
-import { categoryApi } from '../../../api/apiCategory';
-import { genderTypeApi } from '../../../api/apiGenderType';
+import categoryApi from '../../../api/apiCategory';
+import genderTypeApi from '../../../api/apiGenderType';
 import { amountSelector, cartAction, getCart } from '../../../redux/slices/cartSlice';
 import { getWishList, wishListSelector } from '../../../redux/slices/wishListSlice';
 import { useTranslation } from 'react-i18next';
@@ -23,6 +23,8 @@ const Navbar = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [searchParams] = useSearchParams();
+  const search = searchParams.get('search');
   const currentUser = useSelector(userSelector);
   const amount = useSelector(amountSelector);
   const wishList = useSelector(wishListSelector);
@@ -36,7 +38,7 @@ const Navbar = () => {
   const [CategoriesMen, setCategoriesMen] = useState([]);
   const [CategoriesKids, setCategoriesKids] = useState([]);
   const [CategoriesBaby, setCategoriesBaby] = useState([]);
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState(searchParams.get('search') || '');
 
   const getCategoriesWomen = async () => {
     const data = await categoryApi.getCategories(1);
@@ -63,6 +65,15 @@ const Navbar = () => {
     setGenderType(data);
   };
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    navigate('/products?search=' + searchText);
+  };
+
+  useEffect(() => {
+    if (search) setSearchText(search);
+  }, [search]);
+
   useEffect(() => {
     getGenderTypes();
     getCategoriesWomen();
@@ -78,6 +89,7 @@ const Navbar = () => {
       });
       dispatch(getWishList());
     }
+    console.log(wishList);
   }, [currentUser]);
 
   //hover item
@@ -147,7 +159,7 @@ const Navbar = () => {
 
             <div className="nav-right">
               <div className="searchform item">
-                <form onSubmit={() => {}}>
+                <form onSubmit={handleSearch}>
                   <input
                     className="search-input"
                     type="text"
