@@ -50,3 +50,35 @@ export const priceFilters = [
     label: 'Over 999.000 VND',
   },
 ];
+
+export const OrderStatus = {
+  OPEN: 'order_open',
+  CONFIRMED: 'order_confirmed',
+  COMPLETED: 'order_completed',
+  CANCELLED: 'order_cancelded',
+};
+
+export const ShipmentStatus = {
+  PENDING: 'order_shipment_pending',
+  SHIPPING: 'order_shipment_shipping',
+  SHIPPED: 'order_shipment_shipped',
+  ARRIVED: 'order_shipment_Arrived',
+  COLLECTED: 'order_shipment_Collected',
+  RETURNING: 'order_shipment_returning',
+  RETURNED: 'order_shipment_returned',
+};
+
+export const PaymentStatus = {
+  UNPAID: 'order_payment_unpaid',
+  FAILED: 'order_payment_failed',
+  EXPIRED: 'order_payment_expired',
+  PAID: 'order_payment_paid',
+  RETURNING: 'order_payment_returning',
+  RETURNED: 'order_payment_returned',
+};
+
+export const PaymentTypes = {
+  CASH: 'order_payment_cash',
+  CREDIT: 'order_payment_credit',
+  ATM: 'order_payment_atm',
+};

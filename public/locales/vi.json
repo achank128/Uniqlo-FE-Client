@@ -48,6 +48,7 @@
   "common_continue": "Tiếp tục",
   "common_confirm": "Xác nhận",
   "common_cancel": "Hủy bỏ",
+  "common_cancelled": "Đã hủy",
 
   "home": "Trang chủ",
   "home_important_notice": "Thông báo quan trọng",
@@ -131,6 +132,15 @@
   "order_place": "Đặt hàng",
   "order_place_confirm": "Xác nhận đơn đặt hàng",
   "order_place_confirm_content": "Xác nhận đơn đặt hàng của bạn.",
+  "order_payment_status": "Trạng thái thanh toán",
+  "order_created_date": "Ngày đặt hàng",
+  "order_received_date": "Ngày nhận hàng",
+  "order_estimate": "Dự kiến",
+  "order_cancel": "Hủy đơn hàng",
+  "order_confirm_cancel": "Xác nhận hủy đơn hàng",
+  "order_are_you_sure_cancel": "Bạn có chắc chắn muốn hủy đơn hàng này?",
+  "order_reason_cancel": "Lý do hủy",
+  "order_cancel_date": "Ngày hủy",
 
   "auth": "Auth",
   "auth_login": "Đăng nhập",

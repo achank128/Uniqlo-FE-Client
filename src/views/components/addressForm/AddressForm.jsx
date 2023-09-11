@@ -138,7 +138,7 @@ const AddressForm = () => {
           option.
         </p>
 
-        <button className="btn-submit">SAVE ADDRESS</button>
+        <button className="btn-submit-address">SAVE ADDRESS</button>
       </div>
     </div>
   );

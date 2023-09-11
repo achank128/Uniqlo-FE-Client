@@ -8,16 +8,20 @@
     flex-direction: column;
     .status {
       display: flex;
+      .order-status {
+        text-transform: uppercase;
+        color: $yellow-color;
+      }
+      .order-status-cancel {
+        text-transform: uppercase;
+        color: $red-color;
+      }
       .shipment-status {
         color: $teal-color;
-      }
-      .order-status {
-        color: $yellow-color;
       }
     }
 
     .date-info {
-      margin-bottom: 20px;
       font-size: $font-xsm;
     }
 
@@ -31,6 +35,9 @@
         text-transform: uppercase;
         font-weight: 700;
         font-size: $font-med;
+      }
+      .status {
+        text-transform: uppercase;
       }
       .desc {
         font-size: $font-xsm;

@@ -48,6 +48,7 @@
   "common_continue": "Continue",
   "common_confirm": "Confirm",
   "common_cancel": "Cancel",
+  "common_cancelled": "Cancelled",
 
   "home": "Home",
   "home_important_notice": "Important Notice",
@@ -131,6 +132,15 @@
   "order_place": "Place order",
   "order_place_confirm": "Confirm Place Order",
   "order_place_confirm_content": "Confirm place this order.",
+  "order_payment_status": "Payment status",
+  "order_created_date": "Order date",
+  "order_received_date": "Arrived date",
+  "order_estimate": "Estimate",
+  "order_cancel": "Cancel order",
+  "order_confirm_cancel": "Confirm cancel order",
+  "order_are_you_sure_cancel": "Are you sure you want to cancel this order?",
+  "order_reason_cancel": "Reason cancel",
+  "order_cancel_date": "Cancel date",
 
   "auth": "Auth",
   "auth_login": "Login",
