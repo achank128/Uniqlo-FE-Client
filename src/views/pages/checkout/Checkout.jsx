@@ -12,7 +12,10 @@ import {
   amountSelector,
   cartSelector,
   clearCart,
+  couponSelector,
+  discountSelector,
   subTotalSelector,
+  totalSelector,
 } from '../../../redux/slices/cartSlice';
 import { toast } from 'react-toastify';
 import AddressForm from '../../components/addressForm/AddressForm';
@@ -20,6 +23,7 @@ import addressApi from '../../../api/apiAddress';
 import orderApi from '../../../api/apiOrder';
 import { useTranslation } from 'react-i18next';
 import Confirm from '../../components/confirm/Confirm';
+import AddCoupon from '../../components/addCoupon/AddCoupon';
 
 const formater = Intl.NumberFormat('de-DE');
 
@@ -31,14 +35,15 @@ const Checkout = () => {
   const cart = useSelector(cartSelector);
   const amount = useSelector(amountSelector);
   const subtotal = useSelector(subTotalSelector);
+  const discount = useSelector(discountSelector);
+  const total = useSelector(totalSelector);
+  const coupon = useSelector(couponSelector);
   const [loading, setLoading] = useState(false);
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [openAddCoupon, setOpenAddCoupon] = useState(false);
   const [shipmentSubmit, setShipmentSubmit] = useState(false);
   const [paymentSubmit, setPaymentSubmit] = useState(false);
-  const [shippingFee, setShippingFee] = useState(30000);
-  const [discount, setDiscount] = useState(0);
-  const [total, setTotal] = useState(subtotal);
-  const [coupon, setCoupon] = useState();
+  const [shippingFee, setShippingFee] = useState(50000);
   const [address, setAddress] = useState();
   const [paymentType, setPaymentType] = useState('CASH');
 
@@ -48,12 +53,14 @@ const Checkout = () => {
     if (userAddress) {
       const addrs = userAddress.find((ad) => ad.isDefault);
       setAddress(addrs);
+      if (addrs.provinceCode === '01') {
+        setShippingFee(30000);
+      }
     }
-  }, [userAddress]);
-
-  useEffect(() => {
-    setTotal(subtotal + shippingFee);
-  }, [subtotal, shippingFee]);
+    if (subtotal >= 1500000) {
+      setShippingFee(0);
+    }
+  }, [userAddress, subtotal]);
 
   const handleSubmitShipment = () => {
     setShipmentSubmit(true);
@@ -308,25 +315,29 @@ const Checkout = () => {
                       <h2>3. {t('common_order_summary')}</h2>
                     </div>
                     <div className="order-summary">
-                      <div className="item-subtotal">
+                      <div className="item-summary item-subtotal">
                         <div>{t('common_items_subtotal')}</div>
                         <div className="total">{formater.format(subtotal)} VND</div>
                       </div>
-                      <div className="shipping">
+                      <div className="item-summary shipping">
                         <div>{t('common_shipping_fee')}</div>
-                        <div className="total">{formater.format(shippingFee)} VND</div>
+                        <div>{formater.format(shippingFee)} VND</div>
                       </div>
-                      <div className="subtotal">
+                      <div className="item-summary subtotal">
                         <div>{t('common_subtotal')}</div>
-                        <div className="total">{formater.format(subtotal)} VND</div>
+                        <div>{formater.format(subtotal + shippingFee)} VND</div>
                       </div>
-                      <div className="vat">
+                      <div className="item-summary vat">
                         <div>{t('common_vat_included')}</div>
-                        <div className="total">{formater.format(subtotal * 0.1)} VND</div>
+                        <div>{formater.format(subtotal * 0.1)} VND</div>
                       </div>
-                      <div className="order-total">
+                      <div className="item-summary discount">
+                        <div>{t('common_discount')}</div>
+                        <div>- {formater.format(discount)} VND</div>
+                      </div>
+                      <div className="item-summary order-total">
                         <div>{t('common_order_total')}</div>
-                        <div className="total">{formater.format(total)} VND</div>
+                        <div>{formater.format(total + shippingFee)} VND</div>
                       </div>
                     </div>
 
@@ -349,25 +360,31 @@ const Checkout = () => {
                   <h3 className="title">
                     {t('common_order_summary')}| {amount} {t('common_items')}
                   </h3>
-                  <div className="item-subtotal">
-                    <div className="label">{t('common_items_subtotal')}</div>
-                    <div className="total">{formater.format(subtotal)} VND</div>
+                  <div className="item-summary item-subtotal">
+                    <div>{t('common_items_subtotal')}</div>
+                    <div>{formater.format(subtotal)} VND</div>
                   </div>
-                  <div className="shipping">
-                    <div className="label">{t('common_shipping_fee')}</div>
-                    <div className="total">{formater.format(shippingFee)} VND</div>
+                  <div className="item-summary shipping">
+                    <div>{t('common_shipping_fee')}</div>
+                    <div>{formater.format(shippingFee)} VND</div>
                   </div>
-                  <div className="subtotal">
-                    <div className="label">{t('common_subtotal')}</div>
-                    <div className="total">{formater.format(subtotal)} VND</div>
+                  <div className="item-summary subtotal">
+                    <div>{t('common_subtotal')}</div>
+                    <div>{formater.format(subtotal + shippingFee)} VND</div>
                   </div>
-                  <div className="vat">
-                    <div className="label">{t('common_vat_included')}</div>
-                    <div className="total">{formater.format(subtotal * 0.1)} VND</div>
+                  <div className="item-summary vat">
+                    <div>{t('common_vat_included')}</div>
+                    <div>{formater.format(subtotal * 0.1)} VND</div>
                   </div>
-                  <div className="order-total">
-                    <div className="label">{t('common_order_total')}</div>
-                    <div className="total">{formater.format(total)} VND</div>
+                  {discount > 0 && (
+                    <div className="item-summary discount">
+                      <div>{t('common_discount')}</div>
+                      <div>- {formater.format(discount)} VND</div>
+                    </div>
+                  )}
+                  <div className="item-summary order-total">
+                    <div>{t('common_order_total')}</div>
+                    <div>{formater.format(total + shippingFee)} VND</div>
                   </div>
                 </div>
                 <div className="summary-content">
@@ -383,10 +400,16 @@ const Checkout = () => {
                     ))}
                   </div>
                 </div>
-                <div className="coupon">
-                  <span>
-                    <ConfirmationNumberOutlined className="icon-coupon" /> {t('common_coupon')}
-                  </span>
+                <div className="coupon" onClick={() => setOpenAddCoupon(true)}>
+                  {coupon ? (
+                    <span>
+                      <ConfirmationNumberOutlined className="icon-coupon" /> <b>{coupon.code}</b>
+                    </span>
+                  ) : (
+                    <span>
+                      <ConfirmationNumberOutlined className="icon-coupon" /> Coupon
+                    </span>
+                  )}
                   <span className="arrow-down">
                     <KeyboardArrowDown className="arrow-down-icon" />
                   </span>
@@ -403,6 +426,7 @@ const Checkout = () => {
           titleText={'order_place_confirm'}
           onConfirm={handleSubmitOrder}
         />
+        <AddCoupon open={openAddCoupon} setOpen={setOpenAddCoupon} />
       </div>
     </>
   );

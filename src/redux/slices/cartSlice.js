@@ -16,6 +16,9 @@ const cartSlice = createSlice({
     cart: JSON.parse(localStorage.getItem('cart')) || cartDefault,
     amount: 0,
     subtotal: 0,
+    discount: 0,
+    total: 0,
+    coupon: null,
     isLoadingCart: false,
   },
   reducers: {
@@ -34,6 +37,26 @@ const cartSlice = createSlice({
       );
       state.amount = amount;
       state.subtotal = subtotal;
+      state.total = subtotal;
+    },
+
+    addCoupon(state, action) {
+      if (state.subtotal >= action.payload.totalFrom) {
+        state.coupon = action.payload;
+        if (action.payload.percent) {
+          let discount = state.subtotal * (action.payload.percent / 100);
+          if (discount > action.payload.max) {
+            discount = action.payload.max;
+          }
+          state.discount = discount;
+          state.total = state.subtotal - discount;
+        } else {
+          state.discount = action.payload.discount;
+          state.total = state.subtotal - action.payload.discount;
+        }
+      } else {
+        toast.error(t('cart_total_not_enough'));
+      }
     },
   },
 
@@ -166,6 +189,9 @@ export const cartSelector = (state) => state.cartSlice.cart;
 export const loadingCartSelector = (state) => state.cartSlice.isLoadingCart;
 export const amountSelector = (state) => state.cartSlice.amount;
 export const subTotalSelector = (state) => state.cartSlice.subtotal;
+export const discountSelector = (state) => state.cartSlice.discount;
+export const totalSelector = (state) => state.cartSlice.total;
+export const couponSelector = (state) => state.cartSlice.coupon;
 
 export const cartAction = cartSlice.actions;
 

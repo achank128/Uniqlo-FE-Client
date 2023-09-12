@@ -120,12 +120,9 @@
         margin-bottom: 20px;
         .subtotal {
           text-transform: uppercase;
-          border-top: 1px solid $border-color;
           margin-top: 20px;
+          border-top: 1px solid $border-color;
           padding-top: 8px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
           font-weight: 700;
           font-size: 1.175rem;
         }
@@ -133,20 +130,14 @@
         .item-subtotal,
         .vat,
         .shipping {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
           margin-top: 6px;
         }
 
         .order-total {
           text-transform: uppercase;
-          border-top: 1px solid $border-color;
           margin-top: 20px;
+          border-top: 1px solid $border-color;
           padding-top: 8px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
           font-weight: 700;
           font-size: $font-med;
         }
@@ -155,6 +146,12 @@
         font-size: $font-xsm;
         color: $gray-color;
       }
+    }
+
+    .item-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
 
     .summary {
@@ -172,31 +169,24 @@
         .subtotal {
           text-transform: uppercase;
           margin-top: 30px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
           font-weight: 700;
           font-size: 1.175rem;
         }
-
         .item-subtotal,
         .vat,
         .shipping {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-top: 6px;
+          font-size: $font-xsm;
         }
-
+        .discount {
+          margin-top: 10px;
+        }
         .order-total {
           text-transform: uppercase;
           margin-top: 30px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
           font-weight: 700;
           font-size: $font-med;
         }
+
         .list-img-item {
           display: flex;
           flex-wrap: wrap;

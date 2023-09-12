@@ -24,19 +24,9 @@
     }
     .cart-content {
       margin-bottom: 100px;
-      display: flex;
-      gap: 80px;
-      @include tablet {
-        flex-direction: column;
-        padding: 0;
-        gap: 40px;
-      }
     }
-    .items {
-      flex: 2;
-    }
+
     .summary {
-      flex: 1;
       top: 140px;
       position: sticky;
       height: calc(100vh - $topHeight);
@@ -55,34 +45,28 @@
           font-weight: 700;
           margin-bottom: 30px;
         }
-        .item-subtotal {
+        .item-summary {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          font-size: $font-xsm;
         }
+
         .subtotal {
           margin-top: 30px;
           text-transform: uppercase;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
           font-weight: 700;
         }
+        .item-subtotal,
         .vat,
         .shipping {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
           font-size: $font-xsm;
         }
-
+        .discount {
+          margin-top: 10px;
+        }
         .order-total {
           margin-top: 30px;
           text-transform: uppercase;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
           font-weight: 700;
           font-size: $font-med;
         }

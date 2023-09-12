@@ -59,6 +59,8 @@
   "common_update": "Cập nhật",
   "common_edit": "Chỉnh sửa",
   "common_note": "Ghi chú",
+  "common_apply": "Áp dụng",
+  "common_applied": "Đã áp dụng",
 
   "home": "Trang chủ",
   "home_important_notice": "Thông báo quan trọng",
@@ -97,6 +99,7 @@
   "cart_view": "Xem giỏ hàng",
   "cart_item_added": "Sản phẩm đã được thêm vào giỏ hàng",
   "cart_item_out_of_quantity": "Số lượng sản phẩm đã vượt quá giới hạn",
+  "cart_total_not_enough": "Tổng giá trị đơn hàng không đủ",
 
   "profile": "Hồ sơ",
   "profile_address": "Địa chỉ",

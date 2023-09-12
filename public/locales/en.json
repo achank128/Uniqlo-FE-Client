@@ -59,6 +59,8 @@
   "common_update": "Update",
   "common_edit": "Edit",
   "common_note": "Note",
+  "common_apply": "Apply",
+  "common_applied": "Applied",
 
   "home": "Home",
   "home_important_notice": "Important Notice",
@@ -97,6 +99,7 @@
   "cart_view": "View Cart",
   "cart_item_added": "Items added to your cart",
   "cart_item_out_of_quantity": "Item quantity has exceeded the limit",
+  "cart_total_not_enough": "Total order value is not enough",
 
   "profile": "Profile",
   "profile_address": "Address",

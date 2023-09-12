@@ -1,0 +1,59 @@
+@use '../../../assets/scss' as *;
+
+#add-coupon {
+  .title {
+    text-transform: uppercase;
+    font-size: $font-lg;
+    font-weight: 700;
+  }
+  .search-coupon {
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    .btn-add {
+      @include btnBlack;
+      width: 60px;
+      height: 40px;
+    }
+  }
+  .list {
+    max-height: 400px;
+    overflow-y: auto;
+    .item {
+      position: relative;
+      display: flex;
+      padding: 20px 0;
+      border-bottom: 1px solid $border-color;
+      .img {
+        max-width: 160px;
+        margin-right: 20px;
+        @include mobile {
+          width: 100px;
+        }
+        img {
+          width: 100%;
+        }
+      }
+      .info {
+        display: flex;
+        flex-direction: column;
+        .name {
+          font-weight: 700;
+          font-size: $font-sm;
+          margin-bottom: 4px;
+        }
+        .code {
+          color: $gray-color;
+        }
+        .limited {
+          color: $red-color;
+          font-weight: 500;
+        }
+      }
+      .discount {
+        font-size: $font-xsm;
+      }
+    }
+  }
+}
