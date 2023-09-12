@@ -7,7 +7,7 @@ import { useQuery } from 'react-query';
 import dayjs from 'dayjs';
 import Loading from '../loading/Loading';
 import { toast } from 'react-toastify';
-import { Add, Close } from '@mui/icons-material';
+import { Close } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { cartAction, couponSelector, subTotalSelector } from '../../../redux/slices/cartSlice';
 
