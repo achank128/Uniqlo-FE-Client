@@ -8,6 +8,7 @@ import Loading from '../../components/loading/Loading';
 import { useDispatch } from 'react-redux';
 import { authAction } from '../../../redux/slices/authSlice';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const { t } = useTranslation();
@@ -28,11 +29,14 @@ const Login = () => {
       const res = await authApi.login({ email, password });
       dispatch(authAction.handleLogin(res.data));
       setLoading(false);
+      toast.success(t(res.message));
       navigate('/');
     } catch (error) {
       setError(true);
       setLoading(false);
-      setMsg(error.response.data.Message);
+      toast.error(t(error.response.data.Message));
+      setMsg(t(error.response.data.Message));
+      window.scrollTo(0, 0);
     }
   };
 
