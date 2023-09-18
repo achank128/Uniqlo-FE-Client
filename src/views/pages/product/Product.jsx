@@ -9,9 +9,10 @@ import {
   ArrowForwardIos,
   Facebook,
   KeyboardArrowDown,
+  Star,
   Twitter,
 } from '@mui/icons-material';
-import { Dialog, DialogContent, DialogTitle } from '@mui/material';
+import { Grid, MenuItem, Rating, Select, Slider } from '@mui/material';
 import {
   addCartItem,
   amountSelector,
@@ -20,19 +21,23 @@ import {
   loadingCartSelector,
   subTotalSelector,
 } from '../../../redux/slices/cartSlice';
+import { formater } from '../../../utils';
 import { addWishList } from '../../../redux/slices/wishListSlice';
 import productApi from '../../../api/apiProduct';
 import RatingStar from '../../components/ratingStar/RatingStar';
 import Loading from '../../components/loading/Loading';
 import Confirm from '../../components/confirm/Confirm';
-
-const formater = Intl.NumberFormat('de-DE');
+import { userSelector } from '../../../redux/slices/authSlice';
+import reviewApi from '../../../api/apiReview';
+import { toast } from 'react-toastify';
+import { HowToFits } from '../../../utils/const';
 
 const Product = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
   const dispatch = useDispatch();
+  const user = useSelector(userSelector);
   const cart = useSelector(cartSelector);
   const amount = useSelector(amountSelector);
   const subtotal = useSelector(subTotalSelector);
@@ -47,6 +52,22 @@ const Product = () => {
   const [index, setIndex] = useState(0);
   const [productSizeSorted, setProductSizeSorted] = useState([]);
   const [openCartConfirm, setOpenCartConfirm] = useState(false);
+  const [openAddReview, setOpenAddReview] = useState(false);
+  const [filterReview, setFilterReview] = useState({
+    pageIndex: 1,
+    pageSize: 10,
+    productId: id,
+    star: null,
+  });
+  const [reviewsData, setReviewsData] = useState();
+  const [loadingAR, setLoadingAR] = useState(false);
+  const [review, setReview] = useState({
+    star: null,
+    title: '',
+    content: '',
+    sizeId: '',
+    fit: 3,
+  });
 
   const {
     isLoading,
@@ -58,6 +79,29 @@ const Product = () => {
     ['productDetails', id],
     ({ queryKey }) => productApi.getProductDetails(queryKey[1]),
   );
+
+  const marks = [
+    {
+      value: 1,
+      label: t('review_fit_tight'),
+    },
+    {
+      value: 2,
+      label: t('review_fit_abit_tight'),
+    },
+    {
+      value: 3,
+      label: t('review_fit_true'),
+    },
+    {
+      value: 4,
+      label: t('review_fit_abit_loose'),
+    },
+    {
+      value: 5,
+      label: t('review_fit_loose'),
+    },
+  ];
 
   const lengthImg = product?.productImages?.length;
   const nextImg = () => {
@@ -103,12 +147,52 @@ const Product = () => {
     }
   };
 
+  const handleAddReview = async (e) => {
+    e.preventDefault();
+    const body = {
+      productId: product.id,
+      userId: user.id,
+      star: review.star,
+      title: review.title,
+      content: review.content,
+      sizeId: review.sizeId,
+      fit: review.fit,
+    };
+    try {
+      setLoadingAR(true);
+      const res = await reviewApi.addReview(body);
+      toast.success(res.message);
+      setOpenAddReview(false);
+      setLoadingAR(false);
+      handleGetReviews();
+      setReview({
+        star: null,
+        title: '',
+        content: '',
+        sizeId: '',
+        fit: 3,
+      });
+    } catch (error) {
+      setLoadingAR(false);
+      toast.error(error.response.data.Message);
+    }
+  };
+
+  const handleGetReviews = async (filter) => {
+    const res = await reviewApi.getReivewsProduct(filter);
+    setReviewsData(res);
+  };
+
   useEffect(() => {
     if (product) {
       let productSizes = [...product?.productSizes];
       setProductSizeSorted(productSizes.sort((a, b) => a.size.level - b.size.level));
     }
   }, [product]);
+
+  useEffect(() => {
+    handleGetReviews(filterReview);
+  }, [filterReview]);
 
   useEffect(() => {
     if (color && size) {
@@ -165,8 +249,8 @@ const Product = () => {
                 <li>{product.name}</li>
               </ul>
             </div>
-            <div className="product-content">
-              <div className="product-img-detail">
+            <Grid container spacing={10} className="product-content">
+              <Grid item md={7} xs={12} className="product-img-detail">
                 <div className="product-img">
                   <div className="list-img">
                     {product.productImages?.map((img, indexImg) => {
@@ -261,8 +345,228 @@ const Product = () => {
                     </Link>
                   </div>
                 </div>
-              </div>
-              <div className="product-info">
+                <div className="product-review">
+                  <div className="title">
+                    <h3>{t('review_reviews')}</h3>
+                    {product.productReview && (
+                      <div className="rating">
+                        <div className="star">
+                          <RatingStar rating={product.productReview?.star} />
+                        </div>
+                        <span className="review-count">({product.productReview?.amount})</span>
+                      </div>
+                    )}
+                  </div>
+                  <Grid container className="statistics">
+                    <Grid item md={4} xs={12} className="rating-star">
+                      <h4>{t('review_ratings')}</h4>
+                      <div className="stars">
+                        <div className="star-amount">
+                          <Rating
+                            name="hover-feedback"
+                            className="star"
+                            readOnly
+                            defaultValue={5}
+                            emptyIcon={<Star style={{ opacity: 0.55 }} fontSize="inherit" />}
+                          />
+                          <span className="amount"> (100)</span>
+                        </div>
+                        <div className="star-amount">
+                          <Rating
+                            name="hover-feedback"
+                            className="star"
+                            readOnly
+                            defaultValue={4}
+                            emptyIcon={<Star style={{ opacity: 0.55 }} fontSize="inherit" />}
+                          />
+                          <span className="amount"> (3)</span>
+                        </div>
+                        <div className="star-amount">
+                          <Rating
+                            name="hover-feedback"
+                            className="star"
+                            readOnly
+                            defaultValue={3}
+                            emptyIcon={<Star style={{ opacity: 0.55 }} fontSize="inherit" />}
+                          />
+                          <span className="amount"> (1)</span>
+                        </div>
+                        <div className="star-amount">
+                          <Rating
+                            name="hover-feedback"
+                            className="star"
+                            readOnly
+                            defaultValue={2}
+                            emptyIcon={<Star style={{ opacity: 0.55 }} fontSize="inherit" />}
+                          />
+                          <span className="amount"> (0)</span>
+                        </div>
+                        <div className="star-amount">
+                          <Rating
+                            name="hover-feedback"
+                            className="star"
+                            readOnly
+                            defaultValue={1}
+                            emptyIcon={<Star style={{ opacity: 0.55 }} fontSize="inherit" />}
+                          />
+                          <span className="amount"> (0)</span>
+                        </div>
+                      </div>
+                    </Grid>
+                    <Grid item md={8} xs={12} className="fits">
+                      <h4>{t('review_howtofits')}</h4>
+                      <div className="fit">
+                        <Slider defaultValue={3} step={1} marks={marks} min={1} max={5} disabled />
+                      </div>
+                    </Grid>
+                    <button className="btn-write-review" onClick={() => setOpenAddReview(true)}>
+                      {t('review_write')}
+                    </button>
+                  </Grid>
+                  {openAddReview && (
+                    <form className="write-review" onSubmit={handleAddReview}>
+                      <h3>{t('review_write')}</h3>
+                      <div className="input-container center">
+                        <label className="label">
+                          {t('review_ratings')}
+                          <span>*</span>
+                        </label>
+                        <div className="input">
+                          <Rating
+                            name="hover-feedback"
+                            emptyIcon={<Star style={{ opacity: 0.55 }} fontSize="inherit" />}
+                            value={review.star}
+                            onChange={(e, value) => setReview({ ...review, star: value })}
+                          />
+                        </div>
+                      </div>
+                      <div className="input-container center">
+                        <label className="label">
+                          {t('review_howtofits')}
+                          <span>*</span>
+                        </label>
+                        <div className="input">
+                          <Slider
+                            defaultValue={3}
+                            color="error"
+                            step={1}
+                            marks={marks}
+                            min={1}
+                            max={5}
+                            value={review.fit}
+                            onChange={(e, value) => setReview({ ...review, fit: value })}
+                          />
+                        </div>
+                      </div>
+                      <div className="input-container">
+                        <label className="label">
+                          {t('common_title')}
+                          <span>*</span>
+                        </label>
+                        <div className="input">
+                          <input
+                            type="text"
+                            name="title"
+                            placeholder={t('common_title')}
+                            value={review.title}
+                            onChange={(e) => setReview({ ...review, title: e.target.value })}
+                          />
+                        </div>
+                      </div>
+                      <div className="input-container">
+                        <label className="label">
+                          {t('common_comment')}
+                          <span>*</span>
+                        </label>
+                        <div className="input">
+                          <textarea
+                            name="comment"
+                            placeholder={t('common_comment')}
+                            value={review.content}
+                            onChange={(e) => setReview({ ...review, content: e.target.value })}
+                          />
+                        </div>
+                      </div>
+                      <div className="input-container">
+                        <label className="label">
+                          {t('review_purchased_size')}
+                          <span>*</span>
+                        </label>
+                        <div className="input">
+                          <Select
+                            fullWidth
+                            id="size"
+                            placeholder={t('common_size')}
+                            value={review.sizeId}
+                            onChange={(e) => setReview({ ...review, sizeId: e.target.value })}
+                          >
+                            {productSizeSorted?.map((size) => (
+                              <MenuItem key={size.id} value={size.sizeId}>
+                                {size.size?.name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </div>
+                      </div>
+                      <div className="submit">
+                        <button disabled={loadingAR} className="btn-submit" type="submit">
+                          {t('common_submit')}
+                        </button>
+                        <button
+                          disabled={loadingAR}
+                          className="btn-cancel"
+                          onClick={() => setOpenAddReview(false)}
+                        >
+                          {t('common_cancel')}
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                  {reviewsData && (
+                    <div className="reviews">
+                      <h4>
+                        {reviewsData.totalRecords} {t('review_reviews')}
+                      </h4>
+                      <div className="review-list">
+                        {reviewsData.data.map((review) => (
+                          <div className="review-item">
+                            <h3>{review.title}</h3>
+                            <Rating
+                              name="hover-feedback"
+                              className="star"
+                              readOnly
+                              defaultValue={review.star}
+                              emptyIcon={<Star style={{ opacity: 0.55 }} fontSize="inherit" />}
+                            />
+                            <p>
+                              {t('review_purchased_size')}: {review.size?.name}
+                            </p>
+                            <p className="fit">
+                              {t('review_howtofits')}: {t(HowToFits[review.fit])}
+                            </p>
+                            <p>{review.content}</p>
+                          </div>
+                        ))}
+                      </div>
+                      {filterReview.pageSize <= reviewsData.totalRecords && (
+                        <div className="load-more">
+                          <button
+                            onClick={() =>
+                              setFilterReview({
+                                ...filterReview,
+                                pageSize: filterReview.pageSize + 10,
+                              })
+                            }
+                          >
+                            {t('common_load_more')} <KeyboardArrowDown className="icon-down" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </Grid>
+              <Grid item md={5} xs={12} className="product-info">
                 <div className="top">
                   <div className="title-name">
                     <h1>{product?.name}</h1>
@@ -405,8 +709,8 @@ const Product = () => {
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              </Grid>
+            </Grid>
           </div>
         </div>
       )}

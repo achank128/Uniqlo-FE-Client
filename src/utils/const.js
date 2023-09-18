@@ -82,3 +82,11 @@ export const PaymentTypes = {
   CREDIT: 'order_payment_credit',
   ATM: 'order_payment_atm',
 };
+
+export const HowToFits = {
+  1: 'review_fit_tight',
+  2: 'review_fit_abit_tight',
+  3: 'review_fit_true',
+  4: 'review_fit_abit_loose',
+  5: 'review_fit_loose',
+};

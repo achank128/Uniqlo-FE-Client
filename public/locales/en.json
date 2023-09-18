@@ -61,6 +61,9 @@
   "common_note": "Note",
   "common_apply": "Apply",
   "common_applied": "Applied",
+  "common_title": "Title",
+  "common_comment": "Comment",
+  "common_submit": "Submit",
 
   "home": "Home",
   "home_important_notice": "Important Notice",
@@ -123,6 +126,18 @@
 
   "wish_list": "Wish list",
   "wish_list_no_item": "YOUR WISH LIST HAS NO ITEMS.",
+
+  "review": "Review",
+  "review_reviews": "Reviews",
+  "review_ratings": "Ratings",
+  "review_howtofits": "How to fits",
+  "review_fit_true": "True to size",
+  "review_fit_tight": "Tight",
+  "review_fit_loose": "Loose",
+  "review_fit_abit_tight": "A bit tight",
+  "review_fit_abit_loose": "A bit loose",
+  "review_write": "Write a review",
+  "review_purchased_size": "Purchased size",
 
   "order": "Order",
   "order_history": "Order history",

@@ -67,7 +67,8 @@
 }
 
 @mixin inputLog {
-  input {
+  input,
+  textarea {
     width: 100%;
     border: none;
     background-color: $bg-gray-color;

@@ -2,12 +2,9 @@ import React, { useEffect, useState } from 'react';
 import './addressForm.scss';
 import { useQuery } from 'react-query';
 import regionApi from '../../../api/apiRegion';
-import { Switch } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { userSelector } from '../../../redux/slices/authSlice';
 import { useTranslation } from 'react-i18next';
-import addressApi from '../../../api/apiAddress';
-import { toast } from 'react-toastify';
 
 const AddressForm = ({ address, handleAddAddress, handleUpdateAddress }) => {
   const { t } = useTranslation();

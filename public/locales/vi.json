@@ -61,6 +61,9 @@
   "common_note": "Ghi chú",
   "common_apply": "Áp dụng",
   "common_applied": "Đã áp dụng",
+  "common_title": "Tiêu đề",
+  "common_comment": "Bình luận",
+  "common_submit": "Gửi",
 
   "home": "Trang chủ",
   "home_important_notice": "Thông báo quan trọng",
@@ -123,6 +126,18 @@
 
   "wish_list": "Yêu thích",
   "wish_list_no_item": "KHÔNG CÓ SẢN PHẨM NÀO TRONG DANH SÁCH MONG MUỐN CỦA BẠN.",
+
+  "review": "Đánh giá",
+  "review_reviews": "Đánh giá",
+  "review_ratings": "Đánh giá khách hàng",
+  "review_howtofits": "Mô tả kích cỡ",
+  "review_fit_true": "Vừa đúng kích thước",
+  "review_fit_tight": "Chật",
+  "review_fit_loose": "Rộng",
+  "review_fit_abit_tight": "Hơi chật",
+  "review_fit_abit_loose": "Hơi rộng",
+  "review_write": "Viết đánh giá",
+  "review_purchased_size": "Kích cỡ đã mua",
 
   "order": "Đơn hàng",
   "order_history": "Lịch sử đơn hàng",
