@@ -1,11 +1,18 @@
-import { userRequest } from "../request";
+import userRequest from './configs/userRequest';
 
-export const createOrder = async (order) => {
-  const res = await userRequest.post("/orders", order);
-  return res;
+const orderApi = {
+  getMyOrders: async () => {
+    const res = await userRequest.get('/orders/myorders');
+    return res.data;
+  },
+  createOrder: async (body) => {
+    const res = await userRequest.post('/orders/createfull', body);
+    return res;
+  },
+  updateStatusOrder: async (body) => {
+    const res = await userRequest.put('/orders/status', body);
+    return res;
+  },
 };
 
-export const getUserOrder = async (id) => {
-  const res = await userRequest.get("/orders/myOrders/" + id);
-  return res.data;
-};
+export default orderApi;

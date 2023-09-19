@@ -1,0 +1,40 @@
+@use '../../../assets/scss' as *;
+
+#confirm {
+  .title {
+    text-transform: uppercase;
+    font-size: $font-lg;
+    font-weight: 700;
+  }
+  .item-confirm,
+  .total-confirm {
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .total-confirm {
+    font-size: $font-med;
+  }
+
+  .confirm-input {
+    margin-top: 20px;
+  }
+
+  .confirm-action {
+    display: flex;
+    padding: 0 20px;
+    margin-bottom: 30px;
+    gap: 20px;
+    .btn-confirm {
+      flex: 1;
+      @include btnBlack;
+    }
+    .btn-cancel {
+      flex: 1;
+      @include btnWhite;
+    }
+  }
+}

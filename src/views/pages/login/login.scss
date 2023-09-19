@@ -1,7 +1,6 @@
-@use "../../../assets/scss/" as *;
+@use '../../../assets/scss/' as *;
 
 #login {
-  margin-top: $topHeight;
   .wrapper {
     @include mobile {
       padding: 0 20px;
@@ -32,6 +31,7 @@
         justify-content: space-between;
         margin-bottom: 20px;
         h2 {
+          text-transform: uppercase;
           font-weight: 700;
         }
         .required {
@@ -53,6 +53,7 @@
       }
       .email-label,
       .pass-label {
+        text-transform: uppercase;
         font-weight: 700;
         margin-top: 10px;
         margin-bottom: 4px;
@@ -77,13 +78,14 @@
       .term,
       .privacy,
       .forgot {
+        text-transform: uppercase;
         font-weight: 700;
         text-decoration: underline;
         font-size: $font-xsm;
         margin: 4px 0;
       }
       .login-submit {
-        @include btnIn;
+        @include btnBlack;
         margin-top: 20px;
       }
     }
@@ -96,6 +98,7 @@
         margin-top: 50px;
       }
       .title {
+        text-transform: uppercase;
         font-weight: 700;
         margin-bottom: 20px;
       }
@@ -103,7 +106,7 @@
         margin-bottom: 30px;
       }
       .btn-create-acc {
-        @include btnIn;
+        @include btnBlack;
       }
     }
   }

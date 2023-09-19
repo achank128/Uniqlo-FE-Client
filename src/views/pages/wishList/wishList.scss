@@ -1,14 +1,14 @@
-@use "../../../assets/scss/" as *;
+@use '../../../assets/scss/' as *;
 
 #wish-list {
-  margin-top: $topHeight;
   .wrapper {
     @include tablet {
       padding: 0 20px;
     }
-    .title {
+    .wishlist-title {
       margin: 40px 0;
       h2 {
+        text-transform: uppercase;
         font-weight: 700;
       }
     }
@@ -47,7 +47,11 @@
         .name {
           font-weight: 700;
           font-size: $font-sm;
+        }
+        .for {
           margin-bottom: 10px;
+          color: $gray-color;
+          font-weight: 600;
         }
         .id {
           color: $gray-color;
@@ -64,8 +68,12 @@
           font-size: $font-med;
           color: $red-color;
         }
+        .price-only {
+          font-size: $font-med;
+        }
         .sale {
           color: $red-color;
+          font-weight: 500;
         }
       }
     }

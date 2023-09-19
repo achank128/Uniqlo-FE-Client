@@ -1,25 +1,25 @@
-@use "../../../assets/scss/" as *;
+@use '../../../assets/scss/' as *;
 
-//loading
-#loading-container {
-  padding-top: 100px;
-  height: 100vh;
-}
 #loading-overlay {
+  padding-top: 100px;
+  z-index: 1000;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  height: 100%;
   background-color: rgba(255, 255, 255, 0.6);
 }
+
 #loading-container {
+  padding: 100px 0;
   width: 0;
   margin: 0 auto;
   transform: scale(0.8);
+  @include mobile {
+    padding: 50px 0;
+    transform: scale(0.6);
+  }
   @keyframes lds-roller {
     0% {
       transform: rotate(0deg);
@@ -39,7 +39,7 @@
     transform-origin: 40px 40px;
   }
   .lds-roller div:after {
-    content: " ";
+    content: ' ';
     display: block;
     position: absolute;
     width: 7px;

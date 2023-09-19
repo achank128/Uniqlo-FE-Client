@@ -1,20 +1,26 @@
-import axios from "axios";
+import userRequest from './configs/userRequest';
 
-export const getProvinces = async () => {
-  const res = await axios.get("https://provinces.open-api.vn/api/?depth=2");
-  return res.data;
+const addressApi = {
+  getMyAddress: async () => {
+    const res = await userRequest.get('/userAddresses/myaddress');
+    return res.data;
+  },
+  createAddress: async (body) => {
+    const res = await userRequest.post('/userAddresses', body);
+    return res;
+  },
+  updateAddress: async (body) => {
+    const res = await userRequest.put('/userAddresses', body);
+    return res;
+  },
+  deleteAddress: async (id) => {
+    const res = await userRequest.delete('/userAddresses/' + id);
+    return res;
+  },
+  setDefaultAddress: async (id) => {
+    const res = await userRequest.put('/userAddresses/setdefault/' + id);
+    return res;
+  },
 };
 
-export const getDistricts = async (id) => {
-  const res = await axios.get(
-    `https://provinces.open-api.vn/api/p/${id}/?depth=2`
-  );
-  return res.data;
-};
-
-export const getWards = async (id) => {
-  const res = await axios.get(
-    `https://provinces.open-api.vn/api/d/${id}/?depth=2`
-  );
-  return res.data;
-};
+export default addressApi;

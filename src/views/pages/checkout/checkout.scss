@@ -1,7 +1,6 @@
-@use "../../../assets/scss" as *;
+@use '../../../assets/scss' as *;
 
 #checkout {
-  margin-top: $topHeight;
   .wrapper {
     @include tablet {
       padding: 0 20px;
@@ -9,150 +8,204 @@
     .checkout-title {
       margin: 20px 0;
       h2 {
+        text-transform: uppercase;
         font-weight: 700;
       }
     }
     .checkout-content {
-      padding: 40px 0;
+      padding-top: 10px;
       margin-bottom: 100px;
-      display: flex;
-      gap: 80px;
       @include tablet {
         flex-direction: column-reverse;
         padding: 0;
-        gap: 40px;
       }
     }
-    .form-address {
-      flex: 2;
-      border: 1px solid $border-color;
-      padding: 20px;
-      .heading {
-        margin: 24px 0;
+
+    .checkout-form {
+      .btn-continue {
+        @include btnBlack;
+        max-width: 300px;
+        margin-bottom: 6px;
+      }
+      .btn-submit {
+        @include btnRed;
+        max-width: 300px;
+      }
+      .btn-edit {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+      }
+
+      .form-item {
+        border: 1px solid $border-color;
+        padding: 24px 20px;
+        margin-bottom: 30px;
         h2 {
+          text-transform: uppercase;
+        }
+        &.disabled {
+          background-color: rgba($color: #d0d0d0, $alpha: 0.4);
+          opacity: 0.5;
+          h2 {
+            font-size: $font-lg;
+          }
+        }
+      }
+
+      //1. delivery
+      .shipping-type {
+        padding: 20px 0;
+        border-bottom: 1px solid $border-color;
+        .fee {
+          color: $teal-color;
+        }
+      }
+      .shipping-date {
+        padding: 20px 0;
+        border-bottom: 1px solid $border-color;
+        h4 {
+          text-transform: uppercase;
+          font-size: $font-med;
+          margin-bottom: 10px;
+        }
+        .fee {
+          color: $teal-color;
+        }
+      }
+      .shipping-address {
+        position: relative;
+        padding: 20px 0;
+        h4 {
+          text-transform: uppercase;
+          font-size: $font-med;
+          margin-bottom: 10px;
+        }
+        .info {
+          display: flex;
+          flex-direction: column;
+          .name {
+            font-weight: 700;
+            font-size: $font-sm;
+            margin-bottom: 4px;
+            span {
+              padding-left: 6px;
+              font-size: $font-xsm;
+              font-weight: 500;
+              color: $teal-color;
+            }
+          }
+        }
+        .btn-absolute {
+          position: absolute;
+          top: 30px;
+          right: 30px;
+        }
+      }
+
+      //2. Payment
+      .payment-option {
+        display: flex;
+        padding: 20px 0;
+        border-bottom: 1px solid $border-color;
+      }
+      .payment-content {
+        padding: 20px 0;
+        position: relative;
+      }
+
+      //3. Order summary
+      .order-summary {
+        padding: 20px 0;
+        margin-bottom: 20px;
+        .subtotal {
+          text-transform: uppercase;
+          margin-top: 20px;
+          border-top: 1px solid $border-color;
+          padding-top: 8px;
           font-weight: 700;
+          font-size: 1.175rem;
         }
-      }
-      .form {
-        display: flex;
-        flex-direction: column;
-      }
-      .input-container {
-        display: flex;
-        align-items: flex-start;
-        justify-content: flex-start;
-        margin-bottom: 30px;
-      }
 
-      .label {
-        width: 30%;
-        font-weight: 700;
-        padding: 10px 0;
-      }
-      .name-input,
-      .phone-input,
-      .address-details-input {
-        width: 70%;
-        @include inputLog;
-        p {
+        .item-subtotal,
+        .vat,
+        .shipping {
           margin-top: 6px;
-          font-size: $font-xsm;
+        }
+
+        .order-total {
+          text-transform: uppercase;
+          margin-top: 20px;
+          border-top: 1px solid $border-color;
+          padding-top: 8px;
+          font-weight: 700;
+          font-size: $font-med;
         }
       }
-
-      .address-input {
-        width: 40%;
-        select {
-          width: 100%;
-          padding: 12px;
-          color: $gray-color;
-        }
-        @include mobile {
-          width: 70%;
-        }
-      }
-
-      .via {
-        width: 70%;
-        margin-bottom: 40px;
-      }
-
-      .order-submit {
-        @include btnIn;
-        margin-bottom: 30px;
-      }
-      .error {
-        color: $red-color;
+      .place-order-text {
+        font-size: $font-xsm;
+        color: $gray-color;
       }
     }
+
+    .item-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
     .summary {
-      flex: 1;
-      top: 140px;
-      position: sticky;
-      height: calc(100vh);
-      margin-bottom: 50px;
-      @include tablet {
-        top: 0;
-        position: relative;
-        margin-bottom: 0;
-      }
       .summary-content {
         border: 1px solid $border-color;
         padding: 30px 20px;
         margin-bottom: 30px;
         .title {
+          text-transform: uppercase;
           font-size: $font-med;
           font-weight: 700;
-          margin-bottom: 30px;
-        }
-        .item-subtotal {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 30px;
-          font-size: $font-xsm;
-        }
-        .subtotal {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          font-weight: 700;
-        }
-        .vat,
-        .shipping {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          font-size: $font-xsm;
-        }
-        .shipping {
           margin-bottom: 30px;
         }
 
+        .subtotal {
+          text-transform: uppercase;
+          margin-top: 30px;
+          font-weight: 700;
+          font-size: 1.175rem;
+        }
+        .item-subtotal,
+        .vat,
+        .shipping {
+          font-size: $font-xsm;
+        }
+        .discount {
+          margin-top: 10px;
+        }
         .order-total {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
+          text-transform: uppercase;
+          margin-top: 30px;
           font-weight: 700;
           font-size: $font-med;
         }
+
         .list-img-item {
           display: flex;
           flex-wrap: wrap;
-        }
-        .item-img {
-          width: 100px;
-          padding-right: 20px;
-          margin-bottom: 10px;
-          img {
-            width: 100%;
-          }
-          .quantity-item {
-            text-align: right;
-            line-height: 1.1;
+          text-transform: uppercase;
+          .item-img {
+            width: 100px;
+            padding-right: 20px;
+            margin-bottom: 10px;
+            img {
+              width: 100%;
+            }
+            .quantity-item {
+              text-align: right;
+              line-height: 1.1;
+            }
           }
         }
       }
+
       .coupon {
         display: flex;
         align-items: center;

@@ -1,0 +1,54 @@
+@use '../../../assets/scss/' as *;
+
+#coupon {
+  .heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    h3 {
+      text-transform: uppercase;
+    }
+  }
+  .item {
+    position: relative;
+  }
+  .btn-remove {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+  }
+  .item-content {
+    display: flex;
+    padding: 20px 0;
+    border-bottom: 1px solid $border-color;
+    .img {
+      max-width: 160px;
+      margin-right: 20px;
+      @include mobile {
+        width: 100px;
+      }
+      img {
+        width: 100%;
+      }
+    }
+    .info {
+      display: flex;
+      flex-direction: column;
+      .name {
+        font-weight: 700;
+        font-size: $font-sm;
+        margin-bottom: 4px;
+      }
+      .code {
+        color: $gray-color;
+      }
+      .limited {
+        color: $red-color;
+        font-weight: 500;
+      }
+    }
+    .discount {
+      font-size: $font-xsm;
+    }
+  }
+}

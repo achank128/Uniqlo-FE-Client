@@ -1,0 +1,81 @@
+@use '../../../../assets/scss/' as *;
+#orderItem {
+  padding: 20px;
+  border: 1px solid $border-color;
+  margin-bottom: 20px;
+  .info {
+    display: flex;
+    flex-direction: column;
+    .status {
+      display: flex;
+      .order-status {
+        text-transform: uppercase;
+        color: $yellow-color;
+      }
+      .order-status-cancel {
+        text-transform: uppercase;
+        color: $red-color;
+      }
+      .shipment-status {
+        color: $teal-color;
+      }
+    }
+
+    .date-info {
+      font-size: $font-xsm;
+    }
+
+    .item-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: $font-sm;
+      margin-bottom: 6px;
+      .total {
+        text-transform: uppercase;
+        font-weight: 700;
+        font-size: $font-med;
+      }
+      .status {
+        text-transform: uppercase;
+      }
+      .desc {
+        font-size: $font-xsm;
+        color: $gray-color;
+        margin-top: -10px;
+      }
+    }
+    .action {
+      margin-top: auto;
+    }
+  }
+  .list-product {
+    height: 300px;
+    overflow-y: auto;
+    .product-item {
+      display: flex;
+      margin-bottom: 20px;
+      .product-img {
+        width: 100px;
+        img {
+          width: 100%;
+        }
+        @include tablet {
+          width: 60px;
+        }
+      }
+      .product-info {
+        flex: 1;
+        margin-left: 20px;
+        .name,
+        .price {
+          font-weight: 700;
+          margin-bottom: 6px;
+        }
+        p {
+          font-size: $font-xsm;
+        }
+      }
+    }
+  }
+}

@@ -1,14 +1,14 @@
-@use "../../../assets/scss/" as *;
+@use '../../../assets/scss/' as *;
 
 #cart {
-  margin-top: $topHeight;
   .wrapper {
     @include tablet {
       padding: 0 20px;
     }
     .cart-title {
-      margin: 20px 0;
+      margin: 40px 0;
       h2 {
+        text-transform: uppercase;
         font-weight: 700;
       }
     }
@@ -16,26 +16,17 @@
       height: 60vh;
       padding: 40px 0;
       .no-item-shopping {
+        @include btnBlack;
+        text-transform: uppercase;
         margin-top: 40px;
-        @include btnIn;
+        max-width: 300px;
       }
     }
     .cart-content {
-      padding: 40px 0;
       margin-bottom: 100px;
-      display: flex;
-      gap: 80px;
-      @include tablet {
-        flex-direction: column;
-        padding: 0;
-        gap: 40px;
-      }
     }
-    .items {
-      flex: 2;
-    }
+
     .summary {
-      flex: 1;
       top: 140px;
       position: sticky;
       height: calc(100vh - $topHeight);
@@ -49,38 +40,33 @@
         padding: 30px 20px;
         margin-bottom: 30px;
         .title {
+          text-transform: uppercase;
           font-size: $font-med;
           font-weight: 700;
           margin-bottom: 30px;
         }
-        .item-subtotal {
+        .item-summary {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          margin-bottom: 30px;
-          font-size: $font-xsm;
-        }
-        .subtotal {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          font-weight: 700;
-        }
-        .vat,
-        .shipping {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          font-size: $font-xsm;
-        }
-        .shipping {
-          margin-bottom: 30px;
         }
 
+        .subtotal {
+          margin-top: 30px;
+          text-transform: uppercase;
+          font-weight: 700;
+        }
+        .item-subtotal,
+        .vat,
+        .shipping {
+          font-size: $font-xsm;
+        }
+        .discount {
+          margin-top: 10px;
+        }
         .order-total {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
+          margin-top: 30px;
+          text-transform: uppercase;
           font-weight: 700;
           font-size: $font-med;
         }
@@ -110,10 +96,12 @@
       }
       .btn-checkout {
         @include btnRed;
+        text-transform: uppercase;
         margin-bottom: 16px;
       }
       .btn-continue-shopping {
         @include btnWhite;
+        text-transform: uppercase;
         margin-bottom: 16px;
       }
       .info-shipping {

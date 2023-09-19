@@ -1,370 +1,434 @@
-import React, { useEffect, useState } from "react";
-import "./checkout.scss";
-import { Link, useNavigate } from "react-router-dom";
-import { useGlobalContext } from "../../../hooks/useGlobalContext";
-import { getProvinces, getDistricts, getWards } from "../../../api/apiAddress";
-import { createOrder } from "../../../api/apiOrder";
-
-import {
-  KeyboardArrowDown,
-  ConfirmationNumberOutlined,
-} from "@mui/icons-material";
+import React, { useEffect, useState } from 'react';
+import './checkout.scss';
+import { Link, useNavigate } from 'react-router-dom';
+import { KeyboardArrowDown, ConfirmationNumberOutlined, Edit, Check } from '@mui/icons-material';
 //components
-import Navbar from "../../components/navbar/Navbar";
-import Footer from "../../components/footer/Footer";
-import Loading from "../../components/loading/Loading";
+import Loading from '../../components/loading/Loading';
+import { Grid, IconButton } from '@mui/material';
+import { useQuery } from 'react-query';
+import { useDispatch, useSelector } from 'react-redux';
+import { userSelector } from '../../../redux/slices/authSlice';
 import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@mui/material";
+  amountSelector,
+  cartSelector,
+  clearCart,
+  couponSelector,
+  discountSelector,
+  subTotalSelector,
+  totalSelector,
+} from '../../../redux/slices/cartSlice';
+import { toast } from 'react-toastify';
+import AddressForm from '../../components/addressForm/AddressForm';
+import addressApi from '../../../api/apiAddress';
+import orderApi from '../../../api/apiOrder';
+import { useTranslation } from 'react-i18next';
+import Confirm from '../../components/confirm/Confirm';
+import AddCoupon from '../../components/addCoupon/AddCoupon';
 
-const Checkout = ({ showToast }) => {
-  const { cart, amount, subtotal, shippingFee, total, formater, checkout } =
-    useGlobalContext();
+const formater = Intl.NumberFormat('de-DE');
+
+const Checkout = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
-  const [provincesList, setProvincesList] = useState([]);
-  const [districtsList, setDistrictsList] = useState([]);
-  const [wardsList, setWardsList] = useState([]);
-  const [provinceId, setProvinceId] = useState(1);
-  const [districtId, setDistrictId] = useState(1);
-  const [ward, setWard] = useState("");
-  //error
+  const dispatch = useDispatch();
+  const user = useSelector(userSelector);
+  const cart = useSelector(cartSelector);
+  const amount = useSelector(amountSelector);
+  const subtotal = useSelector(subTotalSelector);
+  const discount = useSelector(discountSelector);
+  const total = useSelector(totalSelector);
+  const coupon = useSelector(couponSelector);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [msg, setMsg] = useState();
-  //output
-  const [fullName, setFullName] = useState();
-  const [phone, setPhone] = useState();
-  const [addressDetail, setAddressDetail] = useState();
-  const [address, setAddress] = useState({});
-
-  //confirm
   const [openConfirm, setOpenConfirm] = useState(false);
-  const handleOpenConfirm = () => {
-    if (!fullName || !phone || !addressDetail) {
-      showToast("Please provide Full Name, Phone, Address Detail", "warning");
-      setMsg("Please provide Full Name, Phone, Address Detail");
-      setError(true);
-    } else {
-      const pp = provincesList.find((p) => p.code === parseInt(provinceId));
-      const dd = districtsList.find((d) => d.code === parseInt(districtId));
-      setAddress({
-        fullName,
-        phone,
-        addressDetail,
-        address: `${ward}, ${dd.name}, ${pp.name}`,
-      });
-      setOpenConfirm(true);
+  const [openAddCoupon, setOpenAddCoupon] = useState(false);
+  const [shipmentSubmit, setShipmentSubmit] = useState(false);
+  const [paymentSubmit, setPaymentSubmit] = useState(false);
+  const [shippingFee, setShippingFee] = useState(50000);
+  const [address, setAddress] = useState();
+  const [paymentType, setPaymentType] = useState('CASH');
+
+  const { data: userAddress } = useQuery(['userAddress'], () => addressApi.getMyAddress());
+
+  useEffect(() => {
+    if (userAddress) {
+      const addrs = userAddress.find((ad) => ad.isDefault);
+      setAddress(addrs);
+      if (addrs.provinceCode === '01') {
+        setShippingFee(30000);
+      }
     }
+    if (subtotal >= 1500000) {
+      setShippingFee(0);
+    }
+  }, [userAddress, subtotal]);
+
+  const handleSubmitShipment = () => {
+    setShipmentSubmit(true);
+  };
+  const handleSubmitPayment = () => {
+    setPaymentSubmit(true);
   };
 
-  useEffect(() => {
-    const getProvince = async () => {
-      try {
-        const data = await getProvinces();
-        setProvincesList(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getProvince();
-  }, []);
-
-  useEffect(() => {
-    const getDistrict = async () => {
-      try {
-        const data = await getDistricts(provinceId);
-        setDistrictsList(data.districts);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getDistrict();
-  }, [provinceId]);
-
-  useEffect(() => {
-    const getWard = async () => {
-      try {
-        const data = await getWards(districtId);
-        setWardsList(data.wards);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getWard();
-  }, [districtId]);
+  const handleSubmitOrder = async () => {
+    try {
+      setLoading(true);
+      setOpenConfirm(false);
+      const orderItems = cart.cartItems.map((item) => {
+        return {
+          productDetailId: item.productDetailId,
+          quantity: item.quantity,
+          price: item.product.isSale
+            ? item.product.productPrice.promoPrice
+            : item.product.productPrice.price,
+        };
+      });
+      const body = {
+        userId: user.id,
+        note: '',
+        couponId: coupon?.id,
+        items: cart.cartItems.length,
+        amount: amount,
+        subtotal: subtotal,
+        vatIncluded: subtotal * 0.1,
+        discount: discount,
+        shippingFee: shippingFee,
+        total: total,
+        status: 'OPEN',
+        userAddressId: address.id,
+        receivedDate: new Date(),
+        shipmentPay: total,
+        shipmentNote: '',
+        paymentType: paymentType,
+        paymentDate: new Date(),
+        creditCardName: '',
+        creditCardType: '',
+        creditCardDate: '',
+        creditCardNumber: '',
+        creditCardNumberDisplay: '',
+        paymentNote: '',
+        orderItems: orderItems,
+      };
+      const res = await orderApi.createOrder(body);
+      dispatch(clearCart(cart.id)).then(() => {
+        toast.success(res.message);
+        navigate('/profile/order');
+      });
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      toast.error(error.response.data.Message);
+    }
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const hanleProvince = (e) => {
-    setProvinceId(e.target.value);
-  };
-  const hanleDistrict = (e) => {
-    setDistrictId(e.target.value);
-  };
-  const handleWard = (e) => {
-    setWard(e.target.value);
-  };
-
-  const handleOrder = async () => {
-    const products = cart.map((c) => {
-      const { _id, color, size, quantity } = c;
-      return { productId: _id, color, size, quantity };
-    });
-
-    try {
-      setLoading(true);
-      await createOrder({
-        address,
-        products,
-        amount,
-        subtotal,
-        shippingFee,
-        total,
-      });
-      checkout();
-      setLoading(false);
-      showToast("Place Order has been Completed!", "success");
-      navigate("/");
-    } catch (error) {
-      setLoading(false);
-      showToast("Place Order failed", "error");
-      setError(true);
-      setMsg(error.response.data?.msg);
-    }
-  };
-
   return (
-    <div>
-      {loading ? (
+    <>
+      {loading && (
         <div id="loading-overlay">
           <Loading />
         </div>
-      ) : null}
-      <Navbar />
+      )}
       <div id="checkout">
-        <Dialog
-          open={openConfirm}
-          onClose={() => setOpenConfirm(false)}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            {"Confirm your order"}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Full Name: <b>{address.fullName}</b>
-              <br></br>
-              Phone: <b>{address.phone}</b>
-              <br></br>
-              Address:{" "}
-              <b>
-                {address.addressDetail}, {address.address}
-              </b>
-              <br></br>
-              Order Items: <b>{amount}</b>
-              <br></br>
-              Order Total: <b>{formater.format(total)} VND</b>
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpenConfirm(false)}>Disagree</Button>
-            <Button onClick={handleOrder} autoFocus>
-              Confirm
-            </Button>
-          </DialogActions>
-        </Dialog>
         <div className="container">
           <div className="wrapper">
             <div className="breadcrumb">
               <ul>
                 <li>
-                  <Link to="/">UNIQLO Home Page</Link>
+                  <Link to="/">{t('common_uniqlo')}</Link>
                 </li>
                 <li className="slash">/</li>
                 <li>
-                  <Link to="/cart">Shopping Cart</Link>
+                  <Link to="/cart">{t('cart_shopping_cart')}</Link>
                 </li>
                 <li className="slash">/</li>
-                <li>Checkout</li>
+                <li>{t('common_checkout')}</li>
               </ul>
             </div>
             <div className="checkout-title">
-              <h2>CHECKOUT</h2>
+              <h2>{t('common_checkout')}</h2>
             </div>
-            <div className="checkout-content">
-              <div className="form-address">
-                <div className="heading">
-                  <h2>ENTER YOUR ADDRESS</h2>
-                </div>
-                <div className="form">
-                  <div className="input-container">
-                    <label className="label">FULL NAME</label>
-                    <div className="name-input">
-                      <input
-                        type="text"
-                        placeholder="Please enter your full name in alphabets"
-                        onChange={(e) => setFullName(e.target.value)}
-                      />
-                    </div>
+            <Grid container spacing={6} className="checkout-content">
+              <Grid item md={8} className="checkout-form">
+                <div className="form-item">
+                  <div className="heading">
+                    <h2>1. {t('order_delivery_option')}</h2>
                   </div>
-                  <div className="input-container">
-                    <label className="label">PHONE</label>
-                    <div className="phone-input">
-                      <input
-                        type="text"
-                        placeholder="Please enter your phone number"
-                        onChange={(e) => setPhone(e.target.value)}
-                      />
+
+                  {address ? (
+                    <div className="shipping-date">
+                      <h4>{t('order_delivery_date')}</h4>
                       <p>
-                        Please enter valid 10 digits phone number starting from
-                        0
+                        {t('order_shipping')}:{' '}
+                        <span className="fee">
+                          <b>{formater.format(shippingFee)} VND</b>
+                        </span>
+                      </p>
+                      <p>{t('order_shipping_estimated_date')}: 13/09/2023</p>
+                      <p>
+                        {t('common_notice')}: {t('order_shipping_notice')}
                       </p>
                     </div>
-                  </div>
-                  <div className="input-container">
-                    <label className="label" htmlFor="province">
-                      PROVINCE
-                    </label>
-                    <div className="address-input">
-                      <select
-                        name="province"
-                        id="provice"
-                        onChange={hanleProvince}
-                      >
-                        {provincesList.map((p) => (
-                          <option value={p.code} key={p.code}>
-                            {p.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="input-container">
-                    <label className="label" htmlFor="district">
-                      DISTRICT
-                    </label>
-                    <div className="address-input">
-                      <select
-                        name="district"
-                        id="district"
-                        onChange={hanleDistrict}
-                      >
-                        {districtsList.map((d) => (
-                          <option value={d.code} key={d.code}>
-                            {d.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="input-container">
-                    <label className="label" htmlFor="ward">
-                      WARD
-                    </label>
-                    <div className="address-input">
-                      <select name="ward" id="ward" onChange={handleWard}>
-                        {wardsList.map((w) => (
-                          <option value={w.name} key={w.code}>
-                            {w.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="input-container">
-                    <label className="label">ADDRESS DETAILS</label>
-                    <div className="address-details-input">
-                      <input
-                        type="text"
-                        placeholder="Apt, suite, unit, building, floor, etc"
-                        onChange={(e) => setAddressDetail(e.target.value)}
-                      />
-                      <p>
-                        For invoice purposes, please input only in Vietnamese.
-                      </p>
-                    </div>
-                  </div>
-
-                  {error ? (
-                    <p className="error via">{msg}</p>
                   ) : (
-                    <p className="via">
-                      You may be contacted via phone or email if we have
-                      questions about your order and delivery option.
-                    </p>
+                    <div className="shipping-type">
+                      <div className="radio-input">
+                        <label className={'checked'}>
+                          <input type="radio" />
+                          <span className="checkmark"></span>
+                          <span>{t('order_ship_to_address')}</span>
+                        </label>
+                        <p>
+                          {t('order_shipping')}:{' '}
+                          <span className="fee">
+                            <b>{formater.format(shippingFee)} VND</b>
+                          </span>
+                        </p>
+                        <p>
+                          <b>{t('order_ship_notice')}</b>
+                        </p>
+                      </div>
+                    </div>
                   )}
 
-                  <button className="order-submit" onClick={handleOpenConfirm}>
-                    PLACE ORDER
-                  </button>
+                  {address ? (
+                    <div className="shipping-address">
+                      <h4>{t('order_shipping_address')}</h4>
+                      <div className="info">
+                        <div className="name">{address.fullName}</div>
+                        <p>
+                          {address.addressDetail}, {address.ward?.fullName},{' '}
+                          {address.district?.fullName}, {address.province?.fullName}
+                        </p>
+                        <p>{address.phone}</p>
+                        {address.note && (
+                          <p>
+                            {t('common_note')}: {address.note}
+                          </p>
+                        )}
+                      </div>
+                      <IconButton aria-label="edit" className="btn-edit">
+                        <Edit />
+                      </IconButton>
+                    </div>
+                  ) : (
+                    <AddressForm />
+                  )}
+
+                  {!shipmentSubmit && address && (
+                    <button className="btn-continue" onClick={handleSubmitShipment}>
+                      {t('order_continue_payment')}
+                    </button>
+                  )}
                 </div>
-              </div>
-              <div className="summary">
-                <div className="summary-content">
-                  <h3 className="title">ORDER SUMMARY| {amount} ITEM(S)</h3>
-                  <div className="item-subtotal">
-                    <div className="label">Item(s) subtotal</div>
-                    <div className="total">{formater.format(subtotal)} VND</div>
-                  </div>
-                  <div className="subtotal">
-                    <div className="label">SUBTOTAL</div>
-                    <div className="total">{formater.format(subtotal)} VND</div>
-                  </div>
-                  <div className="vat">
-                    <div className="label">VAT included</div>
-                    <div className="total">
-                      {formater.format(subtotal * 0.1)} VND
+
+                {shipmentSubmit ? (
+                  paymentSubmit ? (
+                    <div className="form-item">
+                      <div className="heading">
+                        <h2>2. {t('order_payment_option')}</h2>
+                      </div>
+                      <div className="payment-content">
+                        <p>
+                          <Check style={{ marginBottom: '-6px', marginRight: '6px' }} />
+                          <b>{t('order_payment_cash')}</b>
+                        </p>
+                        <IconButton
+                          aria-label="edit"
+                          className="btn-edit"
+                          onClick={() => setPaymentSubmit(false)}
+                        >
+                          <Edit />
+                        </IconButton>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="form-item">
+                      <div className="heading">
+                        <h2>2. {t('order_payment_option')}</h2>
+                        <p>{t('order_plese_select_payment_option')}</p>
+                      </div>
+
+                      <div className="payment-option">
+                        <div className="radio-input">
+                          <label>
+                            <input
+                              type="radio"
+                              name="payment-option"
+                              value="CASH"
+                              checked={paymentType === 'CASH'}
+                              onChange={(e) => setPaymentType(e.target.value)}
+                            />
+                            <span className="checkmark"></span>
+                            <span>{t('order_payment_cash')}</span>
+                          </label>
+                        </div>
+                        <div className="radio-input">
+                          <label>
+                            <input
+                              type="radio"
+                              name="payment-option"
+                              value="CREDIT"
+                              checked={paymentType === 'CREDIT'}
+                              onChange={(e) => setPaymentType(e.target.value)}
+                            />
+                            <span className="checkmark"></span>
+                            <span>{t('order_payment_credit')}</span>
+                          </label>
+                        </div>
+                        <div className="radio-input">
+                          <label>
+                            <input
+                              type="radio"
+                              name="payment-option"
+                              value="ATM"
+                              checked={paymentType === 'ATM'}
+                              onChange={(e) => setPaymentType(e.target.value)}
+                            />
+                            <span className="checkmark"></span>
+                            <span>{t('order_payment_atm')}</span>
+                          </label>
+                        </div>
+                      </div>
+
+                      <div className="payment-content">
+                        <p>{t('order_payment_cash_notice')}</p>
+                      </div>
+
+                      <button className="btn-continue" onClick={handleSubmitPayment}>
+                        {t('common_continue')}
+                      </button>
+                    </div>
+                  )
+                ) : (
+                  <div className="form-item disabled">
+                    <div className="heading">
+                      <h2>2. {t('order_payment_option')}</h2>
                     </div>
                   </div>
-                  <div className="shipping">
-                    <div className="label">Shipping Fee</div>
-                    <div className="total">
-                      {formater.format(shippingFee)} VND
+                )}
+
+                {shipmentSubmit && paymentSubmit ? (
+                  <div className="form-item">
+                    <div className="heading">
+                      <h2>3. {t('common_order_summary')}</h2>
+                    </div>
+                    <div className="order-summary">
+                      <div className="item-summary item-subtotal">
+                        <div>{t('common_items_subtotal')}</div>
+                        <div className="total">{formater.format(subtotal)} VND</div>
+                      </div>
+                      <div className="item-summary shipping">
+                        <div>{t('common_shipping_fee')}</div>
+                        <div>{formater.format(shippingFee)} VND</div>
+                      </div>
+                      <div className="item-summary subtotal">
+                        <div>{t('common_subtotal')}</div>
+                        <div>{formater.format(subtotal + shippingFee)} VND</div>
+                      </div>
+                      <div className="item-summary vat">
+                        <div>{t('common_vat_included')}</div>
+                        <div>{formater.format(subtotal * 0.1)} VND</div>
+                      </div>
+                      <div className="item-summary discount">
+                        <div>{t('common_discount')}</div>
+                        <div>- {formater.format(discount)} VND</div>
+                      </div>
+                      <div className="item-summary order-total">
+                        <div>{t('common_order_total')}</div>
+                        <div>{formater.format(total + shippingFee)} VND</div>
+                      </div>
+                    </div>
+
+                    <button className="btn-submit" onClick={() => setOpenConfirm(true)}>
+                      {t('order_place')}
+                    </button>
+                    <p className="place-order-text">{t('order_place_notice')}</p>
+                  </div>
+                ) : (
+                  <div className="form-item disabled">
+                    <div className="heading">
+                      <h2>3. {t('common_order_summary')}</h2>
                     </div>
                   </div>
-                  <div className="order-total">
-                    <div className="label">ORDER TOTAL</div>
-                    <div className="total">{formater.format(total)} VND</div>
+                )}
+              </Grid>
+
+              <Grid item md={4} className="summary">
+                <div className="summary-content">
+                  <h3 className="title">
+                    {t('common_order_summary')}| {amount} {t('common_items')}
+                  </h3>
+                  <div className="item-summary item-subtotal">
+                    <div>{t('common_items_subtotal')}</div>
+                    <div>{formater.format(subtotal)} VND</div>
+                  </div>
+                  <div className="item-summary shipping">
+                    <div>{t('common_shipping_fee')}</div>
+                    <div>{formater.format(shippingFee)} VND</div>
+                  </div>
+                  <div className="item-summary subtotal">
+                    <div>{t('common_subtotal')}</div>
+                    <div>{formater.format(subtotal + shippingFee)} VND</div>
+                  </div>
+                  <div className="item-summary vat">
+                    <div>{t('common_vat_included')}</div>
+                    <div>{formater.format(subtotal * 0.1)} VND</div>
+                  </div>
+                  {discount > 0 && (
+                    <div className="item-summary discount">
+                      <div>{t('common_discount')}</div>
+                      <div>- {formater.format(discount)} VND</div>
+                    </div>
+                  )}
+                  <div className="item-summary order-total">
+                    <div>{t('common_order_total')}</div>
+                    <div>{formater.format(total + shippingFee)} VND</div>
                   </div>
                 </div>
                 <div className="summary-content">
-                  <h3 className="title">ORDER {amount} ITEM (S)</h3>
+                  <h3 className="title">
+                    {t('order')} {amount} {t('common_items')}
+                  </h3>
                   <div className="list-img-item">
-                    {cart.map((item, index) => (
-                      <div className="item-img" key={index}>
-                        <img src={item.img[0]} alt="" />
+                    {cart.cartItems.map((item) => (
+                      <div className="item-img" key={item.id}>
+                        <img src={item.product?.productImages[0]?.imageUrl} alt="" />
                         <p className="quantity-item">x{item.quantity}</p>
                       </div>
                     ))}
                   </div>
                 </div>
-                <div className="coupon">
-                  <span>
-                    <ConfirmationNumberOutlined className="icon-coupon" />{" "}
-                    Coupon
-                  </span>
+                <div className="coupon" onClick={() => setOpenAddCoupon(true)}>
+                  {coupon ? (
+                    <span>
+                      <ConfirmationNumberOutlined className="icon-coupon" /> <b>{coupon.code}</b>
+                    </span>
+                  ) : (
+                    <span>
+                      <ConfirmationNumberOutlined className="icon-coupon" /> Coupon
+                    </span>
+                  )}
                   <span className="arrow-down">
                     <KeyboardArrowDown className="arrow-down-icon" />
                   </span>
                 </div>
-              </div>
-            </div>
+              </Grid>
+            </Grid>
           </div>
         </div>
+
+        <Confirm
+          open={openConfirm}
+          setOpen={setOpenConfirm}
+          Content={() => <p>{t('order_place_confirm_content')}</p>}
+          titleText={'order_place_confirm'}
+          onConfirm={handleSubmitOrder}
+        />
+        <AddCoupon open={openAddCoupon} setOpen={setOpenAddCoupon} />
       </div>
-      <Footer />
-    </div>
+    </>
   );
 };
 

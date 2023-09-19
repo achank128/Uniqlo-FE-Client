@@ -1,75 +1,66 @@
 import React, { useEffect, useState } from 'react';
 import './productList.scss';
-import { Link, useParams } from 'react-router-dom';
-import { getProducts } from '../../../api/apiProduct';
-import { useGlobalContext } from '../../../hooks/useGlobalContext';
+import { useSearchParams } from 'react-router-dom';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
+import { useQuery } from 'react-query';
+import { useTranslation } from 'react-i18next';
+import { Grid } from '@mui/material';
+import productApi from '../../../api/apiProduct';
 //components
-import Navbar from '../../components/navbar/Navbar';
-import Footer from '../../components/footer/Footer';
+import ProductItem from './productItem/ProductItem';
 import Categories from '../../components/categories/Categories';
-import ProductItem from '../../components/productItem/ProductItem';
 import Loading from '../../components/loading/Loading';
-import { Products } from '../../../utils/data';
+import Filter from '../../components/filter/Filter';
+import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
+import categoryApi from '../../../api/apiCategory';
+import collectionApi from '../../../api/apiCollection';
+import { sorts } from '../../../utils/const';
 
-const sorts = [
-  { title: 'Featured', query: '_id' },
-  { title: 'New arrials', query: '-_id' },
-  { title: 'Low to high', query: 'priceLimited' },
-  { title: 'High to low', query: '-priceLimited' },
-  { title: 'Top rated', query: '-rating' },
-];
-
-const ProductList = ({ showToast }) => {
-  const { category } = useParams();
-  const { search } = useGlobalContext();
-  const [productsData, setProductsData] = useState([]);
-  const [count, setCount] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [error, setError] = useState(false);
+const ProductList = () => {
+  const { t, i18n } = useTranslation();
+  const [searchParams] = useSearchParams();
+  const categoryId = searchParams.get('category');
+  const collectionId = searchParams.get('collection');
+  const search = searchParams.get('search');
   const [listSortOn, setListSortOn] = useState(false);
   const [backToTopOn, setBackToTopOn] = useState(false);
   const [sort, setSort] = useState(sorts[0]);
-  const [page, setPage] = useState(1);
+  const [category, setCategory] = useState();
+  const [collection, setCollection] = useState();
+  const [filter, setFilter] = useState({
+    keyWord: searchParams.get('search'),
+    sortBy: 'name_asc',
+    pageIndex: 1,
+    pageSize: 12,
+    categoryId: searchParams.get('category'),
+    collectionId: searchParams.get('collection'),
+    sizeIds: [],
+    colorIds: [],
+    priceMin: null,
+    priceMax: null,
+    isSale: null,
+    isOnlineOnly: null,
+    isLimited: null,
+  });
 
-  useEffect(() => {
-    // const apiProducts = async () => {
-    //   try {
-    //     setLoading(true);
-    //     setError(false);
-    //     setPage(1);
-    //     const data = await getProducts({
-    //       params: { category, sort: sort.query, search },
-    //     });
-    //     console.log(data);
-    //     setProductsData(data.products);
-    //     setCount(data.count);
-    //     setLoading(false);
-    //   } catch (err) {
-    //     setError(true);
-    //   }
-    // };
-    //apiProducts();
-    setLoading(true);
-    setProductsData(Products);
-    setCount(Products.length);
-    setLoading(false);
-  }, [sort, category, search]);
+  const {
+    isLoading,
+    isError,
+    data: productsData,
+  } = useQuery(['products', filter], ({ queryKey }) => productApi.filterProducts(queryKey[1]));
+
+  const getCategory = async (id) => {
+    const data = await categoryApi.getCategoryById(id);
+    setCategory(data);
+  };
+
+  const getCollection = async (id) => {
+    const data = await collectionApi.getCollectionById(id);
+    setCollection(data);
+  };
 
   const getProductsMore = async () => {
-    try {
-      setLoadingMore(true);
-      setError(false);
-      const data = await getProducts({
-        params: { category, sort: sort.query, search, page: page + 1 },
-      });
-      setProductsData([...productsData, ...data.products]);
-      setPage(page + 1);
-      setLoadingMore(false);
-    } catch (err) {
-      setError(true);
-    }
+    setFilter({ ...filter, pageSize: filter.pageSize + 12 });
   };
 
   //Back to top
@@ -91,106 +82,133 @@ const ProductList = ({ showToast }) => {
   };
 
   useEffect(() => {
+    if (categoryId) {
+      getCategory(categoryId);
+    } else {
+      setCategory(null);
+    }
+    if (collectionId) {
+      getCollection(collectionId);
+    } else {
+      setCollection(null);
+    }
+
+    setFilter({ ...filter, categoryId: categoryId, collectionId: collectionId, keyWord: search });
+  }, [categoryId, collectionId, search]);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  if (error) return <div>Something went wrong...</div>;
+  if (isError) return <div>Something went wrong...</div>;
   return (
-    <>
-      <Navbar />
-      <div id="product-list">
-        <div className="container">
-          <div className="wrapper">
-            <div className="breadcrumb">
-              <ul>
-                <li>
-                  <Link to="/">UNIQLO Home Page</Link>
-                </li>
-                <li className="slash">/</li>
-                <li>
-                  <Link to="/product-list/ALL">All Products</Link>
-                </li>
-                <li className="slash">/</li>
-                <li>{category}</li>
-              </ul>
-            </div>
-            <div className="sort-container">
-              <div className="left">
-                <div className="results">
-                  <div className="title">RESULTS</div>
-                  <p>{count} Items</p>
-                </div>
-              </div>
-              <div className="right">
-                <div className="sort">
-                  <div className="title">SORT BY</div>
-                  <div className="sort-content" onClick={() => setListSortOn(!listSortOn)}>
-                    <span>{sort.title}</span>
-                    <span className={listSortOn ? 'arrow-up arrow-down' : 'arrow-down'}>
-                      <KeyboardArrowDown className="arrow-down-icon" />
-                    </span>
-                  </div>
-                  <ul className={listSortOn ? 'active-list-sort list-sort' : 'list-sort'}>
-                    {sorts.map((s, i) => (
-                      <li
-                        key={i}
-                        className={s.title === sort.title ? 'selected' : ''}
-                        onClick={() => {
-                          setSort(s);
-                          setListSortOn(!listSortOn);
-                        }}
-                      >
-                        {s.title}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+    <div id="product-list">
+      <div className="container">
+        <div className="wrapper">
+          <Breadcrumb />
+
+          <div className="head-title">
+            {category && (
+              <h1>
+                {i18n.language === 'en'
+                  ? category.nameEn
+                  : i18n.language === 'en'
+                  ? category.nameVi
+                  : category.name}
+              </h1>
+            )}
+            {collection && (
+              <h1>
+                {i18n.language === 'en'
+                  ? collection.nameEn
+                  : i18n.language === 'en'
+                  ? collection.nameVi
+                  : collection.name}
+              </h1>
+            )}
+          </div>
+
+          <div className="sort-container">
+            <div className="left">
+              <div className="results">
+                <div className="title">{t('common_results')}</div>
+                <p>
+                  {productsData?.totalRecords} {t('common_items')}
+                </p>
               </div>
             </div>
-            <div className="list">
-              <Categories />
-              {loading ? (
-                <Loading />
-              ) : (
-                <div className="products">
-                  <div className="products-container">
-                    {productsData.map((product) => {
-                      return (
-                        <ProductItem key={product._id} product={product} showToast={showToast} />
-                      );
-                    })}
-                  </div>
-                  {loadingMore ? (
-                    <Loading />
+            <div className="right">
+              <div className="sort">
+                <div className="title">{t('common_sort_by')}</div>
+                <div className="sort-content" onClick={() => setListSortOn(!listSortOn)}>
+                  <span>{t(sort.title)}</span>
+                  <span className={listSortOn ? 'arrow-up arrow-down' : 'arrow-down'}>
+                    <KeyboardArrowDown className="arrow-down-icon" />
+                  </span>
+                </div>
+                <ul className={listSortOn ? 'active-list-sort list-sort' : 'list-sort'}>
+                  {sorts.map((s, i) => (
+                    <li
+                      key={i}
+                      className={s.title === sort.title ? 'selected' : ''}
+                      onClick={() => {
+                        setSort(s);
+                        setFilter({ ...filter, sortBy: s.query });
+                        setListSortOn(!listSortOn);
+                      }}
+                    >
+                      {t(s.title)}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <Grid container spacing={2} className="list">
+            <Grid item md={3}>
+              {category ? <Categories category={category} /> : <h2>{t('product_all')}</h2>}
+              <Filter category={category} filter={filter} setFilter={setFilter} />
+            </Grid>
+
+            {isLoading ? (
+              <Loading />
+            ) : (
+              <Grid item md={9} className="products">
+                <div className="products-container">
+                  {productsData.data.length > 0 ? (
+                    productsData.data.map((product) => {
+                      return <ProductItem key={product.id} product={product} />;
+                    })
                   ) : (
-                    <>
-                      {productsData.length < count ? (
-                        <div className="load-more">
-                          <button onClick={getProductsMore}>
-                            LOAD MORE <KeyboardArrowDown className="icon-down" />
-                          </button>
-                        </div>
-                      ) : (
-                        <></>
-                      )}
-                    </>
+                    <div>{t('product_no_item')}</div>
                   )}
                 </div>
-              )}
-            </div>
-          </div>
-        </div>
-        <div className={backToTopOn ? 'backtotop-btn active' : 'backtotop-btn'} onClick={backToTop}>
-          <div className="back">
-            <span>
-              <KeyboardArrowUp className="up-icon" />
-            </span>
-            <span>TOP</span>
-          </div>
+                {isLoading ? (
+                  <Loading />
+                ) : (
+                  filter.pageSize <= productsData.totalRecords && (
+                    <div className="load-more">
+                      <button onClick={getProductsMore}>
+                        {t('common_load_more')} <KeyboardArrowDown className="icon-down" />
+                      </button>
+                    </div>
+                  )
+                )}
+              </Grid>
+            )}
+          </Grid>
         </div>
       </div>
-      <Footer />
-    </>
+      <div className={backToTopOn ? 'backtotop-btn active' : 'backtotop-btn'} onClick={backToTop}>
+        <div className="back">
+          <span>
+            <KeyboardArrowUp className="up-icon" />
+          </span>
+          <span>TOP</span>
+        </div>
+      </div>
+    </div>
   );
 };
 
